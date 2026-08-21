@@ -1,0 +1,8 @@
+# BMad
+_bmad/
+.bmad/
+*_bmad*
+!_bmad-output
+!_bmad-output/**
+.agents/
+.claude/
