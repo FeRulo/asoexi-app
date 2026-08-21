@@ -1,6 +1,7 @@
 # Mensaje Informativo para la Dirección y Equipo Comercial — ASOEXI S.A.S.
 
 **Fecha:** 21 de agosto de 2026  
+**Presentado por:** Ing. Fernando Páez  
 **Para:** Gerencia General y Equipo Comercial de ASOEXI S.A.S.  
 **Asunto:** Propuesta del Nuevo Sitio Web Corporativo & Estrategia para Atraer Clientes desde Google  
 
@@ -63,4 +64,6 @@ El proyecto se ejecutará de forma organizada en 3 fases. **Cada entregable term
 
 ---
 
-*Quedamos atentos a sus comentarios para iniciar la fase de diseño y desarrollo.*
+**Elaborado y Presentado por:**  
+**Ing. Fernando Páez**  
+*Asesor de Desarrollo & Estrategia Digital*
