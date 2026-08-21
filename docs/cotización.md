@@ -1,6 +1,7 @@
 # Análisis Técnico, Estrategia SEO y Cotización de Desarrollo - ASOEXI S.A.S.
 
 **Fecha:** 21 de agosto de 2026  
+**Elaborado y Presentado por:** Ing. Fernando Páez  
 **Proyecto:** Sitio Web Corporativo, Catálogo B2B de Insumos & Presencia SEO  
 **Cliente:** ASOEXI S.A.S.  
 **Referencia del Brief:** [`_bmad-output/planning-artifacts/briefs/brief-asoexi-app-2026-08-21/brief.md`](file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/planning-artifacts/briefs/brief-asoexi-app-2026-08-21/brief.md)
@@ -100,3 +101,9 @@ Para garantizar el equilibrio perfecto entre liquidez de desarrollo y seguridad 
 > 3. El saldo final de cada mes ($350.000 COP) se cancela únicamente cuando ASOEXI prueba y aprueba que el entregable está funcionando al 100%.
 
 *(No incluye costos de dominio `.com` / `.com.co` ni inversión en pauta publicitaria).*
+
+---
+
+**Elaborado y Presentado por:**  
+**Ing. Fernando Páez**  
+*Asesor de Desarrollo & Estrategia Digital*
