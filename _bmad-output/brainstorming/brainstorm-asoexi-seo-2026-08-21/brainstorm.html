@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASOEXI S.A.S. - Lluvia de Ideas: Estrategia Web & Garantía SEO B2B</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --primary: #dc2626;
+      --primary-light: #ef4444;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background-color: rgba(220, 38, 38, 0.2);
+      color: var(--primary-light);
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5rem;
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .idea-list {
+      list-style: none;
+    }
+
+    .idea-item {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .idea-item::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--primary-light);
+      font-weight: bold;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
+      border-left: 4px solid var(--primary-light);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .highlight-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .roadmap-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .step-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .step-number {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0.25rem 0 0.5rem 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">BMad Brainstorming Artifact</span>
+      <h1>ASOEXI S.A.S. — Estrategia Web & Garantía SEO B2B</h1>
+      <p class="subtitle">Propuestas de refinamiento y matriz táctica para asegurar posicionamiento orgánico en motores de búsqueda para la distribución ferretera e industrial en Colombia.</p>
+    </header>
+
+    <div class="highlight-box">
+      <div class="highlight-title">💡 Diagnóstico & Solución al Dilema SEO B2B</div>
+      <p>El SEO B2B mayorista no requiere un e-commerce complejo ni exponer precios públicos. La clave del éxito para ASOEXI radica en la <strong>Arquitectura Silo por Marca</strong> (creación de páginas optimizadas para cada una de las 40+ marcas como Panduit, DeWalt, Pavco, Schneider) combinada con <strong>Conversión Contextual hacia WhatsApp</strong> y excelente SEO Técnico (Next.js SSG + Schemas B2BSupplier).</p>
+    </div>
+
+    <div class="grid-2">
+      <!-- Technique 1 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">1. Constraint Mapping (Mitos vs Realidad)</div>
+        </div>
+        <ul class="idea-list">
+          <li class="idea-item"><strong>Desmitificar e-Commerce:</strong> No se requiere carrito ni precios públicos para posicionar en Google. Ocultar precios incentiva la cotización directa.</li>
+          <li class="idea-item"><strong>Arquitectura Silo/Hubs:</strong> Google indexa URLs individuales. Crear páginas dedicadas por marca (ej: <code>/distribuidor-panduit-colombia</code>).</li>
+          <li class="idea-item"><strong>Intención Comercial Alta:</strong> Enfocar keywords en <em>"distribuidor mayorista de..."</em> o <em>"proveedor ferretero para obras"</em> en lugar de búsquedas genéricas.</li>
+          <li class="idea-item"><strong>SEO Geo-Localizado Colombia:</strong> Optimizar metadatos y schemas <code>B2BSupplier</code> orientados a Colombia y sus principales hubs industriales.</li>
+        </ul>
+      </div>
+
+      <!-- Technique 2 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">2. How Might We (Oportunidades)</div>
+        </div>
+        <ul class="idea-list">
+          <li class="idea-item"><strong>WhatsApp Contextual:</strong> Al dar clic desde la página de DeWalt, el chat se abre con: <em>"Hola ASOEXI, vi su catálogo DeWalt y quiero cotizar para obra..."</em></li>
+          <li class="idea-item"><strong>Apalancamiento de Marcas Autorizadas:</strong> Capturar el volumen de búsqueda de las 40+ marcas ricas ofreciendo catálogos PDF descargables.</li>
+          <li class="idea-item"><strong>Programmatic SEO:</strong> Utilizar micro-plantillas de datos de marcas para generar decenas de landing pages sin redacción manual masiva.</li>
+          <li class="idea-item"><strong>Roadmap SEO Medible:</strong> Dividir el compromiso en 3 fases: Fundaciones Técnicas, Silos de Contenido y SEO Local & Citaciones.</li>
+        </ul>
+      </div>
+
+      <!-- Technique 3 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🛠️</div>
+          <div class="card-title">3. SCAMPER (Innovación UX & Valor)</div>
+        </div>
+        <ul class="idea-list">
+          <li class="idea-item"><strong>Substitute:</strong> Reemplazar formularios largos por un "Cotizador Exprés B2B" directo a WhatsApp con carga opcional de archivos (PDF/Excel de obra).</li>
+          <li class="idea-item"><strong>Adapt (AEO / AI Search):</strong> Implementar datos estructurados JSON-LD para ser citados por ChatGPT, Perplexity y Google AI Overviews.</li>
+          <li class="idea-item"><strong>Combine:</strong> Integrar un buscador instantáneo client-side en el Hero para filtrar marcas en milisegundos sin recargar página.</li>
+          <li class="idea-item"><strong>Magnify:</strong> Destacar visualmente el sello <em>"7+ años abasteciendo a grandes compañías en Colombia"</em> como garantía institucional.</li>
+        </ul>
+      </div>
+
+      <!-- Technique 4 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">4. Causal Loop Mapping (Flywheel SEO)</div>
+        </div>
+        <ul class="idea-list">
+          <li class="idea-item"><strong>Flywheel de Crecimiento:</strong> Páginas SSG súper rápidas → Tráfico calificado → Leads de WhatsApp → Cotizaciones → Testimonios → Más autoridad.</li>
+          <li class="idea-item"><strong>Apalancamiento Core Web Vitals:</strong> Lograr Score 95+ en Google PageSpeed con Next.js SSG para superar sitios pesados de competidores.</li>
+          <li class="idea-item"><strong>Métricas Clave (KPIs):</strong> Indexabilidad del 100% de páginas de marcas en Google Search Console, impresiones objetivo y leads originados por SEO.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Roadmap to Guarantee SEO -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Roadmap Táctico: ¿Cómo garantizar el compromiso SEO?</div>
+      </div>
+      <div class="roadmap-steps">
+        <div class="step-card">
+          <div class="step-number">Fase 1 — Mes 1</div>
+          <div class="step-title">Infraestructura & SEO Técnico</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Desarrollo SSG en Next.js con Core Web Vitals 95+, Sitemap dinámico, Open Graph y datos estructurados Schema.org (B2BSupplier y WholesaleStore).</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Fase 2 — Mes 2</div>
+          <div class="step-title">Arquitectura Silo por Marca</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Despliegue de 3 Hubs de Categorías (Eléctrico, Ferretero, Hidráulico) y ~40 Landing Pages individuales optimizadas para keywords transaccionales de marca.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Fase 3 — Mes 3</div>
+          <div class="step-title">SEO Local, AI Search & Conversión</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Optimización de Google Business Profile, linkbuilding con proveedores/marcas, preparación para AI Search (AEO) y tracking de conversiones de WhatsApp.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Generado por BMad Brainstorming Agent — ASOEXI S.A.S. Project Workspace</p>
+    </footer>
+  </div>
+</body>
+</html>
