@@ -284,7 +284,7 @@ Metadatos de verificación para Google Search Console y enlace a la ficha de Goo
 ### 6.1 In Scope
 
 - **Mes 1 — Entregable 1 (Sitio Web Base Funcional en Vivo):**
-  - Plataforma en Next.js SSG con diseño responsivo (paleta oficial Blanco, Negro, Rojo, Gris).
+  - Plataforma en Astro 7 (SSG + Islas Preact) con diseño responsivo (paleta oficial Blanco, Negro, Rojo, Gris).
   - Home con los pilares institucionales: 7+ años, crédito a 45 días, entrega en 6h urgencias / 24-48h regular, facturación electrónica.
   - Vitrina de las Top 10 Marcas Tractoras.
   - Selector interactivo de canales de contacto (Geraldine, Sonia Franco, Línea Corporativa).
@@ -331,7 +331,7 @@ Metadatos de verificación para Google Search Console y enlace a la ficha de Goo
 
 ## 8. Cross-Cutting Non-Functional Requirements (NFRs)
 
-- **NFR-1 (Rendimiento):** Arquitectura Next.js SSG servida en CDN con TTFB < 200 ms y LCP < 1.5 s en redes móviles 4G.
+- **NFR-1 (Rendimiento):** Arquitectura Astro 7 SSG servida en Cloudflare Pages CDN con TTFB < 200 ms y LCP < 1.5 s en redes móviles 4G.
 - **NFR-2 (Optimización de Recursos Gráficos):** Logotipos de marcas y banners en formato WebP / SVG vectorial con compresión optimizada y dimensiones explícitas (CLS < 0.05).
 - **NFR-3 (Accesibilidad & Mobile First):** Cumplimiento de WCAG 2.1 AA, contrastes cromáticos de la paleta oficial (Blanco, Negro, Rojo, Gris) y áreas de toque mínimas de 48x48px para botones táctiles.
 - **NFR-4 (Seguridad y Privacidad):** Forzado de HTTPS estricto con TLS vigente y cabeceras de seguridad HTTP (`X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`).

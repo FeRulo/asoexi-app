@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>UX Design Validation: ASOEXI S.A.S. Web & Catálogo B2B</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--verdict-strong);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header class="report-header">
+      <div class="title">
+        <h1>ASOEXI S.A.S. — Reporte de Validación UX</h1>
+        <div class="subtitle">_bmad-output/planning-artifacts/ux-designs/ux-asoexi-app-2026-09-07/</div>
+      </div>
+    </header>
+
+    <div class="synthesis">
+      <p><strong>Veredicto General:</strong> La dupla de contratos de diseño (<code>DESIGN.md</code> y <code>EXPERIENCE.md</code>) presenta una alineación sobresaliente con los objetivos estratégicos B2B de ASOEXI S.A.S. y las fuentes institucionales (PRD, Brief y brochure oficial). Las especificaciones definen con precisión los tokens bajo el estándar de Google Labs, la arquitectura de silos por marca, la integración contextual con WhatsApp y el equilibrio entre autoridad corporativa y calidez en la cotización.</p>
+    </div>
+
+    <div class="dimension-summary">
+      <div class="dim-card">
+        <div class="dim-name">1. Flow coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">2. Token completeness</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">3. Component coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">4. State coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">5. Visual reference coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">ADEQUATE</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">6. Bloat & overspecification</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">7. Inheritance discipline</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">8. Shape fit</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">STRONG</div>
+      </div>
+    </div>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>1. Flow coverage (Cobertura de Flujos)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Se validó la cobertura contra los flujos de usuario (User Journeys) establecidos en el PRD: Flujo de Carlos (Director de Compras en Obra cotizando Pavco) y Flujo de Andrea (Jefe de Suministros Industriales para Planta de Producción). Ambos cuentan con contexto, pasos numerados, clímax de conversión a WhatsApp/teléfono y manejo de fallback en caso de marcas sin catálogo PDF digital.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>2. Token completeness (Completitud de Tokens)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Todos los tokens en el YAML frontmatter de DESIGN.md poseen valores hexadecimales explícitos (#E51A24 primario, #1E2229 secundario, #25D366 whatsapp, #F59E0B acento). Las tipografías Montserrat e Inter están parametrizadas con rampa de tamaños, pesos y alturas de línea completas. Las referencias en componentes resuelven limpiamente.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>3. Component coverage (Cobertura de Componentes)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Todos los componentes requeridos por la arquitectura cuentan con especificación visual en DESIGN.md y reglas de comportamiento en EXPERIENCE.md: Navbar corporativo, Tarjeta de marca con fondo blanco puro, Banner de cotización con la mascota técnica, Botón flotante persistente de WhatsApp y Buscador reactivo en tiempo real.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>4. State coverage (Cobertura de Estados)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Se cubren de manera explícita los estados de carga inicial (skeletons CLS < 0.05), búsqueda sin coincidencias (cero resultados amigable redirigiendo a WhatsApp), fallo en descarga de PDF (fallback para solicitar ficha técnica a un asesor) y pérdida intermitente de conexión con botón de llamada telefónica directa.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>5. Visual reference coverage (Referencias Visuales)</h2>
+          <span class="verdict-pill verdict-adequate">ADEQUATE</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Los 9 recursos visuales extraídos del brochure oficial e importados en imports/ fueron catalogados y analizados. Los elementos clave (portada con logotipo oficial y banner con mascota institucional) están vinculados directamente en las especificaciones.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">LOW</span>
+              <h3 class="finding-title">Cláusula explícita de prevalencia contractual de las especificaciones</h3>
+              <span class="finding-location">DESIGN.md / EXPERIENCE.md</span>
+            </header>
+            <div class="finding-note">Es buena práctica ratificar explícitamente en el encabezado que los contratos de texto (DESIGN.md y EXPERIENCE.md) prevalecen contractualmente ante cualquier discrepancia con los bocetos o imágenes de referencia.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Incluida la nota de prevalencia en ambos contratos.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>6. Bloat & overspecification (Contención y Síntesis)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Excelente disciplina de síntesis: no hay especificaciones rígidas de píxeles fuera de la escala base, ni duplicación redundante del contenido del PRD. Clara delimitación entre estética (DESIGN.md) y comportamiento (EXPERIENCE.md).</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>7. Inheritance discipline (Disciplina de Herencia)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Los metadatos sources enlazan fielmente a las rutas locales del PRD y del Brief. La nomenclatura de los tres sectores (Eléctrico, Ferretero, Hidráulico) y la lista de marcas es 100% coherente.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>8. Shape fit (Ajuste de Estructura Canónica)</h2>
+          <span class="verdict-pill verdict-strong">STRONG</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>DESIGN.md respeta el orden canónico estricto de Google Labs (Brand & Style → Colors → Typography → Layout & Spacing → Elevation & Depth → Shapes → Components → Do's and Don'ts). EXPERIENCE.md cuenta con todas las secciones estándar requeridas más la sección responsive.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <div class="mechanical">
+      <h3>Notas Mecánicas</h3>
+      <ul>
+        <li>Frontmatter YAML válido en ambos archivos sin errores de parseo.</li>
+        <li>Rutas de archivos verificadas y existentes en el sistema local.</li>
+        <li>Tokens {path.to.token} mapean con precisión contra el diccionario YAML de DESIGN.md.</li>
+      </ul>
+    </div>
+
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: review-rubric.md</span>
+        <span>Generado: 2026-09-07T13:07:00-05:00</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

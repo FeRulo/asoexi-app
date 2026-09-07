@@ -11,14 +11,14 @@ Este documento preserva decisiones técnicas, comparativas de arquitectura tecno
 | **Plataformas SaaS Builder** *(GoDaddy, Wix, Squarespace)* | Creadores visuales con hosting cerrado de arrastrar y soltar. | Rápido despliegue inicial. | SEO técnico deficiente, código inflado, rendimiento móvil bajo y mensualidad vitalicia obligatoria. | ❌ **Descartada:** No cumple los estándares de SEO ni la agilidad requerida para un silo B2B de 40+ páginas. |
 | **Plataformas E-commerce SaaS** *(Shopify)* | Sistema enfocado en tiendas virtuales con carrito de compras y pasarela de pago. | Gestión integrada de catálogo transaccional. | Cobro mensual en USD por funcionalidades de carrito transaccional que ASOEXI no utiliza (la dinámica B2B de la empresa es por cotización y negociación de volumen). | ❌ **Descartada:** Genera costos fijos injustificados y fricción en el modelo de cotización corporativa. |
 | **CMS Auto-hospedado** *(WordPress + Elementor / WooCommerce)* | Sistema de gestión de contenidos tradicional con plugins SEO. | Administrable por personal no técnico, ecosistema amplio de plugins. | Vulnerabilidad de seguridad ante plugins desactualizados, rendimiento variable en Core Web Vitals, sobrecarga de base de datos. | ⚠️ **Alternativa Secundaria:** Descartada a favor de Jamstack/SSG por velocidad y simplicidad de mantenimiento. |
-| **Página Autónoma / Desarrollo a la Medida** *(Next.js / SSG / Jamstack)* | Sitio web corporativo estático generado en compilación (Static Site Generation). | Máxima velocidad de carga (<1s), Core Web Vitals 95-100/100, cero costos recurrentes de plataforma, arquitectura limpia de silos SEO, seguridad total. | Requiere un esquema de actualización técnica o CMS headless si el cliente requiere editar textos autónomamente. | **✅ Elección Seleccionada:** Máximo rendimiento SEO y propiedad 100% de ASOEXI S.A.S. |
+| **Página Autónoma / Desarrollo a la Medida** *(Astro 7 / SSG / Jamstack / Islas Preact)* | Sitio web corporativo estático generado en compilación (Static Site Generation). | Máxima velocidad de carga (<1s), Core Web Vitals 95-100/100, cero costos recurrentes de plataforma, arquitectura limpia de silos SEO, seguridad total. | Requiere un esquema de actualización técnica o CMS headless si el cliente requiere editar textos autónomamente. | **✅ Elección Seleccionada:** Máximo rendimiento SEO y propiedad 100% de ASOEXI S.A.S. |
 
 ---
 
 ## 2. Marco Técnico y Mecanismos de Transporte (Downstream Architecture)
 
 ### 2.1 Enfoque de Generación de Páginas
-- **Framework:** Next.js con Static Site Generation (SSG).
+- **Framework:** Astro 7 con Static Site Generation (SSG) e Islas interactivas en Preact.
 - **Rendimiento Objetivo:** Google Core Web Vitals con puntaje de 95 a 100 en Performance móvil y desktop.
 - **Hosting & Despliegue:** Plataforma de borde (Vercel / Cloudflare Pages / AWS S3 + CloudFront) con costo de plataforma cero o marginal, sin dependencias de base de datos activa para servir páginas.
 
@@ -40,7 +40,7 @@ Este documento preserva decisiones técnicas, comparativas de arquitectura tecno
 ## 3. Consideraciones Comerciales y Alcance por Fases
 
 ### 3.1 Cronograma de Entregables Acordado
-- **Mes 1 (Entregable 1 - Sitio Base Funcional en Vivo):** Plataforma base en Next.js, identidad visual corporativa, presentación institucional de 7+ años, integración de selector de canales (Geraldine, Sonia, Corporativo) y vitrina de Top 5 Marcas Tractoras.
+- **Mes 1 (Entregable 1 - Sitio Base Funcional en Vivo):** Plataforma base en Astro 7 (SSG + Islas Preact), identidad visual corporativa, presentación institucional de 7+ años, integración de selector de canales (Geraldine, Sonia, Corporativo) y vitrina de Top 5 Marcas Tractoras.
 - **Mes 2 (Entregable 2 - Catálogo y Silo de ~40 Marcas):** Despliegue de los 3 Hubs de Sector, ~40 páginas de marcas dedicadas, catálogos en PDF descargables y WhatsApp contextual con plantilla estructurada.
 - **Mes 3 (Entregable 3 - SEO Técnico, Google Maps & Medición):** Alta y verificación en Google Search Console, optimización de perfil de empresa en Google Maps, marcado Schema e instrumentación de analítica de eventos para clics a WhatsApp y llamadas telefónicas desglosado por asesora.
 
