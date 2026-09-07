@@ -1,8 +1,8 @@
 ---
 title: PRD - ASOEXI S.A.S.
-status: draft
+status: final
 created: 2026-09-05
-updated: 2026-09-05
+updated: 2026-09-07
 ---
 
 # PRD: ASOEXI S.A.S. - Plataforma Web Corporativa, Catálogo B2B & Motor de Conversión SEO
