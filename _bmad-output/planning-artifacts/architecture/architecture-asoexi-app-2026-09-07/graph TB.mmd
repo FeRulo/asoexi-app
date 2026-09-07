@@ -1,0 +1,73 @@
+graph TB
+    %% Actores
+    subgraph Actores ["Actores del Negocio"]
+        Buyer["👤 Analista / Jefe de Compras\n(Contratista, Obra o Planta)"]
+        GoogleBot["🤖 Googlebot / Motores de Búsqueda\n(Indexación Orgánica SEO)"]
+        SalesTeam["👩‍💼 Asesoras Comerciales ASOEXI\n(Geraldine, Sonia - Ventas)"]
+    end
+
+    %% Contenedor Navegador
+    subgraph Browser ["Navegador Web del Cliente (Desktop / Mobile)"]
+        direction TB
+        StaticPages["📄 Páginas SSG Prerenderizadas\n(HTML5 semántico, Tailwind CSS v4)"]
+        
+        subgraph Islands ["Islas Interactivas de Cliente (Preact 10)"]
+            SearchIsland["🔍 LiveSearchIsland\n(Búsqueda instantánea de insumos)"]
+            CartIsland["🛒 QuoteDrawer & FloatingBadge\n(Carrito de cotización)"]
+            FormIsland["📝 QuoteCreditModal\n(Formulario formal y crédito 45 días)"]
+        end
+        
+        StateStore[("💾 LocalStorage del Navegador\n(Nano Stores: $cartStore)")]
+        WALinkGen["📲 WhatsApp Link Dispatcher\n(Generador de URI wa.me estructurado)"]
+        
+        StaticPages --- SearchIsland
+        CartIsland <--> StateStore
+        FormIsland <--> StateStore
+        CartIsland --> WALinkGen
+    end
+
+    %% Plataforma Cloudflare
+    subgraph CloudflarePlatform ["Plataforma de Borde Cloudflare (Edge)"]
+        direction TB
+        CDNEdge["🌐 Cloudflare Pages CDN & Cache Anycast\n(Distribución global, SSL, compresión Brotli/Gzip)"]
+        StaticAssets["📦 Almacén de Compilación Estática\n(HTML prerenderizado, CSS, WebP/AVIF, PDFs)"]
+        EdgeFunction["⚡ Edge Serverless Function: /api/quote\n(Astro Endpoint en Cloudflare Workers V8 Isolate)"]
+        
+        CDNEdge --> StaticAssets
+        CDNEdge --> EdgeFunction
+    end
+
+    %% Sistemas y Servicios Externos
+    subgraph ExternalServices ["Sistemas y Servicios Externos"]
+        WhatsAppService["💬 Red WhatsApp\n(WhatsApp Web / App Móvil)"]
+        ResendAPI["✉️ Resend Transactional Email API\n(Servicio REST de correo autenticado SPF/DKIM)"]
+        CorporateMail["📬 Bandeja de Correo Corporativo\n(ventas@asoexi.com / Google Workspace)"]
+    end
+
+    %% Flujos y Relaciones
+    Buyer -- "1. Navega catálogo y fichas [HTTPS]" --> CDNEdge
+    GoogleBot -- "Indexa URLs canónicas y JSON-LD [HTTPS]" --> CDNEdge
+    CDNEdge -- "Sirve HTML estático y bundles ultraligeros" --> StaticPages
+
+    Buyer -- "2. Agrega insumos al cotizador" --> CartIsland
+    Buyer -- "3a. Solicita cotización rápida" --> WALinkGen
+    WALinkGen -- "Abre chat con mensaje preestructurado [wa.me]" --> WhatsAppService
+    WhatsAppService --> SalesTeam
+
+    Buyer -- "3b. Solicita cotización formal / crédito con RUT" --> FormIsland
+    FormIsland -- "Envía FormData Multipart (PDF hasta 5MB) [HTTPS POST]" --> EdgeFunction
+    
+    EdgeFunction -- "Valida Zod y despacha correo con adjunto en memoria [HTTPS REST]" --> ResendAPI
+    ResendAPI -- "Entrega correo con RUT adjunto [SMTP / TLS]" --> CorporateMail
+    CorporateMail --> SalesTeam
+
+    %% Estilos de los Nodos
+    classDef actorStyle fill:#0A2540,stroke:#F59E0B,stroke-width:2px,color:#FFFFFF;
+    classDef browserStyle fill:#F8FAFC,stroke:#0A2540,stroke-width:2px,color:#0F172A;
+    classDef cloudflareStyle fill:#F0FDF4,stroke:#16A34A,stroke-width:2px,color:#0F172A;
+    classDef externalStyle fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#0F172A;
+
+    class Buyer,GoogleBot,SalesTeam actorStyle;
+    class StaticPages,SearchIsland,CartIsland,FormIsland,StateStore,WALinkGen browserStyle;
+    class CDNEdge,StaticAssets,EdgeFunction cloudflareStyle;
+    class WhatsAppService,ResendAPI,CorporateMail externalStyle;
