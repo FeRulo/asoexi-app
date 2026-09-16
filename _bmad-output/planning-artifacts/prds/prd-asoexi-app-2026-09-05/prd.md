@@ -123,14 +123,17 @@ La plataforma web corporativa se concibe como un **motor de conversión ágil**,
 
 #### FR-1: Visualización de Diferenciales y Credenciales de Confianza
 El sistema debe exponer en la cabecera/Hero de la página de inicio los 5 pilares de legitimidad empresarial:
+El sistema debe exponer en la cabecera/Hero de la página de inicio los 6 pilares de legitimidad empresarial:
 1. "Más de 7 años abasteciendo a grandes compañías en Colombia".
 2. "Entrega en Bogotá en 24-48h (despacho exprés en 6 horas para urgencias) y 48h en la Sabana".
 3. "Crédito comercial de hasta 45 días para empresas".
 4. "Garantía de marcas 100% originales, certificados autorizados y facturación electrónica".
 5. "Montos mínimos de despacho desde $50.000 COP en Bogotá y transporte directo".
+6. "Atención especializada con logística y entrega directa en obra o empresa (no venta presencial por mostrador)".
 - **Consequences (testable):**
   - Los pilares son visibles de forma inmediata en dispositivos móviles y de escritorio.
   - Se visualizan sellos de facturación electrónica y garantía de fábrica para despejar la desconfianza del comprador primerizo.
+  - Se aclara desde el primer momento que el modelo es de suministro y despacho a domicilio, gestionando adecuadamente la expectativa física del cliente.
 - **Out of Scope:** Pasarela de pago en línea o calculadora de crédito automatizada.
 
 #### FR-2: Vitrina Destacada de las Top 10 Marcas Tractoras
@@ -141,6 +144,12 @@ El sistema debe exhibir en una sección preferencial del Home las 10 marcas estr
 - **Consequences (testable):**
   - Cada marca se visualiza con su logotipo oficial optimizado en formato WebP/SVG.
   - Al hacer clic en cualquiera de ellas, navega directamente a su Silo de Marca correspondiente (`/distribuidor-[marca]-colombia`).
+
+#### FR-2b: Sección de Clientes Corporativos y Prueba Social
+El sistema debe incluir una franja de confianza institucional destacando las empresas y centros comerciales abastecidos por ASOEXI:
+- **Clientes validados:** Casalimpia, Centro Comercial Andino, Centro Comercial Unicentro, Winner Group, Multiplika.
+- **Consequences (testable):**
+  - Grilla o carrusel de logotipos de clientes en alta resolución/optimizado en escala de grises o contraste armonioso en la página de inicio y en la sección institucional.
 
 ---
 
@@ -180,9 +189,13 @@ El sistema debe generar páginas dedicadas con estructura canónica `/distribuid
 
 #### FR-6: Descarga de Catálogos en PDF y Enlaces de Fichas
 Cada silo de marca debe incluir un botón para descargar el catálogo o ficha técnica en PDF.
+#### FR-6: Orientación a Cotización y Vitrina de Portafolio por Marca
+Dado que ASOEXI maneja precios dinámicos por volumen y no dispone de catálogos PDF oficiales ni listas públicas con precios (se utilizan piezas publicitarias de apoyo visual de marcas), la plataforma web opera 100% orientada a la **solicitud de cotización formal**.
 - **Consequences (testable):**
   - Al hacer clic, abre o descarga el PDF sin retardar el render de la página.
   - Si una marca no dispone temporalmente de PDF, el botón se oculta de forma transparente y se prioriza el botón de cotización por WhatsApp.
+  - Cada silo de marca y ficha de categoría presenta como acción principal el botón *"Cotizar por WhatsApp productos de [Marca]"* o *"Solicitar Cotización Formal"*.
+  - No existen botones rotos de descarga de catálogos: si en el futuro se incorpora una ficha técnica o catálogo PDF oficial para una marca específica, el botón de descarga se renderiza condicionalmente. De lo contrario, se enfoca totalmente en la apertura del selector de cotización.
 
 ---
 
@@ -197,9 +210,14 @@ Al activar cualquier botón de cotización o el botón flotante de WhatsApp, se 
 1. **Atención Comercial — Geraldine:** WhatsApp comercial y línea telefónica directa.
 2. **Atención Comercial — Sonia Franco:** WhatsApp comercial y línea telefónica directa.
 3. **Línea Corporativa & Servicio al Cliente:** Línea rotativa y PBX para vinculación corporativa o solicitudes generales.
+Al activar cualquier botón de cotización o el botón flotante de WhatsApp, se despliega un selector con 3 opciones de atención directa con los números comerciales validados:
+1. **Atención Comercial — Geraldine:** WhatsApp comercial directo `+57 318 639 7212` (`3186397212`).
+2. **Atención Comercial — Sonia Franco:** WhatsApp comercial directo `+57 320 449 8881` (`3204498881`).
+3. **Línea Corporativa & Servicio al Cliente:** Línea directa `+57 304 401 3761` (`3044013761`) rotativa y para vinculación corporativa.
 - **Consequences (testable):**
   - Las 3 líneas cuentan con capacidad para cotizar y atender solicitudes.
   - En móviles se despliega como hoja táctil (bottom sheet) con botones táctiles grandes (mínimo 48px).
+  - Cada botón abre la API de WhatsApp con la vendedora correspondiente preseleccionada.
 
 #### FR-8: Plantilla Estructurada con los Datos Indispensables para las Vendedoras
 Al abrir el chat de WhatsApp con la asesora comercial, el sistema debe pre-cargar automáticamente la plantilla de cotización con los 6 datos requeridos:
@@ -217,6 +235,19 @@ Hola ASOEXI, vi su catálogo de [Marca/Sector] en la página web y deseo solicit
 
 #### FR-9: Directorio Telefónico y Nota de Tiempos de Entrega
 El sistema debe incluir enlaces directos `tel:+57...` para las 3 líneas telefónicas en el Header, Contacto y Footer.
+#### FR-9: Directorio Corporativo, Teléfonos, Correos y Canales Oficiales
+El sistema debe incluir enlaces directos `tel:+57...`, correos electrónicos y los datos oficiales de la compañía en el Header, Contacto y Footer:
+- **NIT:** `900480460-8`
+- **Sede Administrativa:** Carrera 55 A No. 51 A 28 Sur, Bogotá D.C. (Aclarando explícitamente: *Sede administrativa y despacho logístico. No contamos con venta presencial por mostrador ni retiro en bodega*).
+- **Horario de Atención:** Lunes a Viernes 7:30 AM a 4:30 PM | Sábados 8:00 AM a 12:00 PM.
+- **Líneas Telefónicas Directas:**
+  - Geraldine: `tel:+573186397212`
+  - Sonia Franco: `tel:+573204498881`
+  - Corporativa / Servicio al Cliente: `tel:+573044013761`
+- **Correos Electrónicos:**
+  - `mailto:asesorventas1@asoexi.com`
+  - `mailto:asesorventas3@asoexi.com`
+  - `mailto:servicioclienteasoexi@gmail.com`
 - **Consequences (testable):**
   - Tocar cualquier número activa el marcador nativo del smartphone.
   - Se expone la política de entregas (24-48h estándar Bogotá/Sabana, 6h urgencias en Bogotá, y despachos nacionales por transportadora).
@@ -381,6 +412,11 @@ Metadatos de verificación para Google Search Console y enlace a la ficha de Goo
 | `ASSUMP-1` | `[RESUELTA]` | Distribución de líneas comerciales: 3 líneas facultadas para cotizar (Geraldine, Sonia Franco y Línea Corporativa rotativa). | **Cerrada:** Modelada en `FR-7`, `FR-8` y `FR-9`. Solo resta parametrizar los números telefónicos exactos. |
 | `ASSUMP-2` | `[ASSUMPTION]` | Correos electrónicos corporativos: Se asumen `contacto@asoexi.com` y `ventas@asoexi.com`. | **Bajo:** Configurable mediante variables de entorno del proyecto. |
 | `ASSUMP-3` | `[ASSUMPTION]` | Catálogos PDF: Se obtendrán de los brochures públicos de los fabricantes o material de ASOEXI; si alguna marca no tiene PDF, la landing opera orientada a cotización sin botón roto. | **Medio:** Mitigado por diseño condicional en `FR-6`. |
+| `ASSUMP-1` | `[RESUELTA]` | Distribución de líneas comerciales: 3 líneas facultadas para cotizar (Geraldine: 3186397212, Sonia Franco: 3204498881, Corporativa: 3044013761). | **Cerrada:** Parametrizadas en `FR-7`, `FR-8` y `FR-9` con números directos validados. |
+| `ASSUMP-2` | `[RESUELTA]` | Correos electrónicos corporativos: `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `servicioclienteasoexi@gmail.com`. | **Cerrada:** Parametrizados en `FR-9` y Addendum. |
+| `ASSUMP-3` | `[RESUELTA]` | Catálogos PDF y Precios: El cliente aclaró que no dispone de catálogos oficiales PDF ni precios públicos. El modelo opera 100% orientado a cotización usando piezas publicitarias para visualización de marcas. | **Cerrada:** Reflejada en `FR-6` y Addendum 4.7. Botón principal es "Cotizar por WhatsApp". |
 | `ASSUMP-4` | `[RESUELTA]` | Cobertura y logística: 24-48h regular en Bogotá y Sabana tras aprobación; 6h exprés para urgencias en Bogotá; nacional por transportadora. | **Cerrada:** Integrada formalmente en `FR-1`, `FR-9` y `UJ-2`. |
 | `ASSUMP-5` | `[RESUELTA]` | Montos mínimos de despacho: $50.000 COP en Bogotá; en Sabana $100.000 COP moto y $300.000 COP carro (IVA incluido). Sin mínimo para cotizar. | **Cerrada:** Reflejada en `FR-1`, `FR-9` y Non-Goals. |
 | `ASSUMP-6` | `[ASSUMPTION]` | Alta en Google Business Profile: Se gestionará en el Entregable 3 requiriendo validación física de dirección en Bogotá. | **Medio:** Programado formalmente para la Fase 3. |
+| `ASSUMP-6` | `[ASSUMPTION]` | Alta en Google Business Profile: Se gestionará en el Entregable 3 requiriendo validación física de dirección en Bogotá (Carrera 55 A No. 51 A 28 Sur). | **Medio:** Programado formalmente para la Fase 3, especificando sede administrativa sin mostrador. |
+| `ASSUMP-7` | `[RESUELTA]` | Naturaleza de la sede física: Sede administrativa/logística sin venta por mostrador ni retiro presencial en bodega. Todo pedido es con despacho a domicilio directo. | **Cerrada:** Reflejada en `FR-1`, `FR-9`, Addendum 4.6 y microcopy UX. |

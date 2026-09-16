@@ -72,3 +72,37 @@ Este documento preserva decisiones técnicas, comparativas de arquitectura tecno
 - **Eléctrico:** Panduit, Centelsa by Nexans, Sylvania.
 - **Ferretero & Construcción:** Supermastick PR, Stanley, DeWalt, Truper.
 - **Hidráulico & Químicos:** Pavco Wavin, Sika, Pintuco.
+
+### 4.5 Datos Corporativos Oficiales y Líneas de Contacto Validadas
+- **Razón Social:** ASOEXI S.A.S.
+- **NIT:** `900480460-8`
+- **Sede Administrativa:** Carrera 55 A No. 51 A 28 Sur, Bogotá D.C., Colombia.
+- **Horario Habitual de Atención Comercial:**
+  - Lunes a Viernes: 7:30 AM a 4:30 PM.
+  - Sábados: 8:00 AM a 12:00 PM.
+- **Canales de Atención Directos:**
+  - **Geraldine (Atención Comercial):** WhatsApp `+57 318 639 7212` (`3186397212`).
+  - **Sonia Franco (Atención Comercial):** WhatsApp `+57 320 449 8881` (`3204498881`).
+  - **Línea Corporativa / Servicio al Cliente:** Teléfono `+57 304 401 3761` (`3044013761`).
+- **Correos Electrónicos Oficiales:**
+  - `asesorventas1@asoexi.com`
+  - `asesorventas3@asoexi.com`
+  - `servicioclienteasoexi@gmail.com`
+
+### 4.6 Invariante Operativo: Modelo 100% Despacho / Logística (Sin Venta por Mostrador)
+- **Claridad Operativa de Cara al Cliente:** ASOEXI se enfoca exclusivamente en la gestión logística, entrega de pedidos a domicilio y suministro directo en obra o instalaciones empresariales.
+- **Sede Física no Comercial:** Aunque la compañía cuenta con sede física en la Carrera 55 A No. 51 A 28 Sur, esta opera con fines estrictamente administrativos y de despacho logístico. **No se atiende venta por mostrador ni se almacena material para venta o retiro presencial de clientes en bodega.**
+- **Impacto UX / Web:** La plataforma web debe comunicar de forma transparente que todo el servicio es con despacho a domicilio directo y entregas en sitio, evitando falsas expectativas de que el cliente pueda acudir a una tienda física o punto de venta presencial.
+
+### 4.7 Reorientación de Catálogos (Alineación con ASSUMP-3)
+- **Inexistencia de Catálogos PDF Oficiales / Listas con Precio:** El cliente confirmó que no cuenta con catálogos PDF oficiales ni listas de precios públicas, dado que su esquema comercial se rige por cotizaciones según volúmenes y especificaciones de obra.
+- **Uso de Piezas Publicitarias:** Los insumos en `assets/supplies/imagenesCatalogo/` corresponden a volantes publicitarios básicos para referencia de marcas.
+- **Enfoque Web:** La plataforma opera 100% orientada a la **solicitud de cotización formal** (por WhatsApp, formulario o correo). En las landings de marca, el botón principal será *"Cotizar productos de [Marca]"* o *"Solicitar Portafolio"*, sin depender de enlaces rotos ni descargas obligatorias de catálogos en PDF.
+
+### 4.8 Respaldo Institucional: Empresas Clientes Validadas
+Se integran los logotipos e imágenes reales provistas en `assets/supplies/clientes/` para la sección institucional de prueba social y credibilidad:
+1. **Casalimpia** (`casalimpia1.jpeg`, `casalimpia2.jpeg`)
+2. **Centro Comercial Andino** (`andino.jpeg`)
+3. **Centro Comercial Unicentro** (`ccunicentro.jpeg`)
+4. **Winner Group** (`winnergroup.jpeg`, `winnergroup2.jpeg`)
+5. **Multiplika** (`multiplika.jpeg`)

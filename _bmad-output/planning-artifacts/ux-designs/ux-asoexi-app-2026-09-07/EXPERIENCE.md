@@ -31,6 +31,14 @@ El modelo de conversión prioritario no es la venta por carrito con pasarela de 
 | **Landing por Marca (~40 URLs)** | `/marca/[slug]` | Búsqueda Google / Catálogo / Hub | Página dedicada optimizada para SEO (ej. `/marca/dewalt`, `/marca/pavco`). Exhibe logo oficial, reseña de productos suministrados por ASOEXI, botón de descarga de ficha técnica/catálogo en PDF y botón directo de cotización por WhatsApp con texto contextual. |
 | **Nosotros (Institucional)** | `/nosotros` | Menú / Enlace Footer | Historia de la compañía, misión, visión, política de entregas oportunas y protocolos de seguridad física y laboral. |
 | **Contacto & Cotización** | `/contacto` | Menú / Botones CTA | Visualización clara de los 3 teléfonos (2 directos de ejecutivos comerciales + 1 corporativo fijo/general), correos y formulario opcional de cotización formal. |
+| **Inicio (Home)** | `/` | Carga inicial del sitio | Propuesta de valor, métricas de credibilidad (7+ años, 40+ marcas), prueba social con clientes corporativos destacados (Casalimpia, Unicentro, Andino, Winner Group, Multiplika), accesos directos a los 3 sectores, marcas tractoras, banner de cotización y aclaración logística de entrega a domicilio. |
+| **Catálogo General B2B** | `/catalogo` | Menú superior / Hero | Directorio completo multimarca con buscador en vivo y filtros rápidos por sector (Eléctrico, Ferretero, Hidráulico) orientado a cotización directa. |
+| **Hub Sector Eléctrico** | `/sector/electrico` | Menú / Grid de Sectores | Silo temático con marcas de iluminación, cableado y potencia (Panduit, Centelsa, Sylvania, etc.). |
+| **Hub Sector Ferretero** | `/sector/ferretero` | Menú / Grid de Sectores | Silo temático con marcas de herramientas y construcción (Supermastick PR, Stanley, DeWalt, Truper, etc.). |
+| **Hub Sector Hidráulico** | `/sector/hidraulico` | Menú / Grid de Sectores | Silo temático con marcas de tubería, pinturas y grifería (Pavco Wavin, Sika, Pintuco, etc.). |
+| **Landing por Marca (~40 URLs)** | `/marca/[slug]` | Búsqueda Google / Catálogo / Hub | Página dedicada optimizada para SEO (ej. `/marca/dewalt`, `/marca/pavco`). Exhibe logo oficial, referencias visuales de producto, promesa logística en obra y botón directo de cotización por WhatsApp con texto contextual. |
+| **Nosotros (Institucional)** | `/nosotros` | Menú / Enlace Footer | Historia de la compañía, misión, visión, clientes corporativos abastecidos, política de entregas oportunas y aclaración de modelo logístico sin mostrador. |
+| **Contacto & Cotización** | `/contacto` | Menú / Botones CTA | Visualización clara de los 3 canales de atención (Geraldine `3186397212`, Sonia `3204498881`, Corporativo `3044013761`), correos, NIT, dirección administrativa (con advertencia de no venta presencial en mostrador) y formulario/selector de cotización formal. |
 
 ## Voice and Tone
 
@@ -39,17 +47,27 @@ El microcopy de la plataforma es directo, técnico, eficiente y orientado a reso
 | Situación | Usar (Do) | Evitar (Don't) |
 | :--- | :--- | :--- |
 | **Llamado a Cotizar** | *"Cotizar por WhatsApp con un Asesor"* | *"Comprar ahora"* / *"Añadir al carrito"* |
+| **Llamado a Cotizar** | *"Cotizar por WhatsApp con un Asesor"* / *"Solicitar Oferta Formal"* | *"Comprar ahora"* / *"Añadir al carrito"* |
 | **Disponibilidad de Precios** | *"Precios especiales por volumen y proyecto. Solicita tu cotización formal inmediata."* | *"Precios ocultos. Regístrate para ver tarifas."* |
 | **Catálogos Técnicos** | *"Descargar Catálogo Oficial PDF (Ficha Técnica)"* | *"Descargar folleto publicitario"* |
 | **Credibilidad Institucional** | *"Más de 7 años abasteciendo a grandes compañías en Colombia con entregas puntuales y seguras."* | *"Somos los mejores del mercado"* |
+| **Catálogos y Portafolio** | *"Consultar Portafolio y Cotizar Marca"* | *"Descargar catálogo con precios oficiales"* |
+| **Modelo de Entrega vs Sede** | *"Despacho y entrega directa en tu obra o empresa en Bogotá, Sabana y Colombia. Modelo 100% logístico a domicilio."* | *"Visítanos en nuestra tienda / Punto de venta al público en la sede"* |
+| **Credibilidad Institucional** | *"Más de 7 años abasteciendo a grandes compañías en Colombia (Casalimpia, Unicentro, Andino, Winner Group)."* | *"Somos los mejores del mercado"* |
 | **Respuesta Comercial** | *"Atención en tiempo real por ejecutivos comerciales dedicados."* | *"Te responderemos en 24 a 48 horas."* |
 
 ## Component Patterns
 
 ### 1. Enrutador Contextual de WhatsApp
 - **Comportamiento:** Cada botón de WhatsApp lee los metadatos de la página en la que se encuentra el usuario.
+- **Comportamiento:** Cada botón de WhatsApp lee los metadatos de la página en la que se encuentra el usuario y permite elegir asesora o canal.
+- **Canales Parametrizados:**
+  - Geraldine: `+57 318 639 7212` (`573186397212`)
+  - Sonia Franco: `+57 320 449 8881` (`573204498881`)
+  - Línea Corporativa: `+57 304 401 3761` (`573044013761`)
 - **Plantilla Dinámica:** 
   `https://wa.me/57XXXXXXXXXX?text=Hola%20ASOEXI,%20vi%20su%20cat%C3%A1logo%20de%20[Nombre_Marca_o_Sector]%20en%20la%20p%C3%A1gina%20web%20y%20deseo%20solicitar%20una%20cotizaci%C3%B3n%20formal.`
+  `https://wa.me/{numero}?text=Hola%20ASOEXI,%20vi%20su%20cat%C3%A1logo%20de%20[Nombre_Marca_o_Sector]%20en%20la%20p%C3%A1gina%20web%20y%20deseo%20solicitar%20una%20cotizaci%C3%B3n%20formal.`
 - En dispositivos móviles abre directamente la aplicación nativa de WhatsApp; en escritorio redirige fluidamente a WhatsApp Web.
 
 ### 2. Buscador y Filtro Instantáneo de Marcas
@@ -59,9 +77,21 @@ El microcopy de la plataforma es directo, técnico, eficiente y orientado a reso
 ### 3. Descarga de Catálogos PDF y Fallback (`[ASSUMPTION]`)
 - **Comportamiento:** Al pulsar *"Descargar Catálogo PDF"*, el archivo se abre en una nueva pestaña optimizado para visualización o descarga.
 - **Manejo de Excepción / Fallback:** Si una marca específica no cuenta con brochure digital actualizado proporcionado por el fabricante, el botón cambia dinámicamente a: *"Solicitar Ficha Técnica por WhatsApp"* con el mensaje pre-cargado: *"Hola ASOEXI, requiero la ficha técnica actualizada de [Marca]..."*. Nunca se muestra un botón inactivo ni un enlace roto 404.
+### 3. Acceso a Portafolio y Cotización por Marca (Reemplazo de PDFs obligatorios)
+- **Comportamiento:** La acción primordial de cada landing de marca es el botón *"Cotizar por WhatsApp productos de [Marca]"*.
+- **Soporte Visual:** Se apoyan visualmente en las piezas y marcas gráficas (`assets/supplies/imagenesCatalogo`).
+- **Comportamiento Condicional:** Si a futuro se dispone de una ficha técnica oficial o catálogo PDF, se habilita el botón secundario de descarga; de lo contrario, la interfaz permanece 100% limpia sin botones inactivos ni enlaces rotos.
 
 ### 4. Tarjetas de Acceso Telefónico Rápido
 - Las 3 líneas telefónicas institucionales (las 2 líneas directas de atención comercial y la línea corporativa) cuentan con enlaces `tel:+57...` en móvil para llamada a un solo toque.
+### 4. Tarjetas de Acceso Telefónico Rápido y Datos Corporativos
+- Las 3 líneas telefónicas institucionales (Geraldine `tel:+573186397212`, Sonia Franco `tel:+573204498881`, Corporativa `tel:+573044013761`) cuentan con enlaces directos para marcación a un toque en móvil.
+- En el pie de página y sección de contacto se despliegan: NIT `900480460-8`, correos (`asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `servicioclienteasoexi@gmail.com`), horarios comerciales (L-V 7:30 AM a 4:30 PM, Sáb 8:00 AM a 12:00 PM) y la dirección administrativa (Cra 55 A No. 51 A 28 Sur) con la nota expresa: *"Sede administrativa y logística. Atención exclusivamente a domicilio y entregas en obra/empresa (sin venta presencial por mostrador)"*.
+
+### 5. Carrusel / Grilla Institucional de Clientes (Social Proof)
+- **Ubicación:** En la página principal (Home) y en la página `/nosotros`.
+- **Contenido:** Logotipos de empresas clientes abastecidas por ASOEXI: **Casalimpia**, **Centro Comercial Andino**, **Centro Comercial Unicentro**, **Winner Group** y **Multiplika**.
+- **Diseño:** Visualización monocromática o suavizada con efecto hover a color completo, transmitiendo solidez y confianza empresarial a decisores de compras corporativas.
 
 ## State Patterns
 

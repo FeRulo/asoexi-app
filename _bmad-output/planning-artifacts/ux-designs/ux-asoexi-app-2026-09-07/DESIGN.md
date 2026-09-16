@@ -7,6 +7,11 @@ sources:
   - file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/planning-artifacts/briefs/brief-asoexi-app-2026-08-21/brief.md
   - file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/planning-artifacts/ux-designs/ux-asoexi-app-2026-09-07/imports/brochure-portada.jpeg
   - file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/planning-artifacts/ux-designs/ux-asoexi-app-2026-09-07/imports/banner-solicita-cotizacion.jpeg
+  - file:///home/fernando/Fernando/Own/asoexi-app/assets/supplies/contactosYDatos.jpeg
+  - file:///home/fernando/Fernando/Own/asoexi-app/assets/supplies/clientes/
+  - file:///home/fernando/Fernando/Own/asoexi-app/assets/logo.svg
+  - file:///home/fernando/Fernando/Own/asoexi-app/assets/logo-white.svg
+  - file:///home/fernando/Fernando/Own/asoexi-app/assets/logo.png
 colors:
   primary: '#E51A24'
   primary-hover: '#C8101A'
@@ -195,6 +200,7 @@ La interfaz prioriza la nitidez y la carga ultrarrápida, utilizando elevación 
 
 ### 1. Header & Navegación Corporativa
 - Barra superior institucional oscura (`#1E2229`) con teléfonos directos (`311...`, `312...`, `(601)...`) y enlace a WhatsApp.
+- Barra superior institucional oscura (`#1E2229`) con teléfonos directos (Geraldine: `318 639 7212`, Sonia Franco: `320 449 8881`, Corporativo: `304 401 3761`) y enlace a WhatsApp.
 - Menú principal blanco con logotipo oficial de ASOEXI a la izquierda, enlaces a los 3 Sectores (Eléctrico, Ferretero, Hidráulico), Nosotros, Marcas y botón primario *"Cotizar Insumos"*.
 
 ### 2. Tarjeta de Marca (Brand Card)
@@ -204,6 +210,7 @@ La interfaz prioriza la nitidez y la carga ultrarrápida, utilizando elevación 
 - Acciones rápidas al pasar el cursor o al tocar en móvil:
   - Botón secundario: *"Descargar Catálogo PDF"*.
   - Botón primario / WhatsApp: *"Cotizar [Marca]"*.
+  - Enlace condicional / secundario: *"Ficha Técnica"* (únicamente si existe documento oficial verificado).
 
 ### 3. Banner Institucional de Cotización (con Asesor Técnico)
 - Contenedor con fondo oscuro y corte angular rojo.
@@ -220,6 +227,17 @@ La interfaz prioriza la nitidez y la carga ultrarrápida, utilizando elevación 
 ### 5. Footer Institucional
 - Bloque oscuro en `#16191F` con los datos legales de ASOEXI S.A.S. (NIT 900480460-8).
 - Resumen de líneas distribuidas, accesos directos, horarios de atención y créditos.
+- Bloque oscuro en `#16191F` con los datos legales de ASOEXI S.A.S.:
+  - **NIT:** `900480460-8`.
+  - **Sede:** Cra 55 A No. 51 A 28 Sur, Bogotá (con la nota: *"Sede administrativa y de despacho logístico. No contamos con venta presencial por mostrador ni retiro en bodega"*).
+  - **Horarios:** L-V 7:30 AM a 4:30 PM | Sábados 8:00 AM a 12:00 PM.
+  - **Correos:** `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `servicioclienteasoexi@gmail.com`.
+  - Enlaces de llamada directa a las 3 líneas telefónicas.
+
+### 6. Carrusel / Grilla de Clientes Corporativos (Social Proof)
+- Grilla de logos institucionales con fondo neutro o sutilmente elevado.
+- Marcas validadas (`assets/supplies/clientes/`): Casalimpia, Centro Comercial Andino, Centro Comercial Unicentro, Winner Group, Multiplika.
+- Efecto visual en escala de grises con transición a color en `:hover` para mantener sobriedad B2B.
 
 ## Do's and Don'ts
 
