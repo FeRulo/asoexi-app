@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #E51A24;
+  --color-primary-hover: #C8101A;
+  --color-secondary: #1E2229;
+  --color-secondary-hover: #14171C;
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #F8FAFC;
+  --color-surface-dark: #16191F;
+  --color-whatsapp: #25D366;
+  --color-whatsapp-hover: #20BA5C;
+  --color-amber-industrial: #F59E0B;
+  --color-sector-electrico: #DC2626;
+  --color-sector-ferretero: #D97706;
+  --color-sector-hidraulico: #2563EB;
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface);
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+

@@ -1,0 +1,45 @@
+---
+import Header from '@/components/common/Header.astro';
+import Footer from '@/components/common/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const {
+  title = 'ASOEXI S.A.S. | Distribuidor Mayorista de Insumos Industriales y Ferreteros',
+  description = 'Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. Más de 7 años de experiencia y despacho a domicilio.',
+  currentPath = '/',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Google Fonts: Montserrat (Titulares/Display) & Inter (Cuerpo/Datos) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400..700&family=Montserrat:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="flex flex-col min-h-screen bg-surface text-slate-900 font-body antialiased">
+    <Header currentPath={currentPath} />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+

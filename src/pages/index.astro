@@ -1,0 +1,191 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { COMPANY_INFO, CONTACT_PHONES, LOGISTIC_NOTICE } from '@/lib/constants';
+
+const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PHONES[0];
+---
+
+<BaseLayout
+  title={`${COMPANY_INFO.name} | Distribuidor Mayorista de Insumos Industriales`}
+  description="ASOEXI S.A.S. - Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. NIT 900480460-8."
+>
+  <!-- Hero Institucional -->
+  <section class="relative bg-gradient-to-b from-surface-subtle to-white py-16 lg:py-24 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto space-y-6">
+        <!-- Badge Institucional -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span>Distribución Mayorista B2B & Suministros Técnicos</span>
+        </div>
+
+        <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-secondary tracking-tight">
+          Distribución Mayorista de <span class="text-primary">Insumos Industriales</span>
+        </h1>
+
+        <p class="text-base sm:text-xl text-slate-600 font-body leading-relaxed">
+          Más de <strong class="text-secondary font-semibold">{COMPANY_INFO.experienceYears} años</strong> abasteciendo grandes compañías y obras en Colombia con marcas originales, crédito corporativo y logística a domicilio.
+        </p>
+
+        <!-- CTA Groups -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <a
+            href="#cotizar"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-md bg-primary hover:bg-primary-hover text-white font-semibold text-base shadow-md hover:shadow-lg transition-all min-h-[48px]"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Solicitar Cotización</span>
+          </a>
+
+          <a
+            href={`tel:${corporate.e164}`}
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-md bg-secondary hover:bg-slate-800 text-white font-semibold text-base transition-all min-h-[48px]"
+          >
+            <svg class="w-5 h-5 text-amber-industrial" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <span>Llamar a {corporate.name}: {corporate.display}</span>
+          </a>
+        </div>
+
+        <!-- Banner Logístico Informativo -->
+        <div class="mt-8 p-4 rounded-lg bg-surface border border-slate-200 text-left text-xs sm:text-sm text-slate-700 shadow-sm">
+          <div class="flex items-center gap-2 text-primary font-bold mb-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Aviso Operativo Oficial</span>
+          </div>
+          <p class="text-slate-600">{LOGISTIC_NOTICE}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Paleta y Tokens de Diseño (Verificación Visual) -->
+  <section class="py-12 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-6">
+        <h2 class="text-xl font-display font-bold text-secondary">Tokens de Color Institucionales</h2>
+        <p class="text-xs text-slate-500">Validados según especificación y manual de identidad</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="p-4 rounded-lg bg-primary text-white text-xs font-semibold shadow-sm">
+          <div class="font-mono text-sm">#E51A24</div>
+          <div class="mt-1 opacity-90">Rojo Primario</div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-secondary text-white text-xs font-semibold shadow-sm">
+          <div class="font-mono text-sm">#1E2229</div>
+          <div class="mt-1 opacity-90">Antracita</div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-surface-dark text-white text-xs font-semibold shadow-sm border border-slate-700">
+          <div class="font-mono text-sm">#16191F</div>
+          <div class="mt-1 opacity-90">Superficie Oscura</div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-surface-subtle text-secondary text-xs font-semibold border border-slate-200">
+          <div class="font-mono text-sm">#F8FAFC</div>
+          <div class="mt-1 opacity-70">Superficie Alterna</div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-amber-industrial text-secondary text-xs font-semibold shadow-sm">
+          <div class="font-mono text-sm">#F59E0B</div>
+          <div class="mt-1 opacity-90">Ámbar Industrial</div>
+        </div>
+
+        <div class="p-4 rounded-lg bg-whatsapp text-white text-xs font-semibold shadow-sm">
+          <div class="font-mono text-sm">#25D366</div>
+          <div class="mt-1 opacity-90">Verde WhatsApp</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectores Corporativos (Ancla #sectores) -->
+  <section id="sectores" class="py-16 bg-surface-subtle border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-2xl sm:text-3xl font-display font-bold text-secondary">
+          Nuestros 3 Sectores de Especialidad
+        </h2>
+        <p class="text-sm text-slate-600 mt-2">
+          Abastecimiento técnico con fichas de producto, garantía directa de fábrica y despacho centralizado.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Eléctrico -->
+        <div id="sector-electrico" class="p-6 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 rounded-lg bg-red-100 text-sector-electrico flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-secondary">Sector Eléctrico</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Conductores, tableros de distribución, canalización, iluminación industrial y control Schneider, Siemens, Centelsa.
+          </p>
+        </div>
+
+        <!-- Ferretero -->
+        <div id="sector-ferretero" class="p-6 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 rounded-lg bg-amber-100 text-sector-ferretero flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-secondary">Sector Ferretero & Construcción</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Herramientas eléctricas y manuales DeWalt, Stanley, discos de corte, abrasivos, fijaciones y tornillería de grado.
+          </p>
+        </div>
+
+        <!-- Hidráulico -->
+        <div id="sector-hidraulico" class="p-6 rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 rounded-lg bg-blue-100 text-sector-hidraulico flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-secondary">Sector Hidráulico & Pinturas</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Tubería sanitaria y de presión Pavco Wavin, válvulas, motobombas, recubrimientos industriales y solventes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marcas y Cotización (Anclas #marcas y #cotizar) -->
+  <section id="marcas" class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-display font-bold text-secondary">Catálogo Multimarca Autorizado</h2>
+      <p class="text-xs text-slate-500 mt-2 max-w-xl mx-auto">
+        Marcas 100% originales con respaldo directo de fábrica, certificados de conformidad y fichas técnicas oficiales.
+      </p>
+
+      <div id="cotizar" class="mt-8 p-8 rounded-xl bg-secondary text-white max-w-3xl mx-auto space-y-4">
+        <h3 class="font-display font-bold text-xl sm:text-2xl text-white">¿Requieres cotización técnica para tu proyecto?</h3>
+        <p class="text-slate-300 text-sm">
+          Comunícate con nuestras asesoras comerciales oficiales para recibir atención inmediata, lista de precios por volumen y condiciones de crédito comercial.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 pt-2">
+          {CONTACT_PHONES.map((phone) => (
+            <a
+              href={`tel:${phone.e164}`}
+              class="px-4 py-2.5 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors flex items-center gap-2 min-h-[48px]"
+            >
+              <span class="w-2 h-2 rounded-full bg-whatsapp"></span>
+              <span>{phone.name}: {phone.display}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
