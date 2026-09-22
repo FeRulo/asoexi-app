@@ -36,7 +36,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       <div class="flex flex-wrap items-center justify-between gap-y-1 py-1 min-h-[48px]">
         <!-- Badge institucional / Trayectoria -->
         <div class="hidden lg:flex items-center gap-2 text-slate-300 font-medium">
-          <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span class="inline-block w-2 h-2 bg-primary animate-pulse"></span>
           <span>{COMPANY_INFO.name} — Más de {COMPANY_INFO.experienceYears} años abasteciendo a grandes compañías</span>
         </div>
 
@@ -48,7 +48,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           <a
             href={`tel:${geraldine.e164}`}
             aria-label={`Llamar a ${geraldine.name}: ${geraldine.display}`}
-            class="flex items-center gap-1.5 px-2.5 py-3 rounded hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+            class="flex items-center gap-1.5 px-2.5 py-3 rounded-none hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -63,7 +63,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           <a
             href={`tel:${sonia.e164}`}
             aria-label={`Llamar a ${sonia.name}: ${sonia.display}`}
-            class="flex items-center gap-1.5 px-2.5 py-3 rounded hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+            class="flex items-center gap-1.5 px-2.5 py-3 rounded-none hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -78,7 +78,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           <a
             href={`tel:${corporate.e164}`}
             aria-label={`Llamar a ${corporate.name}: ${corporate.display}`}
-            class="flex items-center gap-1.5 px-2.5 py-3 rounded hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+            class="flex items-center gap-1.5 px-2.5 py-3 rounded-none hover:bg-white/10 hover:text-white text-slate-200 transition-colors min-h-[48px] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <svg class="w-4 h-4 text-amber-industrial shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -95,7 +95,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
       <!-- Logotipo Oficial ASOEXI -->
-      <a href="/" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-1" aria-label="Página de inicio ASOEXI S.A.S.">
+      <a href="/" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-primary p-1" aria-label="Página de inicio ASOEXI S.A.S.">
         <div class="w-12 h-12 flex-shrink-0 transition-transform duration-200 group-hover:scale-105">
           <img
             src="/logo.svg"
@@ -123,9 +123,9 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           return (
             <a
               href={link.href}
-              class={`px-3 py-2 rounded-md text-sm font-semibold transition-colors min-h-[48px] flex items-center ${
+              class={`px-3 py-2 text-sm font-semibold transition-colors min-h-[48px] flex items-center ${
                 isActive
-                  ? 'text-primary bg-primary/10'
+                  ? 'text-primary border-b-2 border-primary bg-slate-50 font-bold'
                   : 'text-secondary hover:text-primary hover:bg-slate-50'
               }`}
             >
@@ -137,10 +137,10 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
 
       <!-- Botón CTA "Cotizar Insumos" & Menú Móvil Hamburger -->
       <div class="flex items-center gap-3">
-        <!-- CTA Desktop / Tablet -->
+        <!-- CTA Desktop / Tablet (Filudo / Angular) -->
         <a
           href={ctaLink.href}
-          class="hidden sm:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-primary hover:bg-primary-hover text-white font-semibold text-sm shadow-sm transition-all duration-200 hover:shadow-md min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          class="hidden sm:inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-hover text-white font-display font-bold text-xs tracking-wider uppercase shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] chamfer-corner focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -155,7 +155,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Abrir menú de navegación"
-          class="md:hidden flex items-center justify-center w-12 h-12 rounded-md text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
+          class="md:hidden flex items-center justify-center w-12 h-12 border border-slate-200 text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
         >
           <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -174,7 +174,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       {mainNavLinks.map((link) => (
         <a
           href={link.href}
-          class="mobile-menu-link flex items-center px-4 py-3 rounded-md text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px]"
+          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0"
         >
           {link.label}
         </a>
@@ -182,7 +182,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       <div class="pt-2">
         <a
           href={ctaLink.href}
-          class="mobile-menu-link flex items-center justify-center gap-2 w-full px-4 py-3 rounded-md bg-primary hover:bg-primary-hover text-white font-semibold text-base shadow-sm transition-colors min-h-[48px]"
+          class="mobile-menu-link flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary hover:bg-primary-hover text-white font-display font-bold text-sm tracking-wider uppercase shadow-sm transition-colors min-h-[48px] chamfer-corner"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

@@ -7,10 +7,14 @@
 - **Runner de Pruebas:** `Vitest` es el ejecutor oficial de tests unitarios e integración para el proyecto.
 - **Criterio de Entrega:** Ninguna historia de usuario se considera lista o aprobada si no cuenta con tests unitarios correspondientes y pasa limpiamente la ejecución de `npm test` (`vitest run`) y `npm run build`.
 
-### 2. Invariantes de Arquitectura y Rendimiento
+### 2. Invariantes de Arquitectura, Rendimiento y Estética Visual
 - **Arquitectura de Islas:** Generación estática pura (SSG) en Astro con 0 KB de JavaScript cliente por defecto.
 - **Islas Preact:** La interactividad reside exclusivamente en `src/islands/` montada con directivas cliente explícitas (`client:idle`, `client:visible`).
 - **Diseño con Tailwind CSS v4:** Tokens corporativos declarados en `src/styles/global.css` mediante `@theme`.
+- **Estética Filuda e Industrial (Regla de Brochure ASOEXI):**
+  - Cero bordes suaves o redondeados genéricos tipo SaaS (`rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-full` están prohibidos en botones, tarjetas y contenedores estructurales).
+  - Botones, tarjetas, badges y contenedores deben ser filudos, rectos y angulares (`rounded-none`), con bordes técnicos o cortes geométricos en chaflán a 45° inspirados en la portada del brochure de ASOEXI.
+  - Sensación visual: suministro industrial pesado, ingeniería, solvencia técnica B2B y aristas sólidas.
 - **Accesibilidad y Móvil:** Cumplimiento WCAG 2.2 AA (áreas táctiles ≥ 48x48px, ratios de contraste verificados).
 
 ### 3. Invariantes de Negocio y Datos Oficiales de ASOEXI S.A.S.
