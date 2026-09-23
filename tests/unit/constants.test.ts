@@ -43,7 +43,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
 
     const sonia = CONTACT_PHONES.find((p) => p.id === 'sonia');
     expect(sonia).toBeDefined();
-    expect(sonia?.name).toBe('Sonia Franco');
+    expect(sonia?.name).toBe('Sonia');
     expect(sonia?.e164).toMatch(e164Regex);
     expect(sonia?.e164).toBe('+573204498881');
     expect(sonia?.display).toContain('320 449 8881');

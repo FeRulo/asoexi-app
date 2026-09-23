@@ -62,7 +62,7 @@ export const CONTACT_PHONES: ContactPhone[] = [
   },
   {
     id: 'sonia',
-    name: 'Sonia Franco',
+    name: 'Sonia',
     e164: '+573204498881',
     display: '+57 320 449 8881',
     role: 'Asesora Comercial',
