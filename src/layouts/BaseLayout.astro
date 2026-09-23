@@ -1,6 +1,9 @@
 ---
 import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
+import ContactChannelModal from '@/islands/ContactChannelModal';
+import MobileStickyBar from '@/islands/MobileStickyBar';
+import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -34,12 +37,42 @@ const {
       rel="stylesheet"
     />
   </head>
-  <body class="flex flex-col min-h-screen bg-surface text-slate-900 font-body antialiased">
+  <body class="flex flex-col min-h-screen bg-surface text-slate-900 font-body antialiased pb-20 md:pb-0">
     <Header currentPath={currentPath} />
     <main class="flex-grow">
       <slot />
     </main>
     <Footer />
+
+    <!-- Componentes e islas interactivas de contacto y balanceo -->
+    <ContactChannelModal client:load />
+    <MobileStickyBar client:idle />
+    <FloatingWhatsAppButton />
+
+    <!-- Interceptor global para disparadores de cotización y modal -->
+    <script>
+      function setupContactTriggers() {
+        const triggers = document.querySelectorAll(
+          '[data-open-contact-modal], a[href="#cotizar"], a[href="/#cotizar"]'
+        );
+        triggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __contactModalBound?: boolean }).__contactModalBound) return;
+          (trigger as HTMLElement & { __contactModalBound?: boolean }).__contactModalBound = true;
+
+          trigger.addEventListener('click', (e) => {
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('open-contact-modal'));
+          });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupContactTriggers);
+      } else {
+        setupContactTriggers();
+      }
+      document.addEventListener('astro:page-load', setupContactTriggers);
+    </script>
   </body>
 </html>
-

@@ -140,6 +140,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
         <!-- CTA Desktop / Tablet (Micro-radio 2px con Remate Angular a 45°) -->
         <a
           href={ctaLink.href}
+          data-open-contact-modal
           class="group hidden sm:inline-flex items-stretch overflow-hidden rounded-industrial bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <span class="inline-flex items-center px-4 font-display font-bold text-xs tracking-wider uppercase">
@@ -186,6 +187,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       <div class="pt-2">
         <a
           href={ctaLink.href}
+          data-open-contact-modal
           class="group mobile-menu-link flex items-stretch overflow-hidden rounded-industrial w-full bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors min-h-[48px]"
         >
           <span class="flex-1 flex items-center justify-center font-display font-bold text-sm tracking-wider uppercase py-3">
