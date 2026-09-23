@@ -1,0 +1,83 @@
+---
+import { COMPANY_INFO, CONTACT_PHONES, LOGISTIC_HERO_PROPOSITION } from '@/lib/constants';
+
+const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') ?? CONTACT_PHONES[0];
+---
+
+<!-- Hero Institucional con Geometría Angular a 45° -->
+<section class="relative bg-gradient-to-b from-surface-subtle via-white to-white py-16 lg:py-24 border-b border-slate-200 overflow-hidden">
+  <!-- Composición Geométrica Diagonal a 45° (Inspirada en Portada de Brochure ASOEXI) -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10 select-none">
+    <!-- Franja Antracita Angular -->
+    <div class="absolute -top-32 -right-24 w-[480px] h-[480px] bg-secondary/90 transform rotate-45 hidden lg:block opacity-95"></div>
+    <!-- Franja de Acento Rojo ASOEXI a 45° -->
+    <div class="absolute -top-36 -right-16 w-[520px] h-3 bg-primary transform rotate-45 hidden lg:block"></div>
+    <div class="absolute -top-28 -right-24 w-[500px] h-1.5 bg-primary/40 transform rotate-45 hidden lg:block"></div>
+    <!-- Remate angular inferior -->
+    <div class="absolute -bottom-12 -left-12 w-32 h-32 border-l-4 border-b-4 border-primary/20 transform rotate-45 hidden sm:block"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div class="text-center max-w-3xl mx-auto space-y-6">
+      <!-- Badge Institucional Angular (Micro-radio industrial) -->
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold uppercase tracking-widest border-l-4 border-primary rounded-industrial shadow-sm">
+        <span class="w-2 h-2 bg-primary"></span>
+        <span>Distribución Mayorista B2B & Suministros Técnicos</span>
+      </div>
+
+      <!-- Titular Display en Montserrat -->
+      <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-secondary tracking-tight">
+        Distribución Mayorista de <span class="text-primary">Insumos Industriales</span>
+      </h1>
+
+      <!-- Subtítulo destacando años de trayectoria -->
+      <p class="text-base sm:text-xl text-slate-600 font-body leading-relaxed">
+        Más de <strong class="text-secondary font-semibold">{COMPANY_INFO.experienceYears} años de trayectoria</strong> abasteciendo grandes compañías, constructoras y obras en Colombia con marcas 100% originales, crédito corporativo y logística directa a domicilio.
+      </p>
+
+      <!-- CTA Groups con Micro-Radio Industrial y Remate Angular a 45° -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <!-- CTA Principal "Solicitar Cotización" con Remate a 45° -->
+        <a
+          href="#cotizar"
+          class="group w-full sm:w-auto inline-flex items-stretch overflow-hidden rounded-industrial bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          <span class="inline-flex items-center justify-center px-7 py-3.5 font-display font-bold text-xs sm:text-sm tracking-wider uppercase flex-1 sm:flex-initial">
+            Solicitar Cotización
+          </span>
+          <span class="inline-flex items-center justify-center pl-3.5 pr-4 bg-black/15 group-hover:bg-black/25 text-white transition-colors icon-diagonal-45 shrink-0">
+            <svg class="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </span>
+        </a>
+
+        <!-- Botón Secundario Línea Corporativa -->
+        <a
+          href={`tel:${corporate.e164}`}
+          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3.5 rounded-industrial bg-secondary hover:bg-slate-800 text-white font-display font-bold text-xs sm:text-sm tracking-wider uppercase border border-slate-700 hover:border-primary/60 transition-all duration-200 min-h-[48px] shadow-sm text-center"
+        >
+          <svg class="w-5 h-5 text-amber-industrial transition-transform group-hover:scale-110 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          <span class="break-words sm:whitespace-nowrap">Llamar a {corporate.name}: <span class="whitespace-nowrap">{corporate.display}</span></span>
+        </a>
+      </div>
+
+      <!-- Propuesta de Valor Logístico (Reencuadre Positivo con Micro-Radio Industrial) -->
+      <div class="mt-8 p-4 bg-surface border-l-4 border-l-primary border-y border-r border-slate-200 rounded-industrial text-left text-xs sm:text-sm text-slate-700 shadow-sm flex items-start sm:items-center gap-3.5">
+        <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20 rounded-industrial">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div>
+          <span class="block font-display font-bold text-secondary text-xs uppercase tracking-wider">Logística y Entrega Directa</span>
+          <p class="text-slate-600 mt-0.5 font-medium leading-relaxed">
+            <strong class="text-secondary font-semibold">📦 {LOGISTIC_HERO_PROPOSITION}</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
