@@ -11,10 +11,12 @@
 - **Arquitectura de Islas:** Generación estática pura (SSG) en Astro con 0 KB de JavaScript cliente por defecto.
 - **Islas Preact:** La interactividad reside exclusivamente en `src/islands/` montada con directivas cliente explícitas (`client:idle`, `client:visible`).
 - **Diseño con Tailwind CSS v4:** Tokens corporativos declarados en `src/styles/global.css` mediante `@theme`.
-- **Estética Filuda e Industrial (Regla de Brochure ASOEXI):**
-  - Cero bordes suaves o redondeados genéricos tipo SaaS (`rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-full` están prohibidos en botones, tarjetas y contenedores estructurales).
-  - Botones, tarjetas, badges y contenedores deben ser filudos, rectos y angulares (`rounded-none`), con bordes técnicos o cortes geométricos en chaflán a 45° inspirados en la portada del brochure de ASOEXI.
-  - Sensación visual: suministro industrial pesado, ingeniería, solvencia técnica B2B y aristas sólidas.
+- **Estética de Precisión Industrial con Geometría Angular a 45° (Regla de Brochure ASOEXI):**
+  - Cero redondeados genéricos tipo burbuja/SaaS (8px-12px) y cero esquinas vivas de 0px sin pulir.
+  - Micro-radio de precisión de 2px (`rounded-[2px]`) estándar en botones, tarjetas, badges, inputs y contenedores para conferir solidez de bloque manufacturado.
+  - Integración de la diagonal institucional a 45° (inspirada en la portada del brochure y flecha del logo) en remates de iconos de CTAs principales (`.icon-diagonal-45`) y composición geométrica del Hero.
+  - Áreas táctiles estrictamente accesibles (≥ 48px de altura) sin deformación ni corte de textos.
+  - Sensación visual: suministro industrial pesado, ingeniería, solvencia técnica B2B y aristas manufacturadas de precisión.
 - **Accesibilidad y Móvil:** Cumplimiento WCAG 2.2 AA (áreas táctiles ≥ 48x48px, ratios de contraste verificados).
 
 ### 3. Invariantes de Negocio y Datos Oficiales de ASOEXI S.A.S.

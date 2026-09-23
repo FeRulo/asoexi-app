@@ -9,12 +9,23 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
   title={`${COMPANY_INFO.name} | Distribuidor Mayorista de Insumos Industriales`}
   description="ASOEXI S.A.S. - Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. NIT 900480460-8."
 >
-  <!-- Hero Institucional -->
-  <section class="relative bg-gradient-to-b from-surface-subtle to-white py-16 lg:py-24 border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Hero Institucional con Geometría Angular a 45° -->
+  <section class="relative bg-gradient-to-b from-surface-subtle via-white to-white py-16 lg:py-24 border-b border-slate-200 overflow-hidden">
+    <!-- Composición Geométrica Diagonal a 45° (Inspirada en Portada de Brochure ASOEXI) -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10 select-none">
+      <!-- Franja Antracita Angular -->
+      <div class="absolute -top-32 -right-24 w-[480px] h-[480px] bg-secondary/90 transform rotate-45 hidden lg:block opacity-95"></div>
+      <!-- Franja de Acento Rojo ASOEXI a 45° -->
+      <div class="absolute -top-36 -right-16 w-[520px] h-3 bg-primary transform rotate-45 hidden lg:block"></div>
+      <div class="absolute -top-28 -right-24 w-[500px] h-1.5 bg-primary/40 transform rotate-45 hidden lg:block"></div>
+      <!-- Remate angular inferior -->
+      <div class="absolute -bottom-12 -left-12 w-32 h-32 border-l-4 border-b-4 border-primary/20 transform rotate-45 hidden sm:block"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <div class="text-center max-w-3xl mx-auto space-y-6">
-        <!-- Badge Institucional Angular -->
-        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold uppercase tracking-widest border-l-4 border-primary">
+        <!-- Badge Institucional Angular (Micro-radio 2px) -->
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold uppercase tracking-widest border-l-4 border-primary rounded-[2px] shadow-sm">
           <span class="w-2 h-2 bg-primary"></span>
           <span>Distribución Mayorista B2B & Suministros Técnicos</span>
         </div>
@@ -27,32 +38,38 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
           Más de <strong class="text-secondary font-semibold">{COMPANY_INFO.experienceYears} años</strong> abasteciendo grandes compañías y obras en Colombia con marcas originales, crédito corporativo y logística a domicilio.
         </p>
 
-        <!-- CTA Groups Angulares / Filudos -->
+        <!-- CTA Groups con Micro-Radio de 2px y Remate Angular a 45° -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <!-- CTA Principal "Solicitar Cotización" con Remate a 45° -->
           <a
             href="#cotizar"
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-primary hover:bg-primary-hover text-white font-display font-bold text-sm tracking-wider uppercase transition-all duration-150 min-h-[48px] chamfer-corner shadow-sm hover:translate-x-0.5"
+            class="group w-full sm:w-auto inline-flex items-stretch overflow-hidden rounded-[2px] bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Solicitar Cotización</span>
+            <span class="inline-flex items-center px-7 py-3.5 font-display font-bold text-sm tracking-wider uppercase">
+              Solicitar Cotización
+            </span>
+            <span class="inline-flex items-center justify-center pl-3.5 pr-4 bg-black/15 group-hover:bg-black/25 text-white transition-colors icon-diagonal-45">
+              <svg class="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
           </a>
 
+          <!-- Botón Secundario Línea Corporativa -->
           <a
             href={`tel:${corporate.e164}`}
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-secondary hover:bg-slate-800 text-white font-display font-bold text-sm tracking-wider uppercase border border-slate-700 transition-all duration-150 min-h-[48px]"
+            class="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-[2px] bg-secondary hover:bg-slate-800 text-white font-display font-bold text-sm tracking-wider uppercase border border-slate-700 hover:border-primary/60 transition-all duration-200 min-h-[48px] shadow-sm"
           >
-            <svg class="w-5 h-5 text-amber-industrial" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-amber-industrial transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             <span>Llamar a {corporate.name}: {corporate.display}</span>
           </a>
         </div>
 
-        <!-- Propuesta de Valor Logístico (Reencuadre Positivo) -->
-        <div class="mt-8 p-4 bg-surface border-l-4 border-l-primary border-y border-r border-slate-200 text-left text-xs sm:text-sm text-slate-700 shadow-sm flex items-start sm:items-center gap-3.5">
-          <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+        <!-- Propuesta de Valor Logístico (Reencuadre Positivo con Micro-Radio de 2px) -->
+        <div class="mt-8 p-4 bg-surface border-l-4 border-l-primary border-y border-r border-slate-200 rounded-[2px] text-left text-xs sm:text-sm text-slate-700 shadow-sm flex items-start sm:items-center gap-3.5">
+          <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20 rounded-[2px]">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
@@ -60,51 +77,9 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
           <div>
             <span class="block font-display font-bold text-secondary text-xs uppercase tracking-wider">Logística y Entrega Directa</span>
             <p class="text-slate-600 mt-0.5 font-medium leading-relaxed">
-              <strong class="text-secondary font-semibold">📦 Despacho directo a tu bodega u obra a nivel nacional</strong> — Gestión 100% centralizada y sin filas.
+              <strong class="text-secondary font-semibold">📦 Despacho directo a tu bodega u obra a nivel nacional</strong> — Sede administrativa centralizada.
             </p>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Paleta y Tokens de Diseño (Verificación Visual) -->
-  <section class="py-12 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mb-6">
-        <h2 class="text-xl font-display font-bold text-secondary">Tokens de Color Institucionales</h2>
-        <p class="text-xs text-slate-500">Validados según especificación y manual de identidad</p>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div class="p-4 bg-primary text-white text-xs font-semibold shadow-sm">
-          <div class="font-mono text-sm">#E51A24</div>
-          <div class="mt-1 opacity-90">Rojo Primario</div>
-        </div>
-
-        <div class="p-4 bg-secondary text-white text-xs font-semibold shadow-sm">
-          <div class="font-mono text-sm">#1E2229</div>
-          <div class="mt-1 opacity-90">Antracita</div>
-        </div>
-
-        <div class="p-4 bg-surface-dark text-white text-xs font-semibold shadow-sm border border-slate-700">
-          <div class="font-mono text-sm">#16191F</div>
-          <div class="mt-1 opacity-90">Superficie Oscura</div>
-        </div>
-
-        <div class="p-4 bg-surface-subtle text-secondary text-xs font-semibold border border-slate-200">
-          <div class="font-mono text-sm">#F8FAFC</div>
-          <div class="mt-1 opacity-70">Superficie Alterna</div>
-        </div>
-
-        <div class="p-4 bg-amber-industrial text-secondary text-xs font-semibold shadow-sm">
-          <div class="font-mono text-sm">#F59E0B</div>
-          <div class="mt-1 opacity-90">Ámbar Industrial</div>
-        </div>
-
-        <div class="p-4 bg-whatsapp text-white text-xs font-semibold shadow-sm">
-          <div class="font-mono text-sm">#25D366</div>
-          <div class="mt-1 opacity-90">Verde WhatsApp</div>
         </div>
       </div>
     </div>
@@ -124,8 +99,8 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Eléctrico -->
-        <div id="sector-electrico" class="p-6 bg-white border-t-4 border-t-sector-electrico border-x border-b border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-red-50 text-sector-electrico flex items-center justify-center mb-4 border border-red-200">
+        <div id="sector-electrico" class="p-6 bg-white border-t-4 border-t-sector-electrico border-x border-b border-slate-200 rounded-[2px] shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 bg-red-50 text-sector-electrico flex items-center justify-center mb-4 border border-red-200 rounded-[2px]">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -137,8 +112,8 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
         </div>
 
         <!-- Ferretero -->
-        <div id="sector-ferretero" class="p-6 bg-white border-t-4 border-t-sector-ferretero border-x border-b border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-amber-50 text-sector-ferretero flex items-center justify-center mb-4 border border-amber-200">
+        <div id="sector-ferretero" class="p-6 bg-white border-t-4 border-t-sector-ferretero border-x border-b border-slate-200 rounded-[2px] shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 bg-amber-50 text-sector-ferretero flex items-center justify-center mb-4 border border-amber-200 rounded-[2px]">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
             </svg>
@@ -150,8 +125,8 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
         </div>
 
         <!-- Hidráulico -->
-        <div id="sector-hidraulico" class="p-6 bg-white border-t-4 border-t-sector-hidraulico border-x border-b border-slate-200 shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-blue-50 text-sector-hidraulico flex items-center justify-center mb-4 border border-blue-200">
+        <div id="sector-hidraulico" class="p-6 bg-white border-t-4 border-t-sector-hidraulico border-x border-b border-slate-200 rounded-[2px] shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
+          <div class="w-12 h-12 bg-blue-50 text-sector-hidraulico flex items-center justify-center mb-4 border border-blue-200 rounded-[2px]">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
@@ -173,7 +148,7 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
         Marcas 100% originales con respaldo directo de fábrica, certificados de conformidad y fichas técnicas oficiales.
       </p>
 
-      <div id="cotizar" class="mt-8 p-8 bg-secondary text-white max-w-3xl mx-auto space-y-4 border-t-4 border-primary chamfer-corner shadow-lg">
+      <div id="cotizar" class="mt-8 p-8 bg-secondary text-white max-w-3xl mx-auto space-y-4 border-t-4 border-primary rounded-[2px] shadow-lg">
         <h3 class="font-display font-bold text-xl sm:text-2xl text-white">¿Requieres cotización técnica para tu proyecto?</h3>
         <p class="text-slate-300 text-sm">
           Comunícate con nuestras asesoras comerciales oficiales para recibir atención inmediata, lista de precios por volumen y condiciones de crédito comercial.
@@ -182,9 +157,9 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
           {CONTACT_PHONES.map((phone) => (
             <a
               href={`tel:${phone.e164}`}
-              class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 min-h-[48px] border border-white/10"
+              class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 min-h-[48px] border border-white/10 rounded-[2px]"
             >
-              <span class="w-2 h-2 bg-whatsapp"></span>
+              <span class="w-2 h-2 bg-whatsapp rounded-none"></span>
               <span>{phone.name}: {phone.display}</span>
             </a>
           ))}

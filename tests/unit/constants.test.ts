@@ -26,7 +26,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
 
   it('should define a positive commercial logistics value proposition for hero', () => {
     expect(LOGISTIC_HERO_PROPOSITION).toContain('Despacho directo a tu bodega u obra a nivel nacional');
-    expect(LOGISTIC_HERO_PROPOSITION).toContain('Gestión 100% centralizada y sin filas');
+    expect(LOGISTIC_HERO_PROPOSITION).toContain('Sede administrativa centralizada');
   });
 
   it('should provide all official phone numbers in strict E.164 format and display format', () => {

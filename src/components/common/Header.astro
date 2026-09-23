@@ -137,15 +137,19 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
 
       <!-- Botón CTA "Cotizar Insumos" & Menú Móvil Hamburger -->
       <div class="flex items-center gap-3">
-        <!-- CTA Desktop / Tablet (Filudo / Angular) -->
+        <!-- CTA Desktop / Tablet (Micro-radio 2px con Remate Angular a 45°) -->
         <a
           href={ctaLink.href}
-          class="hidden sm:inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary-hover text-white font-display font-bold text-xs tracking-wider uppercase shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] chamfer-corner focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          class="group hidden sm:inline-flex items-stretch overflow-hidden rounded-[2px] bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <span>{ctaLink.label}</span>
+          <span class="inline-flex items-center px-4 font-display font-bold text-xs tracking-wider uppercase">
+            {ctaLink.label}
+          </span>
+          <span class="inline-flex items-center justify-center pl-2.5 pr-3 bg-black/15 group-hover:bg-black/25 text-white transition-colors icon-diagonal-45">
+            <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </span>
         </a>
 
         <!-- Botón Menú Móvil -->
@@ -155,7 +159,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Abrir menú de navegación"
-          class="md:hidden flex items-center justify-center w-12 h-12 border border-slate-200 text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
+          class="md:hidden flex items-center justify-center w-12 h-12 border border-slate-200 rounded-[2px] text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
         >
           <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -174,7 +178,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       {mainNavLinks.map((link) => (
         <a
           href={link.href}
-          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0"
+          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0 rounded-[2px]"
         >
           {link.label}
         </a>
@@ -182,12 +186,16 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       <div class="pt-2">
         <a
           href={ctaLink.href}
-          class="mobile-menu-link flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary hover:bg-primary-hover text-white font-display font-bold text-sm tracking-wider uppercase shadow-sm transition-colors min-h-[48px] chamfer-corner"
+          class="group mobile-menu-link flex items-stretch overflow-hidden rounded-[2px] w-full bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors min-h-[48px]"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <span>{ctaLink.label}</span>
+          <span class="flex-1 flex items-center justify-center font-display font-bold text-sm tracking-wider uppercase py-3">
+            {ctaLink.label}
+          </span>
+          <span class="flex items-center justify-center pl-3.5 pr-4 bg-black/15 icon-diagonal-45">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </span>
         </a>
       </div>
     </div>
