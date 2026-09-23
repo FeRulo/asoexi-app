@@ -4,8 +4,8 @@
 
 ### 1. Metodología TDD (Test-Driven Development) Estricta
 - **Ciclo Red-Green-Refactor:** Para cada funcionalidad, utilidad, store o componente, los tests unitarios deben concebirse y escribirse **antes** o a la par con la implementación de producción.
-- **Runner de Pruebas:** `Vitest` es el ejecutor oficial de tests unitarios e integración para el proyecto.
-- **Criterio de Entrega:** Ninguna historia de usuario se considera lista o aprobada si no cuenta con tests unitarios correspondientes y pasa limpiamente la ejecución de `npm test` (`vitest run`) y `npm run build`.
+- **Runner de Pruebas y Diagnósticos:** `Vitest` es el ejecutor oficial de tests unitarios e integración; `@astrojs/check` (`astro check`) y TypeScript (`tsc --noEmit`) auditan la integridad estricta de tipos e interfaces en componentes `.astro`, `.tsx` y `.ts`.
+- **Criterio de Entrega:** Ninguna historia de usuario se considera lista o aprobada si no cuenta con tests unitarios correspondientes, pasa limpiamente la ejecución de `npm test` (`vitest run && astro check && tsc --noEmit`), compila con `npm run build` y registra estrictamente 0 errores y 0 warnings en los diagnósticos de TypeScript/Astro (panel Problems de VS Code limpio).
 
 ### 2. Invariantes de Arquitectura, Rendimiento y Estética Visual
 - **Arquitectura de Islas:** Generación estática pura (SSG) en Astro con 0 KB de JavaScript cliente por defecto.
@@ -33,4 +33,10 @@
 ### 4. Convenciones de Git y Documentación
 - **Mensajes de Commit Referenciando Specs:** Todo mensaje de commit en el flujo de desarrollo debe incluir una referencia explícita al spec de la historia correspondiente (ej. `feat(spec-1-1): ...`, `fix(spec-1-1): ...`, `refactor(spec-1-1): ...`).
 - **Mantenimiento del README.md:** Mantener actualizado continuamente `README.md` con los requisitos de entorno (Node >=22), comandos vigentes para desarrollo (`npm run dev`), pruebas unitarias (`npm test`) y compilación de producción (`npm run build`).
+
+### 5. Mecanismo Obligatorio de Cero Problemas en VS Code (Zero-Diagnostics)
+- **Ejecución Automatizada en Cada Spec:** Todo ciclo de desarrollo (`bmad-build`) debe ejecutar `npm test` al verificar la historia. Al estar conectado a `vitest run && astro check && tsc --noEmit`, cualquier error de tipado o propiedad faltante en componentes `.astro` o archivos `.ts` detendrá el proceso de inmediato.
+- **Compilación Blindada:** `npm run build` corre automáticamente `astro check && astro build` asegurando que no se generen artefactos si existen diagnósticos pendientes.
+- **Configuración Workspace de VS Code:** El archivo `.vscode/settings.json` asegura que el editor utilice siempre el SDK de TypeScript del repositorio (`node_modules/typescript/lib`) y el servidor de lenguaje oficial de Astro.
+
 

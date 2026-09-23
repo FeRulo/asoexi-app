@@ -96,7 +96,8 @@ const ogTags = generateOpenGraphTags(metadata);
           if ((trigger as HTMLElement & { __contactBound?: boolean }).__contactBound) return;
           (trigger as HTMLElement & { __contactBound?: boolean }).__contactBound = true;
 
-          trigger.addEventListener('click', (e) => {
+          trigger.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();
             const directUrl = getDirectWhatsAppUrl();

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ABOUT_DATA, SITE_METADATA, type AboutData, type SiteMetadata } from '@/lib/constants';
+import { ABOUT_DATA, SITE_METADATA } from '@/lib/constants';
 
 describe('Institutional Data Contracts (ABOUT_DATA & SITE_METADATA)', () => {
   describe('SITE_METADATA', () => {

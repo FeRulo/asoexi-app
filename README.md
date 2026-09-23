@@ -33,19 +33,34 @@ Desarrollada bajo arquitectura de islas con **Astro 7**, **Preact**, **Tailwind 
 
 ---
 
-## 🧪 Pruebas Automatizadas (TDD)
+## 🧪 Pruebas Automatizadas y Diagnósticos (Cero Errores)
 
-El proyecto sigue una metodología estricta de desarrollo guiado por pruebas (**TDD**). Toda nueva funcionalidad, contrato fiscal o componente interactivo cuenta con tests unitarios.
+El proyecto sigue una metodología estricta de desarrollo guiado por pruebas (**TDD**) y auditoría estricta de diagnósticos de TypeScript y Astro:
 
-- **Ejecutar todas las pruebas una vez:**
+- **Ejecutar pruebas unitarias + chequeo de tipos Astro y TypeScript:**
   ```bash
   npm test
   ```
-  *(Ejecuta `vitest run` resolviendo path aliases `@/*` y contratos corporativos).*
+  *(Ejecuta de forma secuencial: `vitest run`, `astro check` y `tsc --noEmit` para garantizar 0 errores en el código y en VS Code).*
+
+- **Auditar únicamente diagnósticos de componentes Astro:**
+  ```bash
+  npm run check
+  ```
+
+- **Auditar únicamente tipado estricto TypeScript:**
+  ```bash
+  npm run typecheck
+  ```
+
+- **Verificación completa (Tests + Diagnósticos + Build):**
+  ```bash
+  npm run verify
+  ```
 
 - **Ejecutar pruebas en modo interactivo / observador (watch):**
   ```bash
-  npx vitest
+  npm run test:watch
   ```
 
 ---
