@@ -12,6 +12,8 @@ import {
 describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
   it('should define official company identity and tax details', () => {
     expect(COMPANY_INFO.name).toBe('ASOEXI S.A.S.');
+    expect(COMPANY_INFO.commercialName).toBe('ASOEXI');
+    expect(COMPANY_INFO.legalName).toBe('ASOEXI S.A.S.');
     expect(COMPANY_INFO.nit).toBe('900480460-8');
     expect(COMPANY_INFO.address).toContain('Carrera 55 A No. 51 A 28 Sur');
     expect(COMPANY_INFO.city).toBe('Bogotá');

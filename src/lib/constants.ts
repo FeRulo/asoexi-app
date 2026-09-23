@@ -1,5 +1,6 @@
 export interface CompanyInfo {
   name: string;
+  commercialName: string;
   legalName: string;
   nit: string;
   address: string;
@@ -44,7 +45,8 @@ export const LOGISTIC_HERO_PROPOSITION =
 
 export const COMPANY_INFO: CompanyInfo = {
   name: 'ASOEXI S.A.S.',
-  legalName: 'ASOCIADOS DE ÉXITO INTERNACIONAL S.A.S.',
+  commercialName: 'ASOEXI',
+  legalName: 'ASOEXI S.A.S.',
   nit: '900480460-8',
   address: 'Carrera 55 A No. 51 A 28 Sur',
   city: 'Bogotá',
@@ -302,7 +304,7 @@ export const ABOUT_DATA: AboutData = {
   history: {
     title: 'Nuestra Historia y Trayectoria B2B',
     paragraphs: [
-      'Constituida legalmente como ASOCIADOS DE ÉXITO INTERNACIONAL S.A.S. (ASOEXI S.A.S., NIT 900480460-8), contamos con más de 7 años de experiencia ininterrumpida abasteciendo insumos industriales, eléctricos, ferreteros e hidráulicos a los principales centros comerciales, cadenas de hotelería y compañías de servicios en Colombia.',
+      'Constituida legalmente como ASOEXI S.A.S. (con nombre comercial ASOEXI, NIT 900480460-8), contamos con más de 7 años de experiencia ininterrumpida abasteciendo insumos industriales, eléctricos, ferreteros e hidráulicos a los principales centros comerciales, cadenas de hotelería y compañías de servicios en Colombia.',
       'Nacimos para transformar la adquisición técnica B2B eliminando la intermediación innecesaria, suministrando marcas 100% originales con certificados oficiales de conformidad, facturación electrónica y despacho programado directamente a las instalaciones de nuestros clientes corporativos.',
     ],
     stats: [
