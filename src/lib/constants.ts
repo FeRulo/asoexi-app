@@ -221,4 +221,171 @@ export const CORPORATE_CLIENTS: CorporateClient[] = [
   },
 ];
 
+export interface SiteMetadata {
+  siteUrl: string;
+  siteName: string;
+  defaultTitle: string;
+  defaultDescription: string;
+  defaultOgImage: string;
+  locale: string;
+  ogType: string;
+  twitterCard: string;
+}
 
+export const SITE_METADATA: SiteMetadata = {
+  siteUrl: 'https://asoexi.com',
+  siteName: 'ASOEXI S.A.S.',
+  defaultTitle: 'ASOEXI S.A.S. | Distribuidor Mayorista de Insumos Industriales y Ferreteros',
+  defaultDescription:
+    'Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. Más de 7 años de experiencia y despacho a domicilio.',
+  defaultOgImage: 'https://asoexi.com/og-image.jpg',
+  locale: 'es_CO',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+};
+
+export interface AboutStat {
+  value: string;
+  label: string;
+}
+
+export interface AboutLogisticsFeature {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+export interface AboutSafetyProtocolItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface AboutData {
+  badge: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  history: {
+    title: string;
+    paragraphs: string[];
+    stats: AboutStat[];
+  };
+  mission: {
+    title: string;
+    description: string;
+  };
+  vision: {
+    title: string;
+    description: string;
+  };
+  logistics: {
+    title: string;
+    description: string;
+    administrativeNotice: string;
+    noCounterNotice: string;
+    headquartersAddress: string;
+    features: AboutLogisticsFeature[];
+  };
+  safetyProtocols: {
+    title: string;
+    subtitle: string;
+    items: AboutSafetyProtocolItem[];
+  };
+}
+
+export const ABOUT_DATA: AboutData = {
+  badge: 'Trayectoria y Solvencia B2B',
+  heroTitle: 'Más de 7 Años Abasteciendo a la Industria y Grandes Superficies',
+  heroSubtitle:
+    'Garantía directa de fábrica, cumplimiento estricto de entregas y respaldo contractual para compras corporativas en Colombia.',
+  history: {
+    title: 'Nuestra Historia y Trayectoria B2B',
+    paragraphs: [
+      'Constituida legalmente como ASOCIADOS DE ÉXITO INTERNACIONAL S.A.S. (ASOEXI S.A.S., NIT 900480460-8), contamos con más de 7 años de experiencia ininterrumpida abasteciendo insumos industriales, eléctricos, ferreteros e hidráulicos a los principales centros comerciales, cadenas de hotelería y compañías de servicios en Colombia.',
+      'Nacimos para transformar la adquisición técnica B2B eliminando la intermediación innecesaria, suministrando marcas 100% originales con certificados oficiales de conformidad, facturación electrónica y despacho programado directamente a las instalaciones de nuestros clientes corporativos.',
+    ],
+    stats: [
+      { value: '7+ Años', label: 'Abasteciendo grandes empresas' },
+      { value: '100%', label: 'Marcas originales con garantía de fábrica' },
+      { value: '24-48h', label: 'Tiempos estándar de entrega en Bogotá' },
+      { value: '45 Días', label: 'Línea de crédito comercial con RUT' },
+    ],
+  },
+  mission: {
+    title: 'Nuestra Misión',
+    description:
+      'Abastecer a la industria, el sector constructor e institucional con suministros técnicos y ferreteros de primera calidad, proporcionando una solución logística ágil, confiable y oportuna que asegure la continuidad operativa de los proyectos de nuestros clientes corporativos.',
+  },
+  vision: {
+    title: 'Nuestra Visión',
+    description:
+      'Consolidarnos como el distribuidor mayorista multimarca referente a nivel nacional en suministro industrial y ferretero, reconocido por la excelencia en servicio técnico comercial, trazabilidad certificada y un modelo logístico 100% digitalizado y eficiente.',
+  },
+  logistics: {
+    title: 'Modelo Logístico y Operativo',
+    description:
+      'Coordinación centralizada de despachos directos a obra, planta o bodega corporativa a nivel nacional.',
+    administrativeNotice: 'Sede Administrativa Centralizada',
+    headquartersAddress: 'Carrera 55 A No. 51 A 28 Sur, Bogotá, Colombia',
+    noCounterNotice:
+      'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)',
+    features: [
+      {
+        title: 'Despacho 100% a Domicilio',
+        description:
+          'Entregas directas en obra, fábrica o bodega centralizada del cliente, evitando traslados y tiempos muertos.',
+      },
+      {
+        title: 'Sin Venta por Mostrador',
+        description:
+          'Operación 100% enfocada en despachos programados B2B; no disponemos de atención en mostrador ni retiro en bodega.',
+      },
+      {
+        title: 'Entregas 24-48h y 6h Urgencias',
+        description:
+          'Atención prioritaria en Bogotá para mantener el ritmo de su operación sin detenciones por falta de insumos.',
+      },
+      {
+        title: 'Cobertura Bogotá y Sabana',
+        description:
+          'Despachos desde $50.000 COP en Bogotá y fletes económicos para los municipios de la Sabana.',
+      },
+    ],
+  },
+  safetyProtocols: {
+    title: 'Protocolos de Seguridad y Salud en el Trabajo (SG-SST)',
+    subtitle:
+      'Cumplimiento riguroso de normativas y estándares para garantizar operaciones seguras y productos certificados.',
+    items: [
+      {
+        id: 'epp-certificados',
+        title: 'EPPs Homologados y Certificados',
+        description:
+          'Personal de logística y transporte equipado con EPPs homologados bajo normas ANSI e ICONTEC para ingreso seguro a plantas y obras.',
+        icon: 'shield-check',
+      },
+      {
+        id: 'trazabilidad-lotes',
+        title: 'Trazabilidad Estricta de Lotes',
+        description:
+          'Control exhaustivo de números de lote, fechas de fabricación y certificados de calidad de cada insumo despachado.',
+        icon: 'document-search',
+      },
+      {
+        id: 'fichas-sds',
+        title: 'Fichas Técnicas SDS Oficiales',
+        description:
+          'Disponibilidad inmediata de Hojas de Datos de Seguridad (SDS) y fichas técnicas oficiales para recubrimientos, químicos y materiales técnicos.',
+        icon: 'document-text',
+      },
+      {
+        id: 'entrega-segura-obra',
+        title: 'Entrega y Descarga Segura en Obra',
+        description:
+          'Protocolos de estiba, aseguramiento de carga y maniobras seguras de descargue coordinadas con supervisores de obra.',
+        icon: 'truck-check',
+      },
+    ],
+  },
+};

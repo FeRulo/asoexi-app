@@ -4,19 +4,43 @@ import Footer from '@/components/common/Footer.astro';
 import ContactChannelModal from '@/islands/ContactChannelModal';
 import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
+import { buildPageMetadata, generateOpenGraphTags } from '@/lib/seo';
 import '@/styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
   currentPath?: string;
+  canonicalUrl?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: string;
+  noindex?: boolean;
 }
 
 const {
-  title = 'ASOEXI S.A.S. | Distribuidor Mayorista de Insumos Industriales y Ferreteros',
-  description = 'Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. Más de 7 años de experiencia y despacho a domicilio.',
+  title,
+  description,
   currentPath = '/',
+  canonicalUrl,
+  image,
+  imageAlt,
+  type,
+  noindex,
 } = Astro.props;
+
+const metadata = buildPageMetadata({
+  title,
+  description,
+  currentPath,
+  canonicalUrl,
+  image,
+  imageAlt,
+  type,
+  noindex,
+});
+
+const ogTags = generateOpenGraphTags(metadata);
 ---
 
 <!doctype html>
@@ -26,8 +50,19 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{metadata.title}</title>
+    <meta name="description" content={metadata.description} />
+    <link rel="canonical" href={metadata.canonicalUrl} />
+    <meta name="robots" content={metadata.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+
+    <!-- Open Graph Protocol & Twitter Cards -->
+    {ogTags.map((tag) => (
+      tag.property ? (
+        <meta property={tag.property} content={tag.content} />
+      ) : (
+        <meta name={tag.name} content={tag.content} />
+      )
+    ))}
 
     <!-- Google Fonts: Montserrat (Titulares/Display) & Inter (Cuerpo/Datos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
