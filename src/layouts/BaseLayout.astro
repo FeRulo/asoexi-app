@@ -49,20 +49,23 @@ const {
     <MobileStickyBar client:idle />
     <FloatingWhatsAppButton />
 
-    <!-- Interceptor global para disparadores de cotización y modal -->
+    <!-- Interceptor global para disparadores de cotización directa a WhatsApp -->
     <script>
+      import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
+
       function setupContactTriggers() {
         const triggers = document.querySelectorAll(
-          '[data-open-contact-modal], a[href="#cotizar"], a[href="/#cotizar"]'
+          '[data-open-contact-modal], [data-direct-whatsapp], a[href="#cotizar"], a[href="/#cotizar"]'
         );
         triggers.forEach((trigger) => {
-          if ((trigger as HTMLElement & { __contactModalBound?: boolean }).__contactModalBound) return;
-          (trigger as HTMLElement & { __contactModalBound?: boolean }).__contactModalBound = true;
+          if ((trigger as HTMLElement & { __contactBound?: boolean }).__contactBound) return;
+          (trigger as HTMLElement & { __contactBound?: boolean }).__contactBound = true;
 
           trigger.addEventListener('click', (e) => {
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();
-            window.dispatchEvent(new CustomEvent('open-contact-modal'));
+            const directUrl = getDirectWhatsAppUrl();
+            window.open(directUrl, '_blank', 'noopener,noreferrer');
           });
         });
       }

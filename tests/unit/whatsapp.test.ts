@@ -2,10 +2,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   DEFAULT_WHATSAPP_MESSAGE,
   SESSION_ROTATION_STORAGE_KEY,
+  WHATSAPP_ADVISORS,
   cleanPhoneForWhatsApp,
   generateWhatsAppUrl,
   getSessionRotationIndex,
   setSessionRotationIndex,
+  getBalancedWhatsAppAdvisors,
+  getPrimaryWhatsAppAdvisor,
+  getDirectWhatsAppUrl,
   getBalancedAdvisors,
   getPrimaryAdvisor,
 } from '@/lib/whatsapp';
@@ -40,7 +44,7 @@ class MockStorage implements Storage {
   }
 }
 
-describe('WhatsApp Utilities & Tripartite Balancing Engine (TDD)', () => {
+describe('WhatsApp Utilities & 50/50 Internal Balancing Engine (TDD)', () => {
   let mockStorage: MockStorage;
 
   beforeEach(() => {
@@ -80,71 +84,80 @@ describe('WhatsApp Utilities & Tripartite Balancing Engine (TDD)', () => {
     });
   });
 
-  describe('Tripartite Session Load Balancing (1/3 Rotation)', () => {
-    it('should define exactly 3 official contact channels in CONTACT_PHONES', () => {
-      expect(CONTACT_PHONES).toHaveLength(3);
-      expect(CONTACT_PHONES[0].id).toBe('geraldine');
-      expect(CONTACT_PHONES[1].id).toBe('sonia');
-      expect(CONTACT_PHONES[2].id).toBe('corporate');
+  describe('Channel Filtering: Línea Corporativa has NO WhatsApp, only sales reps rotate 50/50', () => {
+    it('should identify only Geraldine and Sonia as WHATSAPP_ADVISORS and exclude Línea Corporativa', () => {
+      expect(WHATSAPP_ADVISORS).toHaveLength(2);
+      expect(WHATSAPP_ADVISORS.map((a) => a.id)).toEqual(['geraldine', 'sonia']);
+
+      const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate');
+      expect(corporate?.hasWhatsApp).toBe(false);
     });
 
-    it('Rotation 1 (index 0): Geraldine #1, Sonia #2, Línea Corporativa #3', () => {
+    it('Rotation 0: Geraldine is primary WhatsApp advisor #1, Sonia is #2', () => {
       setSessionRotationIndex(0, mockStorage);
-      const advisors = getBalancedAdvisors(mockStorage);
+      const balanced = getBalancedWhatsAppAdvisors(mockStorage);
 
-      expect(advisors).toHaveLength(3);
-      expect(advisors[0].id).toBe('geraldine');
-      expect(advisors[1].id).toBe('sonia');
-      expect(advisors[2].id).toBe('corporate');
+      expect(balanced).toHaveLength(2);
+      expect(balanced[0].id).toBe('geraldine');
+      expect(balanced[1].id).toBe('sonia');
 
-      const primary = getPrimaryAdvisor(mockStorage);
+      const primary = getPrimaryWhatsAppAdvisor(mockStorage);
       expect(primary.id).toBe('geraldine');
+      expect(getPrimaryAdvisor(mockStorage).id).toBe('geraldine');
     });
 
-    it('Rotation 2 (index 1): Sonia #1, Línea Corporativa #2, Geraldine #3', () => {
+    it('Rotation 1: Sonia is primary WhatsApp advisor #1, Geraldine is #2', () => {
       setSessionRotationIndex(1, mockStorage);
-      const advisors = getBalancedAdvisors(mockStorage);
+      const balanced = getBalancedWhatsAppAdvisors(mockStorage);
 
-      expect(advisors).toHaveLength(3);
-      expect(advisors[0].id).toBe('sonia');
-      expect(advisors[1].id).toBe('corporate');
-      expect(advisors[2].id).toBe('geraldine');
+      expect(balanced).toHaveLength(2);
+      expect(balanced[0].id).toBe('sonia');
+      expect(balanced[1].id).toBe('geraldine');
 
-      const primary = getPrimaryAdvisor(mockStorage);
+      const primary = getPrimaryWhatsAppAdvisor(mockStorage);
       expect(primary.id).toBe('sonia');
+      expect(getPrimaryAdvisor(mockStorage).id).toBe('sonia');
     });
 
-    it('Rotation 3 (index 2): Línea Corporativa #1, Geraldine #2, Sonia #3', () => {
-      setSessionRotationIndex(2, mockStorage);
-      const advisors = getBalancedAdvisors(mockStorage);
+    it('getDirectWhatsAppUrl produces a direct link to the balanced advisor', () => {
+      setSessionRotationIndex(0, mockStorage);
+      const url0 = getDirectWhatsAppUrl(mockStorage);
+      expect(url0).toContain('https://wa.me/573186397212');
 
-      expect(advisors).toHaveLength(3);
-      expect(advisors[0].id).toBe('corporate');
-      expect(advisors[1].id).toBe('geraldine');
-      expect(advisors[2].id).toBe('sonia');
+      setSessionRotationIndex(1, mockStorage);
+      const url1 = getDirectWhatsAppUrl(mockStorage);
+      expect(url1).toContain('https://wa.me/573204498881');
+    });
 
-      const primary = getPrimaryAdvisor(mockStorage);
-      expect(primary.id).toBe('corporate');
+    it('getBalancedAdvisors orders WhatsApp advisors first and Línea Corporativa call-only at the end', () => {
+      setSessionRotationIndex(0, mockStorage);
+      const allAdvisors = getBalancedAdvisors(mockStorage);
+
+      expect(allAdvisors).toHaveLength(3);
+      expect(allAdvisors[0].id).toBe('geraldine');
+      expect(allAdvisors[1].id).toBe('sonia');
+      expect(allAdvisors[2].id).toBe('corporate');
+      expect(allAdvisors[2].hasWhatsApp).toBe(false);
     });
 
     it('should persist the assigned rotation index in sessionStorage for repeat calls in same session', () => {
-      // First call with empty storage assigns a random index and saves to storage
+      // First call with empty storage assigns a random index (0 or 1) and saves to storage
       const firstCallIndex = getSessionRotationIndex(mockStorage);
-      expect([0, 1, 2]).toContain(firstCallIndex);
+      expect([0, 1]).toContain(firstCallIndex);
       expect(mockStorage.getItem(SESSION_ROTATION_STORAGE_KEY)).toBe(String(firstCallIndex));
 
       // Subsequent call in the same session must return identical index
       const secondCallIndex = getSessionRotationIndex(mockStorage);
       expect(secondCallIndex).toBe(firstCallIndex);
 
-      const balancedFirst = getBalancedAdvisors(mockStorage);
-      const balancedSecond = getBalancedAdvisors(mockStorage);
+      const balancedFirst = getBalancedWhatsAppAdvisors(mockStorage);
+      const balancedSecond = getBalancedWhatsAppAdvisors(mockStorage);
       expect(balancedFirst.map((a) => a.id)).toEqual(balancedSecond.map((a) => a.id));
     });
 
-    it('should distribute across all 3 channels (1/3 each) when picking randomly', () => {
-      const counts = [0, 0, 0];
-      const iterations = 300;
+    it('should distribute 50/50 between Geraldine and Sonia when picking randomly', () => {
+      const counts = [0, 0];
+      const iterations = 200;
 
       for (let i = 0; i < iterations; i++) {
         const tempStorage = new MockStorage();
@@ -152,11 +165,10 @@ describe('WhatsApp Utilities & Tripartite Balancing Engine (TDD)', () => {
         counts[index]++;
       }
 
-      // Each should have roughly 1/3 (~100) with a reasonable statistical margin
-      expect(counts[0]).toBeGreaterThan(50);
-      expect(counts[1]).toBeGreaterThan(50);
-      expect(counts[2]).toBeGreaterThan(50);
-      expect(counts[0] + counts[1] + counts[2]).toBe(iterations);
+      // Each should have roughly 50% (~100) with statistical margin
+      expect(counts[0]).toBeGreaterThan(60);
+      expect(counts[1]).toBeGreaterThan(60);
+      expect(counts[0] + counts[1]).toBe(iterations);
     });
 
     it('should handle broken or throwing sessionStorage gracefully (incognito mode / quota exceeded)', () => {
@@ -173,35 +185,31 @@ describe('WhatsApp Utilities & Tripartite Balancing Engine (TDD)', () => {
         },
       };
 
-      // Must not throw an unhandled exception
       expect(() => getSessionRotationIndex(brokenStorage)).not.toThrow();
       const index = getSessionRotationIndex(brokenStorage);
-      expect([0, 1, 2]).toContain(index);
+      expect([0, 1]).toContain(index);
 
-      expect(() => getBalancedAdvisors(brokenStorage)).not.toThrow();
-      const advisors = getBalancedAdvisors(brokenStorage);
-      expect(advisors).toHaveLength(3);
+      expect(() => getBalancedWhatsAppAdvisors(brokenStorage)).not.toThrow();
+      const advisors = getBalancedWhatsAppAdvisors(brokenStorage);
+      expect(advisors).toHaveLength(2);
     });
 
     it('should handle undefined storage gracefully (SSR / Node environments)', () => {
-      expect(() => getBalancedAdvisors(undefined)).not.toThrow();
-      const advisors = getBalancedAdvisors(undefined);
-      expect(advisors).toHaveLength(3);
+      expect(() => getBalancedWhatsAppAdvisors(undefined)).not.toThrow();
+      const advisors = getBalancedWhatsAppAdvisors(undefined);
+      expect(advisors).toHaveLength(2);
     });
 
-    it('should resolve and persist to window.sessionStorage across invocations when called without storage arguments', () => {
+    it('should resolve and persist to window.sessionStorage when storage parameter is omitted', () => {
       vi.stubGlobal('window', { sessionStorage: mockStorage });
-
-      const firstIndex = getSessionRotationIndex();
-      expect([0, 1, 2]).toContain(firstIndex);
-      expect(mockStorage.getItem(SESSION_ROTATION_STORAGE_KEY)).toBe(String(firstIndex));
-
-      const secondIndex = getSessionRotationIndex();
-      expect(secondIndex).toBe(firstIndex);
-
-      const balanced = getBalancedAdvisors();
-      expect(balanced).toHaveLength(3);
-      expect(balanced[0].id).toBe(CONTACT_PHONES[firstIndex].id);
+      try {
+        const first = getSessionRotationIndex();
+        const second = getSessionRotationIndex();
+        expect(second).toBe(first);
+        expect(mockStorage.getItem(SESSION_ROTATION_STORAGE_KEY)).toBe(String(first));
+      } finally {
+        vi.unstubAllGlobals();
+      }
     });
   });
 });

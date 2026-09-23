@@ -40,6 +40,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(geraldine?.e164).toMatch(e164Regex);
     expect(geraldine?.e164).toBe('+573186397212');
     expect(geraldine?.display).toContain('318 639 7212');
+    expect(geraldine?.hasWhatsApp).toBe(true);
 
     const sonia = CONTACT_PHONES.find((p) => p.id === 'sonia');
     expect(sonia).toBeDefined();
@@ -47,6 +48,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(sonia?.e164).toMatch(e164Regex);
     expect(sonia?.e164).toBe('+573204498881');
     expect(sonia?.display).toContain('320 449 8881');
+    expect(sonia?.hasWhatsApp).toBe(true);
 
     const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate');
     expect(corporate).toBeDefined();
@@ -54,6 +56,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(corporate?.e164).toMatch(e164Regex);
     expect(corporate?.e164).toBe('+573044013761');
     expect(corporate?.display).toContain('304 401 3761');
+    expect(corporate?.hasWhatsApp).toBe(false);
   });
 
   it('should provide all official corporate emails with valid format', () => {

@@ -15,6 +15,7 @@ export interface ContactPhone {
   e164: string;
   display: string;
   role: string;
+  hasWhatsApp: boolean;
 }
 
 export interface OfficialEmail {
@@ -59,6 +60,7 @@ export const CONTACT_PHONES: ContactPhone[] = [
     e164: '+573186397212',
     display: '+57 318 639 7212',
     role: 'Asesora Comercial',
+    hasWhatsApp: true,
   },
   {
     id: 'sonia',
@@ -66,6 +68,7 @@ export const CONTACT_PHONES: ContactPhone[] = [
     e164: '+573204498881',
     display: '+57 320 449 8881',
     role: 'Asesora Comercial',
+    hasWhatsApp: true,
   },
   {
     id: 'corporate',
@@ -73,6 +76,7 @@ export const CONTACT_PHONES: ContactPhone[] = [
     e164: '+573044013761',
     display: '+57 304 401 3761',
     role: 'Atención Institucional',
+    hasWhatsApp: false,
   },
 ];
 

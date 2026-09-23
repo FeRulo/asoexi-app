@@ -86,6 +86,12 @@ context:
 
 ## Spec Change Log
 
+- **2026-09-23 (Refinamiento UX & Regla de Negocio de Línea Corporativa):**
+  - *Feedback de Usuario:* Se eliminó la fricción de selección modal en el botón flotante y CTAs principales de cotización; ahora transfieren directamente a WhatsApp (`wa.me`) con balanceo rotativo interno silencioso.
+  - *Regla de Negocio Descubierta:* La Línea Corporativa (`+57 304 401 3761`) opera exclusivamente para llamadas telefónicas y no dispone de WhatsApp.
+  - *Ajuste de Balanceo:* Rotación 50/50 equitativa para leads de WhatsApp exclusivamente entre Geraldine (`+57 318 639 7212`) y Sonia (`+57 320 449 8881`).
+  - *Sección Contacto Directo (Footer):* Tarjetas individuales con acciones explícitas: WhatsApp + Llamada para Geraldine y Sonia; Llamada exclusiva para Línea Corporativa.
+
 ## Design Notes
 
 - `ContactChannelModal`:

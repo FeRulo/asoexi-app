@@ -6,6 +6,12 @@ export const DEFAULT_WHATSAPP_MESSAGE =
 export const SESSION_ROTATION_STORAGE_KEY = 'asoexi_lead_rotation_index';
 
 /**
+ * Filter of advisors enabled specifically for WhatsApp commercial inquiries.
+ * Note: Línea Corporativa is voice-call only and excluded from WhatsApp deep links.
+ */
+export const WHATSAPP_ADVISORS: ContactPhone[] = CONTACT_PHONES.filter((p) => p.hasWhatsApp);
+
+/**
  * Sanitizes any raw phone representation to E.164-compatible pure digits
  * suitable for WhatsApp wa.me links. If a 10-digit Colombian mobile number
  * is supplied without country prefix, 57 is automatically prepended.
@@ -44,11 +50,12 @@ function getSafeStorage(storage?: Storage): Storage | null {
 }
 
 /**
- * Retrieves the current session rotation index (0, 1, or 2).
- * If no valid index is present in storage, selects one equitably (1/3 probability)
+ * Retrieves the current session rotation index for WhatsApp advisors (0 or 1).
+ * If no valid index is present in storage, selects one equitably (50/50 probability)
  * and attempts to persist it in sessionStorage.
  */
 export function getSessionRotationIndex(storage?: Storage): number {
+  const total = WHATSAPP_ADVISORS.length || 1;
   const safeStorage = getSafeStorage(storage);
 
   if (safeStorage) {
@@ -56,7 +63,7 @@ export function getSessionRotationIndex(storage?: Storage): number {
       const stored = safeStorage.getItem(SESSION_ROTATION_STORAGE_KEY);
       if (stored !== null) {
         const parsed = parseInt(stored, 10);
-        if (!isNaN(parsed) && parsed >= 0 && parsed <= 2) {
+        if (!isNaN(parsed) && parsed >= 0 && parsed < total) {
           return parsed;
         }
       }
@@ -65,8 +72,8 @@ export function getSessionRotationIndex(storage?: Storage): number {
     }
   }
 
-  // Generate equitable random index between 0 and 2 (1/3 each)
-  const newIndex = Math.floor(Math.random() * 3);
+  // Generate equitable random index between 0 and total - 1 (50/50 for Geraldine / Sonia)
+  const newIndex = Math.floor(Math.random() * total);
 
   if (safeStorage) {
     try {
@@ -94,29 +101,52 @@ export function setSessionRotationIndex(index: number, storage?: Storage): void 
 }
 
 /**
- * Returns the 3 official commercial channels rotated cyclically according to the
- * session balance index:
- * - Index 0: [Geraldine, Sonia, Línea Corporativa]
- * - Index 1: [Sonia, Línea Corporativa, Geraldine]
- * - Index 2: [Línea Corporativa, Geraldine, Sonia]
+ * Returns WhatsApp commercial advisors rotated cyclically according to the 50/50 session index:
+ * - Index 0: [Geraldine, Sonia]
+ * - Index 1: [Sonia, Geraldine]
  */
-export function getBalancedAdvisors(storage?: Storage): ContactPhone[] {
+export function getBalancedWhatsAppAdvisors(storage?: Storage): ContactPhone[] {
+  const total = WHATSAPP_ADVISORS.length;
+  if (total === 0) return [];
+
   const index = getSessionRotationIndex(storage);
-  const total = CONTACT_PHONES.length;
-
-  if (total === 0) {
-    return [];
-  }
-
   const normalizedIndex = ((index % total) + total) % total;
 
-  return Array.from({ length: total }, (_, i) => CONTACT_PHONES[(normalizedIndex + i) % total]);
+  return Array.from({ length: total }, (_, i) => WHATSAPP_ADVISORS[(normalizedIndex + i) % total]);
 }
 
 /**
- * Returns the primary (highest priority) advisor assigned to the current session.
+ * Returns the primary (highest priority) WhatsApp advisor assigned to the current session (Geraldine or Sonia).
+ */
+export function getPrimaryWhatsAppAdvisor(storage?: Storage): ContactPhone {
+  const balanced = getBalancedWhatsAppAdvisors(storage);
+  return balanced[0] ?? WHATSAPP_ADVISORS[0] ?? CONTACT_PHONES[0];
+}
+
+/**
+ * Generates direct wa.me link directly to the session-assigned WhatsApp advisor without any intermediate modal.
+ */
+export function getDirectWhatsAppUrl(
+  storage?: Storage,
+  message: string = DEFAULT_WHATSAPP_MESSAGE
+): string {
+  const advisor = getPrimaryWhatsAppAdvisor(storage);
+  return generateWhatsAppUrl(advisor.e164, message);
+}
+
+/**
+ * Returns all contact channels for the "Contacto Directo" section with WhatsApp advisors balanced
+ * at the top and Línea Corporativa (call-only) positioned cleanly at the end.
+ */
+export function getBalancedAdvisors(storage?: Storage): ContactPhone[] {
+  const whatsappBalanced = getBalancedWhatsAppAdvisors(storage);
+  const callOnly = CONTACT_PHONES.filter((p) => !p.hasWhatsApp);
+  return [...whatsappBalanced, ...callOnly];
+}
+
+/**
+ * Returns the primary advisor for the current session.
  */
 export function getPrimaryAdvisor(storage?: Storage): ContactPhone {
-  const balanced = getBalancedAdvisors(storage);
-  return balanced[0] ?? CONTACT_PHONES[0];
+  return getPrimaryWhatsAppAdvisor(storage);
 }
