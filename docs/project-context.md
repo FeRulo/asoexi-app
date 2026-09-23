@@ -12,8 +12,7 @@
 - **Islas Preact:** La interactividad reside exclusivamente en `src/islands/` montada con directivas cliente explícitas (`client:idle`, `client:visible`).
 - **Diseño con Tailwind CSS v4:** Tokens corporativos declarados en `src/styles/global.css` mediante `@theme`.
 - **Estética de Precisión Industrial con Geometría Angular a 45° (Regla de Brochure ASOEXI):**
-  - Cero redondeados genéricos tipo burbuja/SaaS (8px-12px) y cero esquinas vivas de 0px sin pulir.
-  - Micro-radio de precisión de 2px (`rounded-[2px]`) estándar en botones, tarjetas, badges, inputs y contenedores para conferir solidez de bloque manufacturado.
+  - Token centralizado `--radius-industrial`: declarado en `@theme` de `src/styles/global.css` (que genera la clase de utilidad `rounded-industrial`) para gobernar de forma única el radio de curvatura en botones, tarjetas, badges, inputs y contenedores.
   - Integración de la diagonal institucional a 45° (inspirada en la portada del brochure y flecha del logo) en remates de iconos de CTAs principales (`.icon-diagonal-45`) y composición geométrica del Hero.
   - Áreas táctiles estrictamente accesibles (≥ 48px de altura) sin deformación ni corte de textos.
   - Sensación visual: suministro industrial pesado, ingeniería, solvencia técnica B2B y aristas manufacturadas de precisión.

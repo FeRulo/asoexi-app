@@ -140,7 +140,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
         <!-- CTA Desktop / Tablet (Micro-radio 2px con Remate Angular a 45°) -->
         <a
           href={ctaLink.href}
-          class="group hidden sm:inline-flex items-stretch overflow-hidden rounded-[2px] bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          class="group hidden sm:inline-flex items-stretch overflow-hidden rounded-industrial bg-primary hover:bg-primary-hover text-white shadow-sm transition-all duration-150 hover:translate-x-0.5 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <span class="inline-flex items-center px-4 font-display font-bold text-xs tracking-wider uppercase">
             {ctaLink.label}
@@ -159,7 +159,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Abrir menú de navegación"
-          class="md:hidden flex items-center justify-center w-12 h-12 border border-slate-200 rounded-[2px] text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
+          class="md:hidden flex items-center justify-center w-12 h-12 border border-slate-200 rounded-industrial text-secondary hover:text-primary hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] min-w-[48px]"
         >
           <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -178,7 +178,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       {mainNavLinks.map((link) => (
         <a
           href={link.href}
-          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0 rounded-[2px]"
+          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0 rounded-industrial"
         >
           {link.label}
         </a>
@@ -186,7 +186,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
       <div class="pt-2">
         <a
           href={ctaLink.href}
-          class="group mobile-menu-link flex items-stretch overflow-hidden rounded-[2px] w-full bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors min-h-[48px]"
+          class="group mobile-menu-link flex items-stretch overflow-hidden rounded-industrial w-full bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors min-h-[48px]"
         >
           <span class="flex-1 flex items-center justify-center font-display font-bold text-sm tracking-wider uppercase py-3">
             {ctaLink.label}
