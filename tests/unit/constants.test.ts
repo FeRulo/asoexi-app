@@ -6,6 +6,7 @@ import {
   BUSINESS_HOURS,
   NAVIGATION_LINKS,
   LOGISTIC_NOTICE,
+  LOGISTIC_HERO_PROPOSITION,
 } from '@/lib/constants';
 
 describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
@@ -21,6 +22,11 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
       'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)';
     expect(LOGISTIC_NOTICE).toBe(expectedNotice);
     expect(COMPANY_INFO.noCounterNotice).toBe(expectedNotice);
+  });
+
+  it('should define a positive commercial logistics value proposition for hero', () => {
+    expect(LOGISTIC_HERO_PROPOSITION).toContain('Despacho directo a tu bodega u obra a nivel nacional');
+    expect(LOGISTIC_HERO_PROPOSITION).toContain('Gestión 100% centralizada y sin filas');
   });
 
   it('should provide all official phone numbers in strict E.164 format and display format', () => {

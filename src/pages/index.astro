@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { COMPANY_INFO, CONTACT_PHONES, LOGISTIC_NOTICE } from '@/lib/constants';
+import { COMPANY_INFO, CONTACT_PHONES, LOGISTIC_HERO_PROPOSITION } from '@/lib/constants';
 
 const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PHONES[0];
 ---
@@ -50,15 +50,19 @@ const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate') || CONTACT_PH
           </a>
         </div>
 
-        <!-- Banner Logístico Informativo Angular -->
-        <div class="mt-8 p-4 bg-surface border-l-4 border-l-primary border-y border-r border-slate-200 text-left text-xs sm:text-sm text-slate-700 shadow-sm">
-          <div class="flex items-center gap-2 text-primary font-bold mb-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        <!-- Propuesta de Valor Logístico (Reencuadre Positivo) -->
+        <div class="mt-8 p-4 bg-surface border-l-4 border-l-primary border-y border-r border-slate-200 text-left text-xs sm:text-sm text-slate-700 shadow-sm flex items-start sm:items-center gap-3.5">
+          <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <span>Aviso Operativo Oficial</span>
           </div>
-          <p class="text-slate-600">{LOGISTIC_NOTICE}</p>
+          <div>
+            <span class="block font-display font-bold text-secondary text-xs uppercase tracking-wider">Logística y Entrega Directa</span>
+            <p class="text-slate-600 mt-0.5 font-medium leading-relaxed">
+              <strong class="text-secondary font-semibold">📦 Despacho directo a tu bodega u obra a nivel nacional</strong> — Gestión 100% centralizada y sin filas.
+            </p>
+          </div>
         </div>
       </div>
     </div>

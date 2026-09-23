@@ -38,6 +38,9 @@ export interface NavLink {
 export const LOGISTIC_NOTICE =
   'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)';
 
+export const LOGISTIC_HERO_PROPOSITION =
+  'Despacho directo a tu bodega u obra a nivel nacional — Gestión 100% centralizada y sin filas';
+
 export const COMPANY_INFO: CompanyInfo = {
   name: 'ASOEXI S.A.S.',
   legalName: 'ASOCIADOS DE ÉXITO INTERNACIONAL S.A.S.',

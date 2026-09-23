@@ -95,3 +95,4 @@ npm run preview
    - **Datos de Contacto:** Definidos canónicamente en `src/lib/constants.ts`.
    - **Teléfonos:** Formato estricto E.164 (`tel:+57...`) con áreas táctiles accesibles (≥ 48x48px, WCAG 2.2 AA).
    - **Aviso Logístico Obligatorio:** *"Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)"*.
+
