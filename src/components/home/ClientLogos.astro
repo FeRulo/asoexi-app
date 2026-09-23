@@ -2,71 +2,89 @@
 import { Image } from 'astro:assets';
 import { CORPORATE_CLIENTS } from '@/lib/constants';
 
-import andinoImg from '@/assets/clients/andino.png';
-import casalimpiaImg from '@/assets/clients/casalimpia.png';
-import unicentroImg from '@/assets/clients/unicentro.png';
-import multiplikaImg from '@/assets/clients/multiplika.png';
-import winnergroupImg from '@/assets/clients/winnergroup.png';
+import casalimpiaSvg from '@/assets/clients/casalimpia.svg';
+import unicentroSvg from '@/assets/clients/unicentro.svg';
+import andinoSvg from '@/assets/clients/andino.svg';
+import winnergroupSvg from '@/assets/clients/winnergroup.svg';
+import multiplikaSvg from '@/assets/clients/multiplika.svg';
 
-const clientLogos: Record<string, typeof andinoImg> = {
-  casalimpia: casalimpiaImg,
-  unicentro: unicentroImg,
-  andino: andinoImg,
-  'winner-group': winnergroupImg,
-  multiplika: multiplikaImg,
+const clientSvgMap: Record<string, ImageMetadata> = {
+  casalimpia: casalimpiaSvg,
+  unicentro: unicentroSvg,
+  andino: andinoSvg,
+  'winner-group': winnergroupSvg,
+  multiplika: multiplikaSvg,
 };
+
+// Generamos dos mitades idénticas para garantizar un bucle continuo de 0% a -50% sin saltos en cualquier resolución
+const halfItems = [...CORPORATE_CLIENTS, ...CORPORATE_CLIENTS];
+const marqueeItems = [...halfItems, ...halfItems];
 ---
 
-<!-- Franja de Social Proof / Clientes Corporativos Normalizados -->
-<section id="clientes" class="py-14 bg-surface border-b border-slate-200 overflow-x-hidden scroll-mt-28">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Encabezado sutil institucional -->
-    <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-      <span class="inline-block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-        Trayectoria y Confianza Demostrada
-      </span>
-      <h2 class="text-xl sm:text-2xl font-display font-bold text-secondary">
-        Respaldando la Operación de Grandes Clientes Corporativos
-      </h2>
-      <p class="text-xs sm:text-sm text-slate-500 mt-1.5">
-        Centros comerciales, operadores hoteleros y empresas de servicios confían en ASOEXI S.A.S. para su abastecimiento técnico.
-      </p>
+<!-- Franja de Social Proof: Carrusel Continuo Infinito con Logos SVG Nítidos a Todo Color -->
+<section id="clientes" class="py-14 sm:py-16 bg-surface border-b border-slate-200 overflow-hidden scroll-mt-28 relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-10 text-center">
+    <!-- Encabezado Institucional -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary/5 text-secondary text-xs font-bold uppercase tracking-widest rounded-industrial border border-slate-200 mb-2.5">
+      <span class="w-1.5 h-1.5 bg-primary"></span>
+      <span>Trayectoria y Respaldo B2B Demostrado</span>
     </div>
+    <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-secondary tracking-tight">
+      Empresas y Grandes Complejos que Confían en ASOEXI
+    </h2>
+    <p class="text-xs sm:text-sm text-slate-600 font-body max-w-2xl mx-auto mt-2 leading-relaxed">
+      Suministro mayorista continuo a centros comerciales emblemáticos, cadenas de hotelería y compañías líderes de servicios industriales en Colombia.
+    </p>
+  </div>
 
-    <!-- Grilla Armonizada de Logos (Escala de grises con hover a color y accesibilidad de teclado) -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-      {CORPORATE_CLIENTS.map((client, index) => {
-        const logoImage = clientLogos[client.id];
-        const isFifthItem = index === 4;
+  <!-- Contenedor del Carrusel con Máscaras de Gradiente en los Extremos -->
+  <div class="relative w-full overflow-hidden py-2" role="region" aria-label="Carrusel de clientes corporativos">
+    <!-- Máscaras de desvanecimiento lateral para transición suave -->
+    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-32 bg-gradient-to-r from-surface via-surface/85 to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-32 bg-gradient-to-l from-surface via-surface/85 to-transparent"></div>
+
+    <!-- Pista Deslizante Infinita (se pausa al pasar el cursor o hacer foco) -->
+    <div class="animate-marquee-infinite flex gap-4 sm:gap-6 py-2 px-2" role="list">
+      {marqueeItems.map((client, index) => {
+        const svgLogo = clientSvgMap[client.id];
+        const isAriaHidden = index >= CORPORATE_CLIENTS.length;
 
         return (
           <div
-            tabindex="0"
-            title={client.highlight}
-            class={`bg-white p-4 sm:p-6 rounded-industrial border border-slate-100 hover:border-slate-300 focus-within:border-slate-300 focus-within:ring-2 focus-within:ring-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col items-center justify-center text-center group min-h-[112px] cursor-default ${
-              isFifthItem ? 'col-span-2 sm:col-span-1 max-sm:max-w-xs max-sm:mx-auto max-sm:w-full' : ''
-            }`}
+            role="listitem"
+            aria-hidden={isAriaHidden ? 'true' : undefined}
+            tabindex={isAriaHidden ? '-1' : '0'}
+            title={`${client.name} — ${client.highlight}`}
+            class="w-[260px] sm:w-[280px] shrink-0 bg-white p-5 rounded-industrial border border-slate-200/90 shadow-xs hover:shadow-md hover:border-primary/50 focus:border-primary/60 focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300 flex flex-col justify-between group cursor-default select-none"
           >
-            <div class="w-full h-12 flex items-center justify-center">
-              {logoImage ? (
+            <!-- Contenedor del Logo Vectorial SVG Nítido a Todo Color -->
+            <div class="h-16 w-full flex items-center justify-center px-2 py-1 bg-surface-subtle/50 rounded-industrial border border-slate-100 group-hover:bg-white group-hover:border-slate-200 transition-colors">
+              {svgLogo ? (
                 <Image
-                  src={logoImage}
+                  src={svgLogo}
                   alt={client.logoAlt}
-                  width={180}
-                  height={48}
-                  class="max-h-12 w-auto object-contain grayscale opacity-75 group-hover:grayscale-0 group-hover:opacity-100 group-focus-within:grayscale-0 group-focus-within:opacity-100 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                  width={200}
+                  height={50}
+                  class="h-10 sm:h-11 w-auto max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
               ) : (
                 <span class="font-display font-bold text-secondary text-sm">{client.name}</span>
               )}
             </div>
-            <span class="text-[11px] font-semibold text-slate-700 mt-2 truncate max-w-full">
-              {client.name}
-            </span>
-            <span class="text-[10px] text-slate-400 block mt-0.5 truncate max-w-full">
-              {client.sector}
-            </span>
+
+            <!-- Metadatos de la Empresa y Sector -->
+            <div class="mt-3.5 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-display font-bold text-xs sm:text-sm text-secondary truncate">
+                  {client.name}
+                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Cliente activo verificado"></span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5" title={client.sector}>
+                {client.sector}
+              </p>
+            </div>
           </div>
         );
       })}

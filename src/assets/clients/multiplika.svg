@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none" role="img" aria-label="Multiplika Arquitectura y Soluciones">
+  <!-- Símbolo Multiplika: Cubo isométrico facetado en rojo rubí -->
+  <g transform="translate(10, 6)">
+    <!-- Cara superior del cubo -->
+    <polygon points="24,4 42,14 24,24 6,14" fill="#E53935"/>
+    <!-- Cara izquierda -->
+    <polygon points="6,14 24,24 24,44 6,34" fill="#C62828"/>
+    <!-- Cara derecha -->
+    <polygon points="24,24 42,14 42,34 24,44" fill="#B71C1C"/>
+    <!-- Detalle geométrico interior 'X' -->
+    <polygon points="24,18 30,21 24,24 18,21" fill="#FFFFFF" opacity="0.4"/>
+  </g>
+  <!-- Texto multiplika -->
+  <text x="64" y="32" font-family="'Montserrat', 'Inter', system-ui, sans-serif" font-size="21" font-weight="900" fill="#1E2229" letter-spacing="-0.5">multiplika</text>
+  <text x="65" y="46" font-family="'Inter', system-ui, sans-serif" font-size="6.5" font-weight="800" fill="#C62828" letter-spacing="2">ARQUITECTURA &amp; SOLUCIONES</text>
+</svg>
