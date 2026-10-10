@@ -31,6 +31,8 @@
 - **Crédito Comercial:** Hasta 45 días para empresas registradas y validadas con RUT.
 
 ### 4. Convenciones de Git y Documentación
+- **Rama Oficial de Desarrollo (`dev`):** Todo el desarrollo activo, implementación de historias y cambios se realizan sobre la rama `dev`. Queda prohibido trabajar o cometer directamente sobre `master` salvo procesos de release final.
+- **Commit y Push en Rama `dev`:** Al completar o verificar una historia, fix o tarea en el flujo de desarrollo, se deben realizar de manera obligatoria y ordenada los commits respectivos y el posterior `git push origin dev` (o upstream correspondiente) para mantener sincronizado el repositorio remoto.
 - **Mensajes de Commit Referenciando Specs:** Todo mensaje de commit en el flujo de desarrollo debe incluir una referencia explícita al spec de la historia correspondiente (ej. `feat(spec-1-1): ...`, `fix(spec-1-1): ...`, `refactor(spec-1-1): ...`).
 - **Mantenimiento del README.md:** Mantener actualizado continuamente `README.md` con los requisitos de entorno (Node >=22), comandos vigentes para desarrollo (`npm run dev`), pruebas unitarias (`npm test`) y compilación de producción (`npm run build`).
 
