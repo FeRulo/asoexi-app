@@ -124,6 +124,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           return (
             <a
               href={link.href}
+              aria-current={isActive ? 'page' : undefined}
               class={`px-3 py-2 text-sm font-semibold transition-colors min-h-[48px] flex items-center ${
                 isActive
                   ? 'text-primary border-b-2 border-primary bg-slate-50 font-bold'
@@ -177,14 +178,22 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
   <!-- Menú Desplegable Móvil -->
   <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white">
     <div class="px-4 pt-2 pb-4 space-y-1">
-      {mainNavLinks.map((link) => (
-        <a
-          href={link.href}
-          class="mobile-menu-link flex items-center px-4 py-3 text-base font-semibold text-secondary hover:text-primary hover:bg-slate-50 transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0 rounded-industrial"
-        >
-          {link.label}
-        </a>
-      ))}
+      {mainNavLinks.map((link) => {
+        const isActive = currentPath === link.href;
+        return (
+          <a
+            href={link.href}
+            aria-current={isActive ? 'page' : undefined}
+            class={`mobile-menu-link flex items-center px-4 py-3 text-base font-semibold transition-colors min-h-[48px] border-b border-slate-100 last:border-b-0 rounded-industrial ${
+              isActive
+                ? 'text-primary border-b-2 border-primary bg-slate-50 font-bold'
+                : 'text-secondary hover:text-primary hover:bg-slate-50'
+            }`}
+          >
+            {link.label}
+          </a>
+        );
+      })}
       <div class="pt-2">
         <a
           href={ctaLink.href}

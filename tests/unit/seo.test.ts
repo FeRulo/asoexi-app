@@ -20,6 +20,8 @@ describe('SEO & Open Graph Utilities (src/lib/seo.ts)', () => {
       expect(resolveCanonicalUrl('/nosotros')).toBe('https://asoexi.com/nosotros');
       expect(resolveCanonicalUrl('nosotros')).toBe('https://asoexi.com/nosotros');
       expect(resolveCanonicalUrl('//nosotros')).toBe('https://asoexi.com/nosotros');
+      expect(resolveCanonicalUrl('/nosotros//subruta')).toBe('https://asoexi.com/nosotros/subruta');
+      expect(resolveCanonicalUrl('https://asoexi.com//nosotros')).toBe('https://asoexi.com/nosotros');
       expect(resolveCanonicalUrl('/catalogo/herramientas')).toBe('https://asoexi.com/catalogo/herramientas');
     });
 
@@ -113,6 +115,22 @@ describe('SEO & Open Graph Utilities (src/lib/seo.ts)', () => {
       expect(meta.twitterImage).toBe('https://asoexi.com/og-nosotros.jpg');
       expect(meta.twitterImageAlt).toBe('Equipo corporativo de ASOEXI S.A.S.');
       expect(meta.noindex).toBe(true);
+    });
+
+    it('should support independent ogTitle and twitterTitle overrides and trim type', () => {
+      const input: PageMetadataInput = {
+        title: 'Nosotros | ASOEXI S.A.S. - Distribuidor Mayorista B2B',
+        ogTitle: 'Nosotros | ASOEXI S.A.S.',
+        twitterTitle: 'Nosotros en Twitter | ASOEXI S.A.S.',
+        type: '   ',
+      };
+
+      const meta = buildPageMetadata(input);
+
+      expect(meta.title).toBe(input.title);
+      expect(meta.ogTitle).toBe('Nosotros | ASOEXI S.A.S.');
+      expect(meta.twitterTitle).toBe('Nosotros en Twitter | ASOEXI S.A.S.');
+      expect(meta.ogType).toBe(SITE_METADATA.ogType);
     });
 
     it('should prioritize explicit canonicalUrl if given', () => {
