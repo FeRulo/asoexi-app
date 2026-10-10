@@ -217,6 +217,30 @@ So that pueda validar la historia de ASOEXI, sus políticas de seguridad física
 **When** un usuario copia y comparte el enlace en WhatsApp, LinkedIn, Slack o correo,  
 **Then** las etiquetas Open Graph y Twitter Cards generan una tarjeta visual enriquecida con el logotipo corporativo oficial, titular institucional y descripción del portafolio mayorista B2B.
 
+### Story 1.5: Unificación de Línea Corporativa, SLA ≤ 5 Minutos y Rebalanceo de Pilares Logísticos
+
+As a decisor de compras o cliente que requiere cotizaciones ágiles,  
+I want contactar directamente a la línea corporativa oficial por WhatsApp o llamada con una garantía de respuesta de máximo 5 minutos, y visualizar la logística rápida como diferencial prioritario,  
+So that obtenga atención comercial inmediata sin fugas a líneas personales y tenga plena certeza sobre los tiempos récord de entrega en obra y condiciones mínimas de despacho.
+
+**Acceptance Criteria:**
+
+**Given** el directorio corporativo de canales de contacto (`src/lib/constants.ts`),  
+**When** se inspeccionan las líneas telefónicas oficiales,  
+**Then** existe únicamente la Línea Corporativa (`+57 304 401 3761`) habilitada tanto para llamadas telefónicas como para WhatsApp directo (`hasWhatsApp: true`), eliminando por completo los números personales de asesoras comerciales y cualquier lógica de rotación 50/50.
+
+**Given** el directorio de correos oficiales,  
+**When** se revisan las direcciones de contacto,  
+**Then** la dirección de atención al cliente corresponde a `serviciocliente@asoexi.com`, sin referencias a cuentas de correo externas `@gmail.com`.
+
+**Given** los componentes de contacto y cotización (`ContactChannelModal`, `FloatingWhatsAppButton`, `MobileStickyBar` y enlaces CTA de cotización),  
+**When** el usuario visualiza o interactúa con ellos,  
+**Then** se presenta de manera visible y destacada la promesa de servicio (SLA): *"Respondemos tus cotizaciones en menos de 5 minutos (horario hábil)"*, orientando al usuario hacia el canal corporativo unificado.
+
+**Given** la grilla de pilares de confianza (`src/components/home/ValuePillars.astro`),  
+**When** el usuario examina las tarjetas de valor,  
+**Then** se respeta la nueva jerarquía priorizada: (1) Entregas 24-48h / 6h Urgencias (Logística y Transporte Rápido como Pilar #1 Insignia), (2) Logística 100% a Domicilio (sin mostrador), (3) Marcas 100% Originales con Certificados, (4) Crédito Comercial B2B hasta 45 Días, y (5) Mínimos desde $200.000 COP (despriorizado respecto a versiones previas).
+
 ---
 
 <!-- Epics 2 to 5 will be detailed in subsequent sprints -->

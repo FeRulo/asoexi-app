@@ -104,11 +104,12 @@ La plataforma web corporativa se concibe como un **motor de conversión ágil**,
 - **Entrega Regular (24-48h):** Tiempo estándar de despacho en Bogotá y la Sabana tras aprobación con Orden de Compra o confirmación escrita.
 - **Despacho Nacional:** Envíos fuera de la Sabana de Bogotá operados a través de empresas transportadoras de carga.
 - **Políticas de Monto Mínimo de Despacho:**
-  - Bogotá urbana: $50.000 COP (IVA incluido).
+  - Bogotá urbana: $200.000 COP (IVA incluido) para despachos programados en obra o bodega.
   - Sabana en moto: $100.000 COP (IVA incluido).
   - Sabana en carro / vehículo de carga: $300.000 COP (IVA incluido).
 - **Crédito Corporativo (Hasta 45 Días):** Línea de crédito comercial para compras recurrentes de clientes corporativos formalmente creados.
-- **Selector de Canales de Contacto:** Componente interactivo que permite elegir entre Atención Comercial Geraldine, Atención Comercial Sonia Franco y Línea Corporativa / Servicio al Cliente.
+- **Canal Oficial de Contacto Directo:** Acceso unificado a la Línea Corporativa (+57 304 401 3761) para llamadas directas y WhatsApp comercial oficial.
+- **Compromiso y SLA de Cotización:** Promesa de atención y respuesta a cotizaciones en un tiempo máximo de 5 minutos en horario laboral en todos los puntos de contacto.
 - **Insumos para Mantenimiento:** Clúster semántico SEO clave que agrupa cableado, breakers, tuberías, pinturas y herramientas para plantas y obras.
 
 ---
@@ -117,19 +118,17 @@ La plataforma web corporativa se concibe como un **motor de conversión ágil**,
 
 ### 4.1 Identidad Corporativa, Hero & Propuesta de Valor
 
-**Description:** La página de inicio comunica de inmediato la propuesta de valor validada en las dos entrevistas: amplitud multimarca tipo Homecenter con precio mayorista, 7+ años de trayectoria, crédito a 45 días, entrega regular en 24-48h y urgencias en 6h en Bogotá, garantizando marcas 100% originales. Realiza `UJ-1`, `UJ-2` y `UJ-3`.
+**Description:** La página de inicio comunica de inmediato la propuesta de valor validada: amplitud multimarca con precio mayorista, 7+ años de trayectoria, crédito a 45 días, entrega regular en 24-48h y urgencias en 6h en Bogotá, logística 100% a domicilio y marcas 100% originales. Realiza `UJ-1`, `UJ-2` y `UJ-3`.
 
 **Functional Requirements:**
 
 #### FR-1: Visualización de Diferenciales y Credenciales de Confianza
-El sistema debe exponer en la cabecera/Hero de la página de inicio los 5 pilares de legitimidad empresarial:
-El sistema debe exponer en la cabecera/Hero de la página de inicio los 6 pilares de legitimidad empresarial:
-1. "Más de 7 años abasteciendo a grandes compañías en Colombia".
-2. "Entrega en Bogotá en 24-48h (despacho exprés en 6 horas para urgencias) y 48h en la Sabana".
-3. "Crédito comercial de hasta 45 días para empresas".
-4. "Garantía de marcas 100% originales, certificados autorizados y facturación electrónica".
-5. "Montos mínimos de despacho desde $50.000 COP en Bogotá y transporte directo".
-6. "Atención especializada con logística y entrega directa en obra o empresa (no venta presencial por mostrador)".
+El sistema debe exponer en la cabecera/Hero de la página de inicio los 5 pilares de legitimidad empresarial con jerarquía priorizada en logística rápida:
+1. "Entregas 24-48h / 6h Urgencias: Logística y Transporte Rápido en obra" [Pilar Insignia #1].
+2. "Logística 100% a Domicilio: Despacho directo en obra o bodega a nivel nacional (sin venta presencial por mostrador ni retiro en bodega)" [Pilar #2].
+3. "Marcas 100% Originales: Garantía directa de fábrica, fichas técnicas y certificados de conformidad" [Pilar #3].
+4. "Crédito Comercial B2B hasta 45 Días: Financiación para empresas y contratistas validados con RUT" [Pilar #4].
+5. "Mínimos desde $200.000 COP: Despachos empresariales accesibles desde $200.000 COP en Bogotá" [Pilar #5].
 - **Consequences (testable):**
   - Los pilares son visibles de forma inmediata en dispositivos móviles y de escritorio.
   - Se visualizan sellos de facturación electrónica y garantía de fábrica para despejar la desconfianza del comprador primerizo.
@@ -205,19 +204,15 @@ Dado que ASOEXI maneja precios dinámicos por volumen y no dispone de catálogos
 
 **Functional Requirements:**
 
-#### FR-7: Selector Interactivo de Canales de Contacto (Modal / Desplegable)
-Al activar cualquier botón de cotización o el botón flotante de WhatsApp, se despliega un selector con 3 opciones de atención directa:
-1. **Atención Comercial — Geraldine:** WhatsApp comercial y línea telefónica directa.
-2. **Atención Comercial — Sonia Franco:** WhatsApp comercial y línea telefónica directa.
-3. **Línea Corporativa & Servicio al Cliente:** Línea rotativa y PBX para vinculación corporativa o solicitudes generales.
-Al activar cualquier botón de cotización o el botón flotante de WhatsApp, se despliega un selector con 3 opciones de atención directa con los números comerciales validados:
-1. **Atención Comercial — Geraldine:** WhatsApp comercial directo `+57 318 639 7212` (`3186397212`).
-2. **Atención Comercial — Sonia Franco:** WhatsApp comercial directo `+57 320 449 8881` (`3204498881`).
-3. **Línea Corporativa & Servicio al Cliente:** Línea directa `+57 304 401 3761` (`3044013761`) rotativa y para vinculación corporativa.
+#### FR-7: Canal Oficial de Contacto Directo Corporativo y WhatsApp Único
+Al activar cualquier botón de cotización, el botón flotante de WhatsApp o la barra persistente móvil, se despliega el acceso unificado a la Línea Corporativa oficial:
+1. **Línea Corporativa & Atención Comercial:** `+57 304 401 3761` con opciones duales: llamada directa (`tel:+573044013761`) y chat de WhatsApp oficial (`https://wa.me/573044013761`).
+2. **Compromiso y SLA de Cotización:** Se comunica visiblemente en el modal, sticky bar y botones de contacto la promesa de servicio: *"Respondemos tus consultas de cotización en menos de 5 minutos (horario hábil)"*.
 - **Consequences (testable):**
-  - Las 3 líneas cuentan con capacidad para cotizar y atender solicitudes.
-  - En móviles se despliega como hoja táctil (bottom sheet) con botones táctiles grandes (mínimo 48px).
-  - Cada botón abre la API de WhatsApp con la vendedora correspondiente preseleccionada.
+  - Se eliminan por completo los números y accesos personales de asesoras comerciales, centralizando toda la prospección en la línea corporativa.
+  - No se requiere algoritmo de rotación 50/50 entre asesoras.
+  - En móviles se despliega como hoja táctil (bottom sheet) con botones táctiles grandes (mínimo 48px) y microcopy claro del SLA de 5 minutos.
+  - Cada interacción de WhatsApp abre directamente el chat con la Línea Corporativa oficial.
 
 #### FR-8: Plantilla Estructurada con los Datos Indispensables para las Vendedoras
 Al abrir el chat de WhatsApp con la asesora comercial, el sistema debe pre-cargar automáticamente la plantilla de cotización con los 6 datos requeridos:
@@ -233,23 +228,20 @@ Hola ASOEXI, vi su catálogo de [Marca/Sector] en la página web y deseo solicit
   - El mensaje aparece listo en la caja de texto de WhatsApp con el nombre de la marca o sector detectado automáticamente.
   - Se añade un micro-texto explicativo en la web: *"¿Tiene su listado en Excel o PDF? Puede adjuntarlo directamente en el chat tras abrir WhatsApp"*.
 
-#### FR-9: Directorio Telefónico y Nota de Tiempos de Entrega
-El sistema debe incluir enlaces directos `tel:+57...` para las 3 líneas telefónicas en el Header, Contacto y Footer.
 #### FR-9: Directorio Corporativo, Teléfonos, Correos y Canales Oficiales
-El sistema debe incluir enlaces directos `tel:+57...`, correos electrónicos y los datos oficiales de la compañía en el Header, Contacto y Footer:
+El sistema debe incluir enlaces directos `tel:+57...`, correos electrónicos institucionales y los datos oficiales de la compañía en el Header, Contacto y Footer:
 - **NIT:** `900480460-8`
 - **Sede Administrativa:** Carrera 55 A No. 51 A 28 Sur, Bogotá D.C. (Aclarando explícitamente: *Sede administrativa y despacho logístico. No contamos con venta presencial por mostrador ni retiro en bodega*).
 - **Horario de Atención:** Lunes a Viernes 7:30 AM a 4:30 PM | Sábados 8:00 AM a 12:00 PM.
-- **Líneas Telefónicas Directas:**
-  - Geraldine: `tel:+573186397212`
-  - Sonia Franco: `tel:+573204498881`
-  - Corporativa / Servicio al Cliente: `tel:+573044013761`
-- **Correos Electrónicos:**
+- **Línea Telefónica y WhatsApp Corporativo:**
+  - Línea Corporativa Oficial: `tel:+573044013761` / WhatsApp: `+57 304 401 3761`
+- **Correos Electrónicos Oficiales:**
   - `mailto:asesorventas1@asoexi.com`
   - `mailto:asesorventas3@asoexi.com`
-  - `mailto:servicioclienteasoexi@gmail.com`
+  - `mailto:serviciocliente@asoexi.com` (correo oficial de atención al cliente)
 - **Consequences (testable):**
-  - Tocar cualquier número activa el marcador nativo del smartphone.
+  - Tocar el número activa el marcador nativo del smartphone o el cliente de WhatsApp.
+  - No figura ninguna cuenta de correo con dominio `@gmail.com`.
   - Se expone la política de entregas (24-48h estándar Bogotá/Sabana, 6h urgencias en Bogotá, y despachos nacionales por transportadora).
 
 ---

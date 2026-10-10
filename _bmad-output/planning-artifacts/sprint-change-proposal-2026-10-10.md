@@ -29,28 +29,28 @@ Durante la fase de revisión del **Epic 1** (Identidad Corporativa, Hero, Prueba
 
 ### Impacto en Épicas e Historias
 - **Epic 1 (En curso):**
-  - **Historia 1.1 (Setup, Header & Footer):** Actualizar enlaces de contacto en barra superior, modal y pie de página para reflejar `serviciocliente@asoexi.com` y únicamente la Línea Corporativa (+57 304 401 3761).
-  - **Historia 1.2 (Hero Banner, Pilares de Valor):** Reordenar los 5 pilares situando "Logística y Despacho Rápido" en el primer lugar con insignias de alto impacto. Modificar el pilar de mínimos de compra de $50.000 COP a $200.000 COP y desplazarlo al final.
-  - **Historia 1.3 (Selector de Canales / WhatsApp):** Simplificar la arquitectura: en lugar de balancear tráfico 50/50 entre Geraldine y Sonia, la interfaz conecta directamente con la Línea Corporativa oficial con WhatsApp, integrando el microcopy del SLA de 5 minutos.
-  - **Historia 1.4 (Página Nosotros & Metadatos):** Actualizar cifras de ticket mínimo ($200k), correo oficial y canales corporativos en el bloque de modelo logístico.
+  - **Historias 1.1, 1.2, 1.3 y 1.4 (Inmutabilidad Histórica):** Se mantienen en estado `done`/`review` como evidencia auditable del trabajo ejecutado e iteraciones previas del sprint. No se sobreescriben retrospectivamente.
+  - **Historia 1.5 (Nueva Historia Delta):** Se crea la historia formal `Story 1.5: Unificación de Línea Corporativa, SLA ≤ 5 Minutos y Rebalanceo de Pilares Logísticos`. Esta historia captura de forma aislada y atómica la refactorización de constantes, eliminación de números personales, actualización de correo corporativo, microcopy de SLA de 5 min y reorganización de pilares.
 - **Epic 4 (Cajón de Cotización B2B):**
   - Actualizar la validación de ticket sugerido de $50.000 COP a $200.000 COP en el `QuoteDrawer`.
 - **Epic 5 (SEO y Telemetría):**
   - La telemetría de clics de WhatsApp (`lead_whatsapp_click`) ya no requiere reportar `advisor_name` rotativo, sino canal corporativo unificado.
 
 ### Impacto en Artefactos de Planificación
-- **PRD (`prd.md` y `addendum.md`):** Actualizar FR-1, FR-7, FR-9, directorio de canales oficiales, política de mínimos y agregar SLA explícito de 5 minutos.
+- **PRD (`prd.md` y `addendum.md`):** Se actualiza la especificación viva canónica (FR-1, FR-7, FR-9, directorio de canales oficiales, política de mínimos $200k, SLA 5 min y correo oficial) para reflejar la verdad de producto actual.
+- **Épicas (`epics.md`):** Se anexa la Story 1.5 al desglose detallado del Epic 1.
+- **Sprint Status (`sprint-status.yaml`):** Se registra la nueva historia `1-5-unificacion-canales-corporativos-sla-5min-y-rebalanceo-pilares` en estado `ready-for-dev`.
 - **Arquitectura (`ARCHITECTURE-SPINE.md`):** `src/lib/whatsapp.ts` se simplifica al no requerir rotación en `sessionStorage`; las constantes en `src/lib/constants.ts` unifican los teléfonos a un único contacto corporativo con WhatsApp.
-- **UX/UI (`DESIGN.md`, `EXPERIENCE.md`):** El modal de contacto y los botones de WhatsApp comunican la promesa "Respuesta en < 5 min en horario laboral".
+- **UX/UI (`DESIGN.md`, `EXPERIENCE.md`):** El modal de contacto y los puntos de cotización integran el microcopy "Respondemos en menos de 5 min (horario hábil)".
 
 ---
 
 ## 3. Enfoque Recomendado (Recommended Approach)
 
-**Ajuste Directo (Direct Adjustment - Opción 1):**
-- No se requiere rollback ni refactorización estructural profunda. La arquitectura de Astro + Preact e islas modulares permite actualizar los datos maestros en `src/lib/constants.ts`, simplificar `src/lib/whatsapp.ts` y adaptar los componentes visuales existentes (`ValuePillars.astro`, `ContactChannelModal.tsx`, `Header.astro`, `Footer.astro`, `FloatingWhatsAppButton.astro`).
-- **Esfuerzo estimado:** Bajo-Medio (1-2 días de desarrollo e integración de tests).
-- **Riesgo:** Bajo. El cambio simplifica el código al eliminar la lógica de rotación y previene incidencias operativas.
+**Creación de Historia Delta (Story 1.5 - Opción Seleccionada por el Usuario):**
+- **Justificación:** Preserva la trazabilidad de sprint y la inmutabilidad de historias completadas, mientras que unifica la refactorización técnica bajo un único spec ejecutable por el equipo de desarrollo.
+- **Esfuerzo estimado:** 1 Story de refactorización y prueba (Bajo-Medio).
+- **Riesgo:** Mínimo. Código más simple, menos dependencias de estado en cliente y mayor solidez de marca.
 
 ---
 
