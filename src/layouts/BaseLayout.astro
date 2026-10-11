@@ -90,17 +90,32 @@ const ogTags = generateOpenGraphTags(metadata);
     <MobileStickyBar client:idle />
     <FloatingWhatsAppButton />
 
-    <!-- Interceptor global para disparadores de cotización directa a WhatsApp -->
+    <!-- Interceptor global para disparadores de contacto y cotización -->
     <script>
       import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
       function setupContactTriggers() {
-        const triggers = document.querySelectorAll(
-          '[data-open-contact-modal], [data-direct-whatsapp], a[href="#cotizar"], a[href="/#cotizar"]'
+        // Disparadores de apertura del modal de selección y llamada/WhatsApp
+        const modalTriggers = document.querySelectorAll('[data-open-contact-modal]');
+        modalTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __modalBound?: boolean }).__modalBound) return;
+          (trigger as HTMLElement & { __modalBound?: boolean }).__modalBound = true;
+
+          trigger.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('open-contact-modal'));
+          });
+        });
+
+        // Disparadores directos de WhatsApp
+        const directTriggers = document.querySelectorAll(
+          '[data-direct-whatsapp], a[href="#cotizar"]:not([data-open-contact-modal]), a[href="/#cotizar"]:not([data-open-contact-modal])'
         );
-        triggers.forEach((trigger) => {
-          if ((trigger as HTMLElement & { __contactBound?: boolean }).__contactBound) return;
-          (trigger as HTMLElement & { __contactBound?: boolean }).__contactBound = true;
+        directTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __directBound?: boolean }).__directBound) return;
+          (trigger as HTMLElement & { __directBound?: boolean }).__directBound = true;
 
           trigger.addEventListener('click', (evt) => {
             const e = evt as MouseEvent;

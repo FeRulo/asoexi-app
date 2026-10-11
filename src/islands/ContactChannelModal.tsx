@@ -195,9 +195,9 @@ export default function ContactChannelModal() {
             <div class="flex items-center gap-1.5 font-semibold text-secondary">
               {COMMERCIAL_ADVISORS.map((advisor, idx) => (
                 <span key={advisor.id} class="inline-flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                  <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full" aria-hidden="true"></span>
                   <span>{advisor.name}</span>
-                  {idx < COMMERCIAL_ADVISORS.length - 1 && <span class="text-slate-300">·</span>}
+                  {idx < COMMERCIAL_ADVISORS.length - 1 && <span class="text-slate-300" aria-hidden="true">·</span>}
                 </span>
               ))}
             </div>

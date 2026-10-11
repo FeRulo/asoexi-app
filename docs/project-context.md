@@ -21,13 +21,12 @@
 ### 3. Invariantes de Negocio y Datos Oficiales de ASOEXI S.A.S.
 - **Razón Social:** ASOEXI S.A.S. | **NIT:** 900480460-8.
 - **Canales de Contacto:**
-  - Geraldine: `+57 318 639 7212`
-  - Sonia Franco: `+57 320 449 8881`
-  - Línea Corporativa: `+57 304 401 3761`
-- **Correos Oficiales:** `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `servicioclienteasoexi@gmail.com`.
+  - Línea Corporativa Oficial (Llamadas y WhatsApp): `+57 304 401 3761`
+  - Equipo Comercial de Atención y Cotizaciones: Geraldine y Sonia Franco
+- **Correos Oficiales:** `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `serviciocliente@asoexi.com`.
 - **Sede Administrativa:** Carrera 55 A No. 51 A 28 Sur, Bogotá.
 - **Política Logística Inviolable:** Despacho 100% a domicilio en obra y empresas. No existe venta presencial por mostrador ni retiro en bodega.
-- **Mínimos de Despacho:** Bogotá desde $50.000 COP; Sabana según municipio ($100.000 - $300.000 COP).
+- **Mínimos de Despacho:** Bogotá desde $200.000 COP; Sabana según municipio accesible.
 - **Crédito Comercial:** Hasta 45 días para empresas registradas y validadas con RUT.
 
 ### 4. Convenciones de Git y Documentación

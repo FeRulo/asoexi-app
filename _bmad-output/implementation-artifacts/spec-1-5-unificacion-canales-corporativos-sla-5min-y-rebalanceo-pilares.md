@@ -2,7 +2,7 @@
 title: 'Story 1.5: Unificación de Línea Corporativa, SLA ≤ 5 Minutos y Rebalanceo de Pilares Logísticos'
 type: 'refactor'
 created: '2026-10-10'
-status: 'in-review'
+status: 'done'
 baseline_commit: '47b72a358937598215adbc8c205e7d16612c5207'
 review_loop_iteration: 0
 context:

@@ -4,10 +4,7 @@ import ClientLogos from '@/components/home/ClientLogos.astro';
 import { COMPANY_INFO, CONTACT_PHONES, OFFICIAL_EMAILS, ABOUT_DATA } from '@/lib/constants';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
-const directWhatsAppUrl = getDirectWhatsAppUrl(
-  undefined,
-  'Hola ASOEXI, vi su página web y deseo solicitar una cotización formal'
-);
+const directWhatsAppUrl = getDirectWhatsAppUrl();
 const pageTitle = `Nosotros | ${COMPANY_INFO.name} - Distribuidor Mayorista B2B`;
 const pageDescription =
   'Conoce la trayectoria de más de 7 años de ASOEXI S.A.S. Abastecimiento técnico B2B, protocolos de seguridad SG-SST y despacho directo a obra sin venta en mostrador.';

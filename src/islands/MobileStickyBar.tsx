@@ -1,4 +1,4 @@
-import { CONTACT_PHONES } from '@/lib/constants';
+import { CONTACT_PHONES, QUOTE_SLA_NOTICE } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function MobileStickyBar() {
@@ -14,7 +14,8 @@ export default function MobileStickyBar() {
       {/* Microcopy SLA ≤ 5 min */}
       <div class="flex items-center justify-center gap-1.5 text-[10px] text-slate-600 font-medium tracking-tight">
         <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-        <span>⚡ Respondemos cotizaciones en menos de 5 min (horario hábil)</span>
+        <span aria-hidden="true">⚡</span>
+        <span>{QUOTE_SLA_NOTICE}</span>
       </div>
 
       <div class="flex items-center gap-2">
