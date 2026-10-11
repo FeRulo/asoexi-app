@@ -1,13 +1,13 @@
 import { CONTACT_PHONES, type ContactPhone } from './constants';
 
 export const DEFAULT_WHATSAPP_MESSAGE =
-  'Hola ASOEXI, vi su página web y deseo solicitar una cotización formal';
+  'Hola ASOEXI (Geraldine y Sonia), vi su página web y deseo solicitar una cotización formal';
 
 export const SESSION_ROTATION_STORAGE_KEY = 'asoexi_lead_rotation_index';
 
 /**
- * Filter of advisors enabled specifically for WhatsApp commercial inquiries.
- * Note: Línea Corporativa is voice-call only and excluded from WhatsApp deep links.
+ * Filter of contact channels enabled for official WhatsApp inquiries.
+ * Centralized on the official Línea Corporativa (+57 304 401 3761).
  */
 export const WHATSAPP_ADVISORS: ContactPhone[] = CONTACT_PHONES.filter((p) => p.hasWhatsApp);
 
@@ -50,44 +50,27 @@ function getSafeStorage(storage?: Storage): Storage | null {
 }
 
 /**
- * Retrieves the current session rotation index for WhatsApp advisors (0 or 1).
- * If no valid index is present in storage, selects one equitably (50/50 probability)
- * and attempts to persist it in sessionStorage.
+ * Retrieves the session rotation index (0 for centralized corporate line).
+ * Preserved for backward compatibility.
  */
 export function getSessionRotationIndex(storage?: Storage): number {
-  const total = WHATSAPP_ADVISORS.length || 1;
   const safeStorage = getSafeStorage(storage);
-
   if (safeStorage) {
     try {
       const stored = safeStorage.getItem(SESSION_ROTATION_STORAGE_KEY);
       if (stored !== null) {
         const parsed = parseInt(stored, 10);
-        if (!isNaN(parsed) && parsed >= 0 && parsed < total) {
-          return parsed;
-        }
+        if (!isNaN(parsed)) return parsed;
       }
     } catch {
-      // Storage access blocked or threw (e.g. strict private mode)
+      // Storage access blocked or threw
     }
   }
-
-  // Generate equitable random index between 0 and total - 1 (50/50 for Geraldine / Sonia)
-  const newIndex = Math.floor(Math.random() * total);
-
-  if (safeStorage) {
-    try {
-      safeStorage.setItem(SESSION_ROTATION_STORAGE_KEY, String(newIndex));
-    } catch {
-      // Storage write failed or quota exceeded
-    }
-  }
-
-  return newIndex;
+  return 0;
 }
 
 /**
- * Overrides or sets the session rotation index explicitly (useful for testing or specific routing).
+ * Overrides or sets the session rotation index explicitly (preserved for compatibility/testing).
  */
 export function setSessionRotationIndex(index: number, storage?: Storage): void {
   const safeStorage = getSafeStorage(storage);
@@ -101,30 +84,24 @@ export function setSessionRotationIndex(index: number, storage?: Storage): void 
 }
 
 /**
- * Returns WhatsApp commercial advisors rotated cyclically according to the 50/50 session index:
- * - Index 0: [Geraldine, Sonia]
- * - Index 1: [Sonia, Geraldine]
+ * Returns WhatsApp commercial channels.
+ * 100% of inquiries are centralized on the official Línea Corporativa.
  */
 export function getBalancedWhatsAppAdvisors(storage?: Storage): ContactPhone[] {
-  const total = WHATSAPP_ADVISORS.length;
-  if (total === 0) return [];
-
-  const index = getSessionRotationIndex(storage);
-  const normalizedIndex = ((index % total) + total) % total;
-
-  return Array.from({ length: total }, (_, i) => WHATSAPP_ADVISORS[(normalizedIndex + i) % total]);
+  void storage;
+  return WHATSAPP_ADVISORS.length > 0 ? [...WHATSAPP_ADVISORS] : [...CONTACT_PHONES];
 }
 
 /**
- * Returns the primary (highest priority) WhatsApp advisor assigned to the current session (Geraldine or Sonia).
+ * Returns the primary WhatsApp channel (Línea Corporativa oficial).
  */
 export function getPrimaryWhatsAppAdvisor(storage?: Storage): ContactPhone {
-  const balanced = getBalancedWhatsAppAdvisors(storage);
-  return balanced[0] ?? WHATSAPP_ADVISORS[0] ?? CONTACT_PHONES[0];
+  void storage;
+  return WHATSAPP_ADVISORS[0] ?? CONTACT_PHONES[0];
 }
 
 /**
- * Generates direct wa.me link directly to the session-assigned WhatsApp advisor without any intermediate modal.
+ * Generates direct wa.me link directly to the corporate line (+57 304 401 3761).
  */
 export function getDirectWhatsAppUrl(
   storage?: Storage,
@@ -135,18 +112,18 @@ export function getDirectWhatsAppUrl(
 }
 
 /**
- * Returns all contact channels for the "Contacto Directo" section with WhatsApp advisors balanced
- * at the top and Línea Corporativa (call-only) positioned cleanly at the end.
+ * Returns all active contact channels.
+ * Points to the unified corporate line for both calls and WhatsApp.
  */
 export function getBalancedAdvisors(storage?: Storage): ContactPhone[] {
-  const whatsappBalanced = getBalancedWhatsAppAdvisors(storage);
-  const callOnly = CONTACT_PHONES.filter((p) => !p.hasWhatsApp);
-  return [...whatsappBalanced, ...callOnly];
+  void storage;
+  return [...CONTACT_PHONES];
 }
 
 /**
- * Returns the primary advisor for the current session.
+ * Returns the primary corporate contact channel.
  */
 export function getPrimaryAdvisor(storage?: Storage): ContactPhone {
   return getPrimaryWhatsAppAdvisor(storage);
 }
+

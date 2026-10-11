@@ -74,18 +74,27 @@ describe('Home Data Contracts (Value Pillars & Corporate Clients)', () => {
       expect(brands?.description).toMatch(/fábrica|certificados|conformidad|fichas/i);
     });
 
-    it('should include minimum orders pillar starting at $50k Bogotá', () => {
+    it('should include minimum orders pillar starting at $200.000 COP Bogotá', () => {
       const minimums = VALUE_PILLARS.find(
         (p) =>
           p.id.includes('minimo') ||
           p.title.toLowerCase().includes('mínimo') ||
-          p.description.includes('50.000') ||
-          p.description.includes('50k')
+          p.description.includes('200.000') ||
+          p.description.includes('200k')
       );
       expect(minimums).toBeDefined();
-      expect(minimums?.title).toMatch(/50\.000|50k/i);
+      expect(minimums?.title).toMatch(/200\.000|200k/i);
       expect(minimums?.description).toMatch(/Bogotá/i);
-      expect(minimums?.description).toMatch(/50\.000/i);
+      expect(minimums?.description).toMatch(/200\.000/i);
+    });
+
+    it('should place logistics pillars at positions #1 and #2, and minimums at position #5', () => {
+      expect(VALUE_PILLARS[0].id).toBe('entregas-rapidas');
+      expect(VALUE_PILLARS[0].badge).toBe('Logística Inmediata');
+      expect(VALUE_PILLARS[1].id).toBe('logistica-domicilio');
+      expect(VALUE_PILLARS[2].id).toBe('marcas-originales');
+      expect(VALUE_PILLARS[3].id).toBe('credito-comercial');
+      expect(VALUE_PILLARS[4].id).toBe('minimos-accesibles');
     });
 
     it('should include 100% delivery logistics without counter sale nor warehouse pickup', () => {

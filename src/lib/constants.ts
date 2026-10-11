@@ -37,11 +37,22 @@ export interface NavLink {
   isCta?: boolean;
 }
 
+export interface CommercialAdvisor {
+  id: string;
+  name: string;
+  role: string;
+}
+
 export const LOGISTIC_NOTICE =
   'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)';
 
 export const LOGISTIC_HERO_PROPOSITION =
   'Despacho directo a tu bodega u obra a nivel nacional — Sede administrativa centralizada';
+
+export const QUOTE_SLA_NOTICE =
+  'Respondemos tus cotizaciones en menos de 5 minutos (horario hábil)';
+
+export const MINIMUM_ORDER_COP = 200000;
 
 export const COMPANY_INFO: CompanyInfo = {
   name: 'ASOEXI S.A.S.',
@@ -57,28 +68,25 @@ export const COMPANY_INFO: CompanyInfo = {
 
 export const CONTACT_PHONES: ContactPhone[] = [
   {
-    id: 'geraldine',
-    name: 'Geraldine',
-    e164: '+573186397212',
-    display: '+57 318 639 7212',
-    role: 'Asesora Comercial',
-    hasWhatsApp: true,
-  },
-  {
-    id: 'sonia',
-    name: 'Sonia',
-    e164: '+573204498881',
-    display: '+57 320 449 8881',
-    role: 'Asesora Comercial',
-    hasWhatsApp: true,
-  },
-  {
     id: 'corporate',
     name: 'Línea Corporativa',
     e164: '+573044013761',
     display: '+57 304 401 3761',
-    role: 'Atención Institucional',
-    hasWhatsApp: false,
+    role: 'Atención Comercial y Cotizaciones',
+    hasWhatsApp: true,
+  },
+];
+
+export const COMMERCIAL_ADVISORS: CommercialAdvisor[] = [
+  {
+    id: 'geraldine',
+    name: 'Geraldine',
+    role: 'Asesora Comercial y Cotizaciones',
+  },
+  {
+    id: 'sonia',
+    name: 'Sonia',
+    role: 'Asesora Comercial y Cotizaciones',
   },
 ];
 
@@ -95,7 +103,7 @@ export const OFFICIAL_EMAILS: OfficialEmail[] = [
   },
   {
     id: 'servicio',
-    email: 'servicioclienteasoexi@gmail.com',
+    email: 'serviciocliente@asoexi.com',
     label: 'Servicio al Cliente',
   },
 ];
@@ -144,14 +152,14 @@ export const VALUE_PILLARS: ValuePillar[] = [
     badge: 'Logística Inmediata',
   },
   {
-    id: 'credito-comercial',
-    title: 'Crédito Comercial hasta 45 Días',
-    shortTitle: 'Crédito B2B',
+    id: 'logistica-domicilio',
+    title: 'Logística 100% a Domicilio',
+    shortTitle: 'Entrega en Obra',
     description:
-      'Financiación corporativa y líneas de crédito de hasta 45 días para empresas registradas y contratistas validados con RUT.',
-    highlight: 'Hasta 45 días de plazo comercial con RUT',
-    icon: 'credit-card',
-    badge: 'Solvencia Financiera',
+      'Despacho directo en tu obra o bodega a nivel nacional. Operación centralizada sin venta presencial por mostrador ni retiro en bodega.',
+    highlight: 'Directo en obra o bodega sin mostrador',
+    icon: 'truck-fast',
+    badge: 'Despacho Directo',
   },
   {
     id: 'marcas-originales',
@@ -164,24 +172,24 @@ export const VALUE_PILLARS: ValuePillar[] = [
     badge: 'Calidad Certificada',
   },
   {
-    id: 'minimos-accesibles',
-    title: 'Mínimos desde $50.000 COP',
-    shortTitle: 'Mínimos Flexibles',
+    id: 'credito-comercial',
+    title: 'Crédito Comercial hasta 45 Días',
+    shortTitle: 'Crédito B2B',
     description:
-      'Despachos accesibles desde $50.000 COP para Bogotá y desde $100.000 a $300.000 COP para municipios de la Sabana.',
-    highlight: 'Bogotá desde $50.000 · Sabana $100k-$300k',
-    icon: 'tag-check',
-    badge: 'Cobertura Flexible',
+      'Financiación corporativa y líneas de crédito de hasta 45 días para empresas registradas y contratistas validados con RUT.',
+    highlight: 'Hasta 45 días de plazo comercial con RUT',
+    icon: 'credit-card',
+    badge: 'Solvencia Financiera',
   },
   {
-    id: 'logistica-domicilio',
-    title: 'Logística 100% a Domicilio',
-    shortTitle: 'Entrega en Obra',
+    id: 'minimos-accesibles',
+    title: 'Mínimos desde $200.000 COP',
+    shortTitle: 'Mínimos Flexibles',
     description:
-      'Despacho directo en tu obra o bodega a nivel nacional. Operación centralizada sin venta presencial por mostrador ni retiro en bodega.',
-    highlight: 'Directo en obra o bodega sin mostrador',
-    icon: 'truck-fast',
-    badge: 'Despacho Directo',
+      'Despachos empresariales accesibles desde $200.000 COP para Bogotá y fletes económicos para municipios de la Sabana.',
+    highlight: 'Bogotá desde $200.000 · Sabana accesible',
+    icon: 'tag-check',
+    badge: 'Cobertura Flexible',
   },
 ];
 
@@ -351,7 +359,7 @@ export const ABOUT_DATA: AboutData = {
       {
         title: 'Cobertura Bogotá y Sabana',
         description:
-          'Despachos desde $50.000 COP en Bogotá y fletes económicos para los municipios de la Sabana.',
+          'Despachos desde $200.000 COP en Bogotá y fletes económicos para los municipios de la Sabana.',
       },
     ],
   },

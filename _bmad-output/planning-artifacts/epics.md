@@ -255,3 +255,10 @@ So that obtenga atención comercial inmediata sin fugas a líneas personales y t
 
 ## Epic 5: Infraestructura SEO B2B, Esquemas Estructurados, Medición y Presencia Local
 *Objetivo:* Sitemap XML dinámico, marcado Schema.org JSON-LD piramidal (BreadcrumbList, B2BSupplier, LocalBusiness), analítica de conversión por asesora y verificación en Google Search Console y Google Maps. (Planificada para Sprint 5).
+
+---
+
+## Insumos de Diseño y Mejoras para Próximos Sprints (Backlog de Forja)
+- **Mascota Institucional (Asesor Técnico) & Animación de Cotización:**  
+  Especificación técnica forjada y sellada en [`_bmad-output/forge/animacion-mascota-cotizacion/forged-idea.md`](file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/forge/animacion-mascota-cotizacion/forged-idea.md) y [`forge-report.html`](file:///home/fernando/Fernando/Own/asoexi-app/_bmad-output/forge/animacion-mascota-cotizacion/forge-report.html). Se integrará como mejora visual/interactiva en el Banner de Cotización y soporte de canal rápido (WebP animado/Sprite <70KB con aceleración GPU y apertura inmediata de WhatsApp sin retención). Planificado como insumo de enriquecimiento de interfaz para el **Sprint 2**.
+
