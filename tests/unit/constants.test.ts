@@ -137,5 +137,23 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(ctaLink?.isCta).toBe(true);
     expect(ctaLink?.href).toBeDefined();
   });
+
+  it('should verify that institutional animated mascot video assets exist in public directory', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+
+    const greetingPath = path.resolve(process.cwd(), 'public/animated/greeting-float.mp4');
+    const callPath = path.resolve(process.cwd(), 'public/animated/recieve-call-float.mp4');
+
+    expect(fs.existsSync(greetingPath)).toBe(true);
+    expect(fs.existsSync(callPath)).toBe(true);
+
+    const greetingSize = fs.statSync(greetingPath).size;
+    const callSize = fs.statSync(callPath).size;
+
+    // Both video assets are ultra-lightweight (< 120 KB each)
+    expect(greetingSize).toBeLessThan(120 * 1024);
+    expect(callSize).toBeLessThan(120 * 1024);
+  });
 });
 
