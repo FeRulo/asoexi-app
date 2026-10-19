@@ -59,52 +59,65 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
 
     it('should sanitize phone numbers to strict digits only for WhatsApp wa.me links', () => {
       // E.164 format with plus
-      expect(cleanPhoneForWhatsApp('+573044013761')).toBe('573044013761');
+      expect(cleanPhoneForWhatsApp('+573014191344')).toBe('573014191344');
       // Human display with spaces and plus
-      expect(cleanPhoneForWhatsApp('+57 304 401 3761')).toBe('573044013761');
+      expect(cleanPhoneForWhatsApp('+57 301 419 1344')).toBe('573014191344');
       // Numbers with dashes or parentheses
-      expect(cleanPhoneForWhatsApp('+57 (304) 401-3761')).toBe('573044013761');
+      expect(cleanPhoneForWhatsApp('+57 (301) 419-1344')).toBe('573014191344');
       // Plain 10-digit mobile prepending country code 57 if missing
-      expect(cleanPhoneForWhatsApp('3044013761')).toBe('573044013761');
+      expect(cleanPhoneForWhatsApp('3014191344')).toBe('573014191344');
+
+      // Diverse Colombian mobile prefixes resilience (310, 318, 320, 300)
+      expect(cleanPhoneForWhatsApp('3101234567')).toBe('573101234567');
+      expect(cleanPhoneForWhatsApp('+57 318 639 7212')).toBe('573186397212');
+      expect(cleanPhoneForWhatsApp('3204498881')).toBe('573204498881');
+      expect(cleanPhoneForWhatsApp('+57 (300) 111-2233')).toBe('573001112233');
     });
 
     it('should generate properly encoded WhatsApp deep links with default message', () => {
-      const url = generateWhatsAppUrl('+573044013761');
-      expect(url).toContain('https://wa.me/573044013761');
+      const url = generateWhatsAppUrl('+573014191344');
+      expect(url).toContain('https://wa.me/573014191344');
       expect(url).toContain('?text=');
       expect(url).toContain(encodeURIComponent(DEFAULT_WHATSAPP_MESSAGE));
     });
 
     it('should generate deep links with custom messages when provided', () => {
       const customMsg = 'Cotización para proyecto en Chía';
-      const url = generateWhatsAppUrl('+57 304 401 3761', customMsg);
-      expect(url).toBe(`https://wa.me/573044013761?text=${encodeURIComponent(customMsg)}`);
+      const url = generateWhatsAppUrl('+57 301 419 1344', customMsg);
+      expect(url).toBe(`https://wa.me/573014191344?text=${encodeURIComponent(customMsg)}`);
     });
   });
 
-  describe('Unified Corporate Channel: Línea Corporativa (+57 304 401 3761) is the 100% unified WhatsApp recipient', () => {
+  describe('Unified Corporate Channel: Línea Corporativa (+57 301 419 1344) is the 100% unified WhatsApp recipient', () => {
     it('should identify Línea Corporativa as the sole official WHATSAPP_ADVISORS channel', () => {
       expect(WHATSAPP_ADVISORS).toHaveLength(1);
       expect(WHATSAPP_ADVISORS[0].id).toBe('corporate');
-      expect(WHATSAPP_ADVISORS[0].e164).toBe('+573044013761');
+      expect(WHATSAPP_ADVISORS[0].e164).toBe('+573014191344');
       expect(WHATSAPP_ADVISORS[0].hasWhatsApp).toBe(true);
 
       // Verify no personal phones in WHATSAPP_ADVISORS
       const advisorIds = WHATSAPP_ADVISORS.map((a) => a.id);
       expect(advisorIds).not.toContain('geraldine');
       expect(advisorIds).not.toContain('sonia');
+
+      // Regression prevention: Verify decommissioned number is not in WHATSAPP_ADVISORS
+      WHATSAPP_ADVISORS.forEach((advisor) => {
+        expect(advisor.e164).not.toContain('3044013761');
+        expect(advisor.display).not.toContain('304 401 3761');
+      });
     });
 
     it('getPrimaryWhatsAppAdvisor returns Línea Corporativa', () => {
       const primary = getPrimaryWhatsAppAdvisor(mockStorage);
       expect(primary.id).toBe('corporate');
-      expect(primary.e164).toBe('+573044013761');
+      expect(primary.e164).toBe('+573014191344');
       expect(getPrimaryAdvisor(mockStorage).id).toBe('corporate');
     });
 
-    it('getDirectWhatsAppUrl produces a direct link to Línea Corporativa (+57 304 401 3761)', () => {
+    it('getDirectWhatsAppUrl produces a direct link to Línea Corporativa (+57 301 419 1344)', () => {
       const url = getDirectWhatsAppUrl(mockStorage);
-      expect(url).toContain('https://wa.me/573044013761');
+      expect(url).toContain('https://wa.me/573014191344');
+      expect(url).not.toContain('3044013761');
       expect(url).toContain(encodeURIComponent(DEFAULT_WHATSAPP_MESSAGE));
     });
 

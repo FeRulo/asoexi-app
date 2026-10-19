@@ -21,7 +21,7 @@
 ### 3. Invariantes de Negocio y Datos Oficiales de ASOEXI S.A.S.
 - **Razón Social:** ASOEXI S.A.S. | **NIT:** 900480460-8.
 - **Canales de Contacto:**
-  - Línea Corporativa Oficial (Llamadas y WhatsApp): `+57 304 401 3761`
+  - Línea Corporativa Oficial (Llamadas y WhatsApp): `+57 301 419 1344`
   - Equipo Comercial de Atención y Cotizaciones: Geraldine y Sonia Franco
 - **Correos Oficiales:** `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`, `serviciocliente@asoexi.com`.
 - **Sede Administrativa:** Carrera 55 A No. 51 A 28 Sur, Bogotá.

@@ -45,8 +45,8 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(corporate.id).toBe('corporate');
     expect(corporate.name).toBe('Línea Corporativa');
     expect(corporate.e164).toMatch(e164Regex);
-    expect(corporate.e164).toBe('+573044013761');
-    expect(corporate.display).toContain('304 401 3761');
+    expect(corporate.e164).toBe('+573014191344');
+    expect(corporate.display).toContain('301 419 1344');
     expect(corporate.hasWhatsApp).toBe(true);
     expect(corporate.role).toMatch(/Atención|Comercial|Cotizaciones/i);
 
@@ -54,6 +54,12 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     const personalIds = CONTACT_PHONES.map((p) => p.id);
     expect(personalIds).not.toContain('geraldine');
     expect(personalIds).not.toContain('sonia');
+
+    // Regression prevention: Verify decommissioned phone number (+57 304 401 3761) is completely gone
+    CONTACT_PHONES.forEach((phone) => {
+      expect(phone.e164).not.toContain('3044013761');
+      expect(phone.display).not.toContain('304 401 3761');
+    });
   });
 
   it('should define commercial advisors team (Geraldine and Sonia) for humanized B2B care', () => {
