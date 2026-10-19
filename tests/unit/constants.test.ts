@@ -2,11 +2,15 @@ import { describe, it, expect } from 'vitest';
 import {
   COMPANY_INFO,
   CONTACT_PHONES,
+  COMMERCIAL_ADVISORS,
   OFFICIAL_EMAILS,
   BUSINESS_HOURS,
   NAVIGATION_LINKS,
   LOGISTIC_NOTICE,
   LOGISTIC_HERO_PROPOSITION,
+  QUOTE_SLA_NOTICE,
+  MINIMUM_ORDER_COP,
+  VALUE_PILLARS,
 } from '@/lib/constants';
 
 describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
@@ -31,48 +35,82 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(LOGISTIC_HERO_PROPOSITION).toContain('Sede administrativa centralizada');
   });
 
-  it('should provide all official phone numbers in strict E.164 format and display format', () => {
+  it('should enforce unified corporate contact phone with WhatsApp and voice calls', () => {
     const e164Regex = /^\+57\d{10}$/;
 
-    expect(CONTACT_PHONES).toHaveLength(3);
+    // Strictly 1 unified corporate line — personal numbers removed from contact directory
+    expect(CONTACT_PHONES).toHaveLength(1);
 
-    const geraldine = CONTACT_PHONES.find((p) => p.id === 'geraldine');
-    expect(geraldine).toBeDefined();
-    expect(geraldine?.name).toBe('Geraldine');
-    expect(geraldine?.e164).toMatch(e164Regex);
-    expect(geraldine?.e164).toBe('+573186397212');
-    expect(geraldine?.display).toContain('318 639 7212');
-    expect(geraldine?.hasWhatsApp).toBe(true);
+    const corporate = CONTACT_PHONES[0];
+    expect(corporate.id).toBe('corporate');
+    expect(corporate.name).toBe('Línea Corporativa');
+    expect(corporate.e164).toMatch(e164Regex);
+    expect(corporate.e164).toBe('+573044013761');
+    expect(corporate.display).toContain('304 401 3761');
+    expect(corporate.hasWhatsApp).toBe(true);
+    expect(corporate.role).toMatch(/Atención|Comercial|Cotizaciones/i);
 
-    const sonia = CONTACT_PHONES.find((p) => p.id === 'sonia');
-    expect(sonia).toBeDefined();
-    expect(sonia?.name).toBe('Sonia');
-    expect(sonia?.e164).toMatch(e164Regex);
-    expect(sonia?.e164).toBe('+573204498881');
-    expect(sonia?.display).toContain('320 449 8881');
-    expect(sonia?.hasWhatsApp).toBe(true);
-
-    const corporate = CONTACT_PHONES.find((p) => p.id === 'corporate');
-    expect(corporate).toBeDefined();
-    expect(corporate?.name).toBe('Línea Corporativa');
-    expect(corporate?.e164).toMatch(e164Regex);
-    expect(corporate?.e164).toBe('+573044013761');
-    expect(corporate?.display).toContain('304 401 3761');
-    expect(corporate?.hasWhatsApp).toBe(false);
+    // Verify personal lines are NOT exposed in CONTACT_PHONES
+    const personalIds = CONTACT_PHONES.map((p) => p.id);
+    expect(personalIds).not.toContain('geraldine');
+    expect(personalIds).not.toContain('sonia');
   });
 
-  it('should provide all official corporate emails with valid format', () => {
+  it('should define commercial advisors team (Geraldine and Sonia) for humanized B2B care', () => {
+    expect(COMMERCIAL_ADVISORS).toBeDefined();
+    expect(COMMERCIAL_ADVISORS).toHaveLength(2);
+
+    const advisorNames = COMMERCIAL_ADVISORS.map((a) => a.name);
+    expect(advisorNames).toContain('Geraldine');
+    expect(advisorNames).toContain('Sonia');
+
+    COMMERCIAL_ADVISORS.forEach((advisor) => {
+      expect(advisor.name).toBeDefined();
+      expect(advisor.role).toBeDefined();
+    });
+  });
+
+  it('should provide all official corporate emails without any @gmail.com addresses', () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     expect(OFFICIAL_EMAILS).toHaveLength(3);
     OFFICIAL_EMAILS.forEach((item) => {
       expect(item.email).toMatch(emailRegex);
+      expect(item.email).not.toContain('@gmail.com');
+      expect(item.email).toContain('@asoexi.com');
     });
 
     const emailAddresses = OFFICIAL_EMAILS.map((item) => item.email);
     expect(emailAddresses).toContain('asesorventas1@asoexi.com');
     expect(emailAddresses).toContain('asesorventas3@asoexi.com');
-    expect(emailAddresses).toContain('servicioclienteasoexi@gmail.com');
+    expect(emailAddresses).toContain('serviciocliente@asoexi.com');
+  });
+
+  it('should define quote SLA notice and minimum order COP amount', () => {
+    expect(QUOTE_SLA_NOTICE).toContain('5 minutos');
+    expect(QUOTE_SLA_NOTICE).toContain('horario hábil');
+    expect(MINIMUM_ORDER_COP).toBe(200000);
+  });
+
+  it('should define rebalanced value pillars hierarchy with logistics at the top and minimums at $200k', () => {
+    expect(VALUE_PILLARS).toHaveLength(5);
+    // Position 1 (Insignia): Rapid delivery
+    expect(VALUE_PILLARS[0].id).toBe('entregas-rapidas');
+    expect(VALUE_PILLARS[0].badge).toBe('Logística Inmediata');
+
+    // Position 2: 100% home delivery
+    expect(VALUE_PILLARS[1].id).toBe('logistica-domicilio');
+
+    // Position 3: 100% original brands
+    expect(VALUE_PILLARS[2].id).toBe('marcas-originales');
+
+    // Position 4: Commercial credit up to 45 days
+    expect(VALUE_PILLARS[3].id).toBe('credito-comercial');
+
+    // Position 5: Minimum order from $200.000 COP
+    expect(VALUE_PILLARS[4].id).toBe('minimos-accesibles');
+    expect(VALUE_PILLARS[4].title).toContain('200.000');
+    expect(VALUE_PILLARS[4].description).toContain('200.000');
   });
 
   it('should define accurate official business hours', () => {
@@ -98,6 +136,24 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(ctaLink?.label).toBe('Cotizar Insumos');
     expect(ctaLink?.isCta).toBe(true);
     expect(ctaLink?.href).toBeDefined();
+  });
+
+  it('should verify that institutional animated mascot video assets exist in public directory', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+
+    const greetingPath = path.resolve(process.cwd(), 'public/animated/greeting-float.mp4');
+    const callPath = path.resolve(process.cwd(), 'public/animated/recieve-call-float.mp4');
+
+    expect(fs.existsSync(greetingPath)).toBe(true);
+    expect(fs.existsSync(callPath)).toBe(true);
+
+    const greetingSize = fs.statSync(greetingPath).size;
+    const callSize = fs.statSync(callPath).size;
+
+    // Both video assets are ultra-lightweight (< 120 KB each)
+    expect(greetingSize).toBeLessThan(120 * 1024);
+    expect(callSize).toBeLessThan(120 * 1024);
   });
 });
 

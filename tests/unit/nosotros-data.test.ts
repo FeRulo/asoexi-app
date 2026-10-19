@@ -68,6 +68,13 @@ describe('Institutional Data Contracts (ABOUT_DATA & SITE_METADATA)', () => {
 
       expect(ABOUT_DATA.logistics.administrativeNotice).toMatch(/sede\s*administrativa/i);
       expect(ABOUT_DATA.logistics.features.length).toBeGreaterThanOrEqual(3);
+
+      const coverageFeature = ABOUT_DATA.logistics.features.find(
+        (f) => f.title.toLowerCase().includes('cobertura') || f.description.toLowerCase().includes('sabana')
+      );
+      expect(coverageFeature).toBeDefined();
+      expect(coverageFeature?.description).toContain('200.000');
+      expect(coverageFeature?.description).not.toContain('50.000');
     });
 
     it('should define comprehensive SG-SST safety protocols', () => {

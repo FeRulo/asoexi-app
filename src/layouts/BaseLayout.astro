@@ -16,6 +16,8 @@ interface Props {
   imageAlt?: string;
   type?: string;
   noindex?: boolean;
+  ogTitle?: string;
+  twitterTitle?: string;
 }
 
 const {
@@ -27,6 +29,8 @@ const {
   imageAlt,
   type,
   noindex,
+  ogTitle,
+  twitterTitle,
 } = Astro.props;
 
 const metadata = buildPageMetadata({
@@ -38,6 +42,8 @@ const metadata = buildPageMetadata({
   imageAlt,
   type,
   noindex,
+  ogTitle,
+  twitterTitle,
 });
 
 const ogTags = generateOpenGraphTags(metadata);
@@ -84,17 +90,32 @@ const ogTags = generateOpenGraphTags(metadata);
     <MobileStickyBar client:idle />
     <FloatingWhatsAppButton />
 
-    <!-- Interceptor global para disparadores de cotización directa a WhatsApp -->
+    <!-- Interceptor global para disparadores de contacto y cotización -->
     <script>
       import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
       function setupContactTriggers() {
-        const triggers = document.querySelectorAll(
-          '[data-open-contact-modal], [data-direct-whatsapp], a[href="#cotizar"], a[href="/#cotizar"]'
+        // Disparadores de apertura del modal de selección y llamada/WhatsApp
+        const modalTriggers = document.querySelectorAll('[data-open-contact-modal]');
+        modalTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __modalBound?: boolean }).__modalBound) return;
+          (trigger as HTMLElement & { __modalBound?: boolean }).__modalBound = true;
+
+          trigger.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('open-contact-modal'));
+          });
+        });
+
+        // Disparadores directos de WhatsApp
+        const directTriggers = document.querySelectorAll(
+          '[data-direct-whatsapp], a[href="#cotizar"]:not([data-open-contact-modal]), a[href="/#cotizar"]:not([data-open-contact-modal])'
         );
-        triggers.forEach((trigger) => {
-          if ((trigger as HTMLElement & { __contactBound?: boolean }).__contactBound) return;
-          (trigger as HTMLElement & { __contactBound?: boolean }).__contactBound = true;
+        directTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __directBound?: boolean }).__directBound) return;
+          (trigger as HTMLElement & { __directBound?: boolean }).__directBound = true;
 
           trigger.addEventListener('click', (evt) => {
             const e = evt as MouseEvent;
@@ -106,12 +127,65 @@ const ogTags = generateOpenGraphTags(metadata);
         });
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupContactTriggers);
-      } else {
-        setupContactTriggers();
+      let currentMascotObserver: IntersectionObserver | null = null;
+
+      function setupSingletonMascotObserver() {
+        if (typeof IntersectionObserver === 'undefined') return;
+
+        if (currentMascotObserver) {
+          currentMascotObserver.disconnect();
+          currentMascotObserver = null;
+        }
+
+        const quoteBanner = document.querySelector('#cotizar') || document.querySelector('#lead-quote-section');
+        const desktopWidget = document.getElementById('floating-whatsapp-widget');
+        const mobileBar = document.getElementById('mobile-sticky-bar');
+
+        if (!quoteBanner || (!desktopWidget && !mobileBar)) return;
+
+        currentMascotObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const isVisible = entry.isIntersecting;
+              if (desktopWidget) {
+                if (isVisible) {
+                  desktopWidget.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+                  desktopWidget.classList.remove('opacity-100', 'translate-y-0');
+                } else {
+                  desktopWidget.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+                  desktopWidget.classList.add('opacity-100', 'translate-y-0');
+                }
+              }
+              if (mobileBar) {
+                if (isVisible) {
+                  mobileBar.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+                  mobileBar.classList.remove('translate-y-0', 'opacity-100');
+                } else {
+                  mobileBar.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+                  mobileBar.classList.add('translate-y-0', 'opacity-100');
+                }
+              }
+            });
+          },
+          {
+            threshold: 0.15,
+          }
+        );
+
+        currentMascotObserver.observe(quoteBanner);
       }
-      document.addEventListener('astro:page-load', setupContactTriggers);
+
+      function initLayoutInteractions() {
+        setupContactTriggers();
+        setupSingletonMascotObserver();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLayoutInteractions);
+      } else {
+        initLayoutInteractions();
+      }
+      document.addEventListener('astro:page-load', initLayoutInteractions);
     </script>
   </body>
 </html>

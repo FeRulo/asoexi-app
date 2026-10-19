@@ -1,19 +1,22 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { type ContactPhone } from '@/lib/constants';
-import { getBalancedAdvisors, generateWhatsAppUrl } from '@/lib/whatsapp';
+import {
+  CONTACT_PHONES,
+  COMMERCIAL_ADVISORS,
+  QUOTE_SLA_NOTICE,
+} from '@/lib/constants';
+import { generateWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ContactChannelModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [advisors, setAdvisors] = useState<ContactPhone[]>([]);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const modalContentRef = useRef<HTMLDivElement | null>(null);
   const mouseDownTargetRef = useRef<EventTarget | null>(null);
 
-  useEffect(() => {
-    // Initial load of balanced channels
-    setAdvisors(getBalancedAdvisors());
+  const corporatePhone = CONTACT_PHONES[0];
+  const waUrl = generateWhatsAppUrl(corporatePhone.e164);
 
+  useEffect(() => {
     const handleOpen = () => {
       setIsOpen((prev) => {
         if (!prev) {
@@ -21,7 +24,6 @@ export default function ContactChannelModal() {
         }
         return true;
       });
-      setAdvisors(getBalancedAdvisors());
     };
 
     const handleClose = () => {
@@ -126,15 +128,15 @@ export default function ContactChannelModal() {
         {/* Modal Header */}
         <div class="flex items-start justify-between pb-3 border-b border-slate-100">
           <div>
-            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded-industrial mb-1">
-              <span class="w-1.5 h-1.5 bg-primary"></span>
-              Atención Inmediata
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold uppercase tracking-wider rounded-industrial border border-emerald-200 mb-1.5">
+              <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+              <span>SLA ≤ 5 Minutos (Horario Hábil)</span>
             </div>
             <h2 id="contact-modal-title" class="font-display font-bold text-lg text-secondary">
-              Seleccionar Canal de Cotización
+              Línea Corporativa de Cotización
             </h2>
-            <p id="contact-modal-desc" class="text-xs text-slate-500 mt-0.5">
-              Comunícate directamente con nuestras ejecutivas comerciales para cotizaciones y asesoría técnica.
+            <p id="contact-modal-desc" class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Atención directa y asesoría técnica con nuestro equipo comercial liderado por <strong class="text-secondary font-semibold">Geraldine</strong> y <strong class="text-secondary font-semibold">Sonia</strong>.
             </p>
           </div>
 
@@ -151,81 +153,82 @@ export default function ContactChannelModal() {
           </button>
         </div>
 
-        {/* Advisors Channels List */}
-        <div class="mt-4 space-y-3">
-          {advisors.map((advisor, index) => {
-            const isPrimary = index === 0;
-            const waUrl = generateWhatsAppUrl(advisor.e164);
+        {/* SLA Callout Banner */}
+        <div class="mt-3.5 p-3 bg-gradient-to-r from-red-50/60 to-slate-50 border border-primary/20 rounded-industrial flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <div class="text-xs text-slate-700 leading-snug">
+            <strong class="text-primary font-bold block mb-0.5">Compromiso de Respuesta Rápida:</strong>
+            <span>{QUOTE_SLA_NOTICE}</span>
+          </div>
+        </div>
 
-            return (
-              <div
-                key={advisor.id}
-                class={`p-3.5 rounded-industrial border transition-all ${
-                  isPrimary
-                    ? 'border-primary/40 bg-gradient-to-r from-red-50/50 via-white to-white shadow-xs'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
-                }`}
-              >
-                <div class="flex items-center justify-between mb-2.5">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class={`w-8 h-8 rounded-industrial flex items-center justify-center font-bold text-xs ${
-                        isPrimary
-                          ? 'bg-primary text-white shadow-xs'
-                          : 'bg-secondary text-white'
-                      }`}
-                    >
-                      {advisor.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div class="flex items-center gap-2">
-                        <span class="font-display font-bold text-xs sm:text-sm text-secondary">
-                          {advisor.name}
-                        </span>
-                        {isPrimary && (
-                          <span class="px-1.5 py-0.5 bg-primary text-white text-[9px] font-bold uppercase tracking-wider rounded-industrial">
-                            Prioritario
-                          </span>
-                        )}
-                      </div>
-                      <span class="text-[11px] text-slate-500 block font-medium">
-                        {advisor.role} · <span class="font-mono text-slate-700">{advisor.display}</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CTA Action Buttons (Height ≥ 48px for WCAG 2.2 AA) */}
-                <div class={`grid gap-2 mt-2 ${advisor.hasWhatsApp ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                  {advisor.hasWhatsApp && (
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Cotizar por WhatsApp con ${advisor.name}`}
-                      class="bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-xs px-3.5 py-2.5 rounded-industrial min-h-[48px] flex items-center justify-center gap-1.5 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-1 text-center"
-                    >
-                      <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                      </svg>
-                      <span>WhatsApp</span>
-                    </a>
-                  )}
-
-                  <a
-                    href={`tel:${advisor.e164}`}
-                    aria-label={`Llamar a ${advisor.name}: ${advisor.display}`}
-                    class="bg-secondary hover:bg-slate-800 text-white font-semibold text-xs px-3 py-2.5 rounded-industrial min-h-[48px] flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-1 text-center"
-                  >
-                    <svg class="w-4 h-4 shrink-0 text-amber-industrial" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    <span>Llamar</span>
-                  </a>
-                </div>
+        {/* Unified Corporate Channel Card */}
+        <div class="mt-3.5 p-4 rounded-industrial border border-slate-200 bg-white shadow-xs">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-industrial bg-secondary text-white flex items-center justify-center font-bold text-sm shrink-0">
+                <svg class="w-5 h-5 text-amber-industrial" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
               </div>
-            );
-          })}
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-display font-bold text-sm text-secondary">
+                    {corporatePhone.name}
+                  </span>
+                  <span class="px-1.5 py-0.5 bg-primary/10 text-primary text-[9px] font-bold uppercase tracking-wider rounded-industrial">
+                    Oficial
+                  </span>
+                </div>
+                <span class="text-xs font-mono font-bold text-slate-800 block mt-0.5">
+                  {corporatePhone.display}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Humanized Commercial Team */}
+          <div class="pt-2.5 pb-3 border-t border-slate-100 text-xs text-slate-600 flex items-center gap-2">
+            <span class="text-slate-400 font-medium">Equipo Comercial:</span>
+            <div class="flex items-center gap-1.5 font-semibold text-secondary">
+              {COMMERCIAL_ADVISORS.map((advisor, idx) => (
+                <span key={advisor.id} class="inline-flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full" aria-hidden="true"></span>
+                  <span>{advisor.name}</span>
+                  {idx < COMMERCIAL_ADVISORS.length - 1 && <span class="text-slate-300" aria-hidden="true">·</span>}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA Action Buttons (Height ≥ 48px for WCAG 2.2 AA) */}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-2">
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chatear por WhatsApp con la Línea Corporativa"
+              class="bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-xs px-3.5 py-3 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-1 text-center"
+            >
+              <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              <span>Chatear por WhatsApp</span>
+            </a>
+
+            <a
+              href={`tel:${corporatePhone.e164}`}
+              aria-label={`Llamar por Teléfono: ${corporatePhone.display}`}
+              class="bg-secondary hover:bg-slate-800 text-white font-semibold text-xs px-3 py-3 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-1 text-center"
+            >
+              <svg class="w-4 h-4 shrink-0 text-amber-industrial" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span>Llamar por Teléfono</span>
+            </a>
+          </div>
         </div>
 
         {/* Logistics microcopy & notice */}

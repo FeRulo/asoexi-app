@@ -77,7 +77,24 @@ context:
 - Given la suite `tests/unit/seo.test.ts` y `tests/unit/nosotros-data.test.ts`, When se ejecuta `npm test`, Then todas las pruebas pasan con 0 fallos.
 - Given la compilación del proyecto con `npm run build`, When se genera la distribución estática, Then finaliza con código 0 y produce `/nosotros/index.html` sin errores.
 - Given la página `/nosotros`, When se inspecciona el HTML generado, Then contiene las secciones de historia corporativa, misión, visión, protocolos operativos con aclaración obligatoria de despacho sin mostrador, y logotipos de clientes corporativos.
-- Given cualquier página del sitio (`/` o `/nosotros`), When se inspeccionan las etiquetas `<head>`, Then se encuentran presentes `canonical`, `og:title`, `og:description`, `og:image` (URL absoluta), `og:url`, `og:site_name`, `twitter:card`, `twitter:title`, `twitter:description` y `twitter:image`.
+
+### Review Findings
+
+- [x] [Review][Patch] Implementar estado activo (`isActive`) en menú móvil y atributo accesible `aria-current="page"` en Header [src/components/common/Header.astro:123, 180]
+- [x] [Review][Patch] Utilizar `getDirectWhatsAppUrl()` en botón principal de cotización para asegurar rotación 50/50 [src/pages/nosotros.astro:333]
+- [x] [Review][Patch] Integrar canales de correo oficiales autorizados (`OFFICIAL_EMAILS`) en la sección de contacto de Nosotros [src/pages/nosotros.astro:346]
+- [x] [Review][Patch] Añadir `aria-hidden="true"` a iconos decorativos y `aria-label` a enlaces telefónicos [src/pages/nosotros.astro:178, 203, 340, 349]
+- [x] [Review][Patch] Normalizar colapso de barras duplicadas en `resolveCanonicalUrl` y trim de `type` en `buildPageMetadata` [src/lib/seo.ts:63, 107]
+- [x] [Review][Patch] Corregir jerarquía semántica de encabezados de características logísticas a `<h3>` [src/pages/nosotros.astro:235]
+- [x] [Review][Defer] Hidratación innecesaria de `ContactChannelModal` [src/layouts/BaseLayout.astro:83] — deferred: pre-existente desde Story 1.3, optimización para refactor general de bundles
+- [x] [Review][Defer] Integración de Schema.org JSON-LD corporativo [src/pages/nosotros.astro:1] — deferred: fuera de alcance de Story 1.4 (enfocada en Open Graph, Twitter Cards y canonical)
+
+#### Rejected Findings
+- `constants.ts:49`: Alteración de razón social — false: el invariant oficial en `docs/project-context.md` define taxativamente `ASOEXI S.A.S.` y el commit 063a55f alineó la base de código.
+- `tsconfig.json:6`: Regresión por eliminar baseUrl — false: ajustado deliberadamente con `./src/*` para compatibilidad estricta con Astro/TS y cero diagnósticos.
+- `index.astro:10`: Discrepancia con defaultTitle — false: la página de inicio define intencionalmente sus metadatos específicos sobreescribiendo el fallback.
+- `seo.ts:130`: Falta de `og:image:type` y `og:image:secure_url` — low: no requerido por el spec ni necesario para Open Graph estándar en HTTPS.
+- `nosotros.astro:351`: Contraste en icono de llamada CTA — false: la relación de contraste `#E51A24` vs `#1E2229` es 3.69:1, superior al umbral WCAG 2.2 AA (3.0:1) para iconos no textuales.
 
 ## Spec Change Log
 

@@ -9,6 +9,8 @@ export interface PageMetadataInput {
   imageAlt?: string;
   type?: string;
   noindex?: boolean;
+  ogTitle?: string;
+  twitterTitle?: string;
 }
 
 export interface PageMetadata {
@@ -61,11 +63,12 @@ export function resolveCanonicalUrl(
   }
 
   if (withoutParams.startsWith('http://') || withoutParams.startsWith('https://')) {
-    return withoutParams.replace(/^http:\/\//, 'https://');
+    const sanitized = withoutParams.replace(/^http:\/\//, 'https://');
+    return sanitized.replace(/([^:])\/+/g, '$1/');
   }
 
-  // Eliminar barras iniciales repetidas y asegurar prefijo '/'
-  const cleanPath = '/' + withoutParams.replace(/^\/+/, '');
+  // Eliminar barras iniciales repetidas, colapsar barras duplicadas internas y asegurar prefijo '/'
+  const cleanPath = '/' + withoutParams.replace(/^\/+/, '').replace(/\/+/g, '/');
   return `${cleanBase}${cleanPath}`;
 }
 
@@ -87,7 +90,7 @@ export function resolveOgImageUrl(
   }
 
   const cleanBase = baseUrl.replace(/\/+$/, '').replace(/^http:\/\//, 'https://');
-  const cleanPath = '/' + trimmed.replace(/^\/+/, '');
+  const cleanPath = '/' + trimmed.replace(/^\/+/, '').replace(/\/+/g, '/');
   return `${cleanBase}${cleanPath}`;
 }
 
@@ -104,13 +107,15 @@ export function buildPageMetadata(input?: PageMetadataInput): PageMetadata {
 
   const ogImage = resolveOgImageUrl(input?.image);
   const imageAlt = input?.imageAlt?.trim() || title;
-  const ogType = input?.type || SITE_METADATA.ogType;
+  const ogType = input?.type?.trim() || SITE_METADATA.ogType;
+  const ogTitle = input?.ogTitle?.trim() || title;
+  const twitterTitle = input?.twitterTitle?.trim() || ogTitle;
 
   return {
     title,
     description,
     canonicalUrl,
-    ogTitle: title,
+    ogTitle,
     ogDescription: description,
     ogImage,
     ogImageAlt: imageAlt,
@@ -121,7 +126,7 @@ export function buildPageMetadata(input?: PageMetadataInput): PageMetadata {
     siteName: SITE_METADATA.siteName,
     locale: SITE_METADATA.locale,
     twitterCard: SITE_METADATA.twitterCard,
-    twitterTitle: title,
+    twitterTitle,
     twitterDescription: description,
     twitterImage: ogImage,
     twitterImageAlt: imageAlt,
