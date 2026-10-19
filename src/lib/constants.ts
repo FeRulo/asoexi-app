@@ -70,8 +70,8 @@ export const CONTACT_PHONES: ContactPhone[] = [
   {
     id: 'corporate',
     name: 'Línea Corporativa',
-    e164: '+573044013761',
-    display: '+57 304 401 3761',
+    e164: '+573014191344',
+    display: '+57 301 419 1344',
     role: 'Atención Comercial y Cotizaciones',
     hasWhatsApp: true,
   },

@@ -7,7 +7,7 @@ export const SESSION_ROTATION_STORAGE_KEY = 'asoexi_lead_rotation_index';
 
 /**
  * Filter of contact channels enabled for official WhatsApp inquiries.
- * Centralized on the official Línea Corporativa (+57 304 401 3761).
+ * Centralized on the official Línea Corporativa configured in CONTACT_PHONES.
  */
 export const WHATSAPP_ADVISORS: ContactPhone[] = CONTACT_PHONES.filter((p) => p.hasWhatsApp);
 
@@ -101,7 +101,7 @@ export function getPrimaryWhatsAppAdvisor(storage?: Storage): ContactPhone {
 }
 
 /**
- * Generates direct wa.me link directly to the corporate line (+57 304 401 3761).
+ * Generates direct wa.me link directly to the official corporate line.
  */
 export function getDirectWhatsAppUrl(
   storage?: Storage,
