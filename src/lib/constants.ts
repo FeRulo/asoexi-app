@@ -102,6 +102,11 @@ export const OFFICIAL_EMAILS: OfficialEmail[] = [
     label: 'Ventas y Cotizaciones 2',
   },
   {
+    id: 'asesor1',
+    email: 'asesor1.asoexi@gmail.com',
+    label: 'Ventas y Cotizaciones 3',
+  },
+  {
     id: 'servicio',
     email: 'serviciocliente@asoexi.com',
     label: 'Servicio al Cliente',
