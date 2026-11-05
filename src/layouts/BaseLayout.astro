@@ -95,7 +95,7 @@ const ogTags = generateOpenGraphTags(metadata);
       import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
       function setupContactTriggers() {
-        // Disparadores de apertura del modal de selección y llamada/WhatsApp
+        // Disparadores de apertura del modal de cotización/WhatsApp
         const modalTriggers = document.querySelectorAll('[data-open-contact-modal]');
         modalTriggers.forEach((trigger) => {
           if ((trigger as HTMLElement & { __modalBound?: boolean }).__modalBound) return;

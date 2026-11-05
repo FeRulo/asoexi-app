@@ -35,7 +35,7 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     expect(LOGISTIC_HERO_PROPOSITION).toContain('Sede administrativa centralizada');
   });
 
-  it('should enforce unified corporate contact phone with WhatsApp and voice calls', () => {
+  it('should enforce unified corporate contact line configured with WhatsApp', () => {
     const e164Regex = /^\+57\d{10}$/;
 
     // Strictly 1 unified corporate line — personal numbers removed from contact directory
@@ -76,20 +76,22 @@ describe('Corporate Constants & Identity Contracts (ASOEXI S.A.S.)', () => {
     });
   });
 
-  it('should provide all official corporate emails without any @gmail.com addresses', () => {
+  it('should provide all official authorized advisor and corporate emails', () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    expect(OFFICIAL_EMAILS).toHaveLength(3);
+    expect(OFFICIAL_EMAILS).toHaveLength(4);
     OFFICIAL_EMAILS.forEach((item) => {
       expect(item.email).toMatch(emailRegex);
-      expect(item.email).not.toContain('@gmail.com');
-      expect(item.email).toContain('@asoexi.com');
+      const isCorporateDomain = item.email.endsWith('@asoexi.com');
+      const isAuthorizedGmail = item.email === 'asesor1.asoexi@gmail.com';
+      expect(isCorporateDomain || isAuthorizedGmail).toBe(true);
     });
 
     const emailAddresses = OFFICIAL_EMAILS.map((item) => item.email);
     expect(emailAddresses).toContain('asesorventas1@asoexi.com');
     expect(emailAddresses).toContain('asesorventas3@asoexi.com');
     expect(emailAddresses).toContain('serviciocliente@asoexi.com');
+    expect(emailAddresses).toContain('asesor1.asoexi@gmail.com');
   });
 
   it('should define quote SLA notice and minimum order COP amount', () => {

@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/home/Hero.astro';
 import ValuePillars from '@/components/home/ValuePillars.astro';
 import ClientLogos from '@/components/home/ClientLogos.astro';
-import { COMPANY_INFO, CONTACT_PHONES } from '@/lib/constants';
+import { COMPANY_INFO } from '@/lib/constants';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 ---
 
@@ -132,16 +132,6 @@ import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
                 </svg>
                 <span>Cotizar por WhatsApp</span>
               </a>
-
-              {CONTACT_PHONES.map((phone) => (
-                <a
-                  href={`tel:${phone.e164}`}
-                  class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold tracking-wide uppercase transition-colors flex items-center gap-2 min-h-[48px] border border-white/15 rounded-industrial"
-                >
-                  <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-                  <span>{phone.name}: {phone.display}</span>
-                </a>
-              ))}
             </div>
           </div>
         </div>
