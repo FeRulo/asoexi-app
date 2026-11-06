@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/home/Hero.astro';
 import ValuePillars from '@/components/home/ValuePillars.astro';
 import ClientLogos from '@/components/home/ClientLogos.astro';
+import FeaturedBrands from '@/components/home/FeaturedBrands.astro';
 import { COMPANY_INFO } from '@/lib/constants';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 ---
@@ -78,13 +79,11 @@ import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
   <!-- Marcas y Cotización (Anclas #marcas y #cotizar) -->
   <section id="marcas" class="py-16 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-2xl font-display font-bold text-secondary">Catálogo Multimarca Autorizado</h2>
-      <p class="text-xs text-slate-500 mt-2 max-w-xl mx-auto">
-        Marcas 100% originales con respaldo directo de fábrica, certificados de conformidad y fichas técnicas oficiales.
-      </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Vitrina Destacada de las Top 10 Marcas Tractoras -->
+      <FeaturedBrands />
 
-      <div id="cotizar" class="mt-10 p-6 sm:p-8 bg-secondary text-white max-w-4xl mx-auto border-t-4 border-primary rounded-industrial shadow-xl">
+      <div id="cotizar" class="mt-16 p-6 sm:p-8 bg-secondary text-white max-w-4xl mx-auto border-t-4 border-primary rounded-industrial shadow-xl">
         <div class="flex flex-col md:flex-row items-center gap-6 sm:gap-8 text-left">
           <!-- Avatar animado de la Mascota Institucional (Asesor Técnico) -->
           <div class="relative shrink-0 mx-auto md:mx-0">

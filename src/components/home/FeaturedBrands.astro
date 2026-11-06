@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import BrandCard from '@/components/catalog/BrandCard.astro';
+import { groupBrandsBySector, filterTractorBrands } from '@/lib/brands';
+
+// Fetch all brands declaratively from the content collection
+const allBrands = await getCollection('brands');
+
+// Filter tractor brands (isTractor: true)
+const tractorBrands = filterTractorBrands(allBrands);
+
+// Group the 10 tractor brands by the 3 industrial sectors
+const sectorGroups = groupBrandsBySector(tractorBrands);
+---
+
+<div class="space-y-12">
+  <!-- Section Intro / Header -->
+  <div class="text-center max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-800 border border-slate-200 rounded-industrial text-xs font-semibold mb-3">
+      <span class="w-2 h-2 bg-primary rounded-full"></span>
+      <span>Top 10 Fabricantes • Distribución Mayorista</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-display font-bold text-secondary">
+      Vitrina Destacada de Marcas Tractoras
+    </h2>
+    <p class="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl mx-auto leading-relaxed">
+      Suministro mayorista de las 10 marcas líderes en los 3 sectores industriales con respaldo directo de fábrica, certificados de conformidad y despacho a domicilio en obra y empresas.
+    </p>
+  </div>
+
+  <!-- Sector Sub-blocks -->
+  <div class="space-y-10">
+    {sectorGroups.filter(({ brands }) => brands.length > 0).map(({ sector, brands }) => (
+      <div
+        class={`bg-surface-subtle/50 p-5 sm:p-7 border-t-4 ${sector.accentBorderClass} border-x border-b border-slate-200 rounded-industrial`}
+        id={`vitrina-${sector.slug}`}
+      >
+        <!-- Sector Sub-block Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200/80 text-left">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class={`inline-block text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-industrial border ${sector.badgeClass}`}>
+                {sector.shortName}
+              </span>
+              <span class="text-xs text-slate-500 font-medium">
+                {brands.length} {brands.length === 1 ? 'marca tractora' : 'marcas tractoras'}
+              </span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-secondary mt-1">
+              <a href={`#${sector.anchor}`} class="hover:text-primary transition-colors focus:outline-none focus:underline">
+                {sector.name}
+              </a>
+            </h3>
+          </div>
+          <p class="text-xs text-slate-500 max-w-md sm:text-right leading-relaxed">
+            {sector.description}
+          </p>
+        </div>
+
+        <!-- Brands Grid -->
+        <div class={`grid grid-cols-1 sm:grid-cols-2 ${brands.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6`}>
+          {brands.map((brandItem) => (
+            <BrandCard brand={brandItem} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Secondary CTA: Explore full catalog by sector (#sectores) -->
+  <div class="pt-2 text-center">
+    <a
+      href="#sectores"
+      class="inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[48px] text-sm font-bold text-secondary bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-300 hover:border-slate-400 rounded-industrial shadow-xs hover:shadow transition-all focus:outline-none focus:ring-2 focus:ring-secondary/20"
+      aria-label="Ver catálogo completo por sectores industriales"
+    >
+      <span>Ver catálogo completo por sectores</span>
+      <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </a>
+  </div>
+</div>

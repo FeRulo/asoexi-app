@@ -2,6 +2,7 @@
 import type { Brand } from '@/content.config';
 import type { CollectionEntry } from 'astro:content';
 import { generateBrandQuoteWhatsAppUrl } from '@/lib/whatsapp';
+import { getBrandSiloUrl } from '@/lib/brands';
 
 export interface Props {
   brand?: Brand | CollectionEntry<'brands'>;
@@ -66,7 +67,7 @@ const currentSector = sectorConfig[data.sector] ?? {
 const hasValidLogo = typeof data.logo === 'string' && data.logo.trim().length > 0;
 
 // Canonical silo link for brand (guarded to '#' if id is empty)
-const brandSiloUrl = data.id ? `/distribuidor-${data.id}-colombia` : '#';
+const brandSiloUrl = getBrandSiloUrl(data.id);
 ---
 
 <article
