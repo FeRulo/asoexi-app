@@ -1,0 +1,10 @@
+{
+  "id": "sylvania",
+  "name": "Sylvania",
+  "sector": "electrico",
+  "isTractor": true,
+  "logo": null,
+  "description": "Especialista en luminarias LED profesionales, campanas industriales high-bay, paneles y sistemas de iluminación arquitectónica de alta eficiencia energética y durabilidad.",
+  "applicationNotes": "Iluminación de bodegas industriales, áreas de producción, parqueaderos y oficinas corporativas con alto factor de potencia.",
+  "pdfCatalogUrl": null
+}

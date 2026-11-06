@@ -1,0 +1,10 @@
+{
+  "id": "panduit",
+  "name": "Panduit",
+  "sector": "electrico",
+  "isTractor": true,
+  "logo": null,
+  "description": "Líder mundial en soluciones de conectividad, infraestructura física y eléctrica, cableado estructurado, amarras y sistemas de enrutamiento para centros de datos y plantas industriales.",
+  "applicationNotes": "Sistemas de cableado estructurado categoría 6A/7, bandejas portacables, amarras plásticas resistentes a intemperie y marcado industrial.",
+  "pdfCatalogUrl": null
+}

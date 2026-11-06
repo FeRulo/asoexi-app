@@ -112,6 +112,23 @@ export function getDirectWhatsAppUrl(
 }
 
 /**
+ * Generates an official WhatsApp wa.me URL contextualized for quoting a specific brand.
+ * Points to the centralized corporate line (+57 301 419 1344).
+ * If brandName is empty, null, or whitespace, falls back safely to DEFAULT_WHATSAPP_MESSAGE.
+ */
+export function generateBrandQuoteWhatsAppUrl(
+  brandName?: string | null,
+  storage?: Storage
+): string {
+  const trimmed = brandName?.trim();
+  if (!trimmed) {
+    return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
+  }
+  const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar una cotización formal para la marca ${trimmed}`;
+  return getDirectWhatsAppUrl(storage, message);
+}
+
+/**
  * Returns all active contact channels.
  * Points to the unified corporate line for both calls and WhatsApp.
  */
