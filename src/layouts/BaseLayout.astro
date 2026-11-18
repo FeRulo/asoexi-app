@@ -2,6 +2,7 @@
 import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
 import ContactChannelModal from '@/islands/ContactChannelModal';
+import LiveSearchModal from '@/islands/LiveSearchModal';
 import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
 import { buildPageMetadata, generateOpenGraphTags } from '@/lib/seo';
@@ -87,6 +88,7 @@ const ogTags = generateOpenGraphTags(metadata);
 
     <!-- Componentes e islas interactivas de contacto y balanceo -->
     <ContactChannelModal client:load />
+    <LiveSearchModal client:idle />
     <MobileStickyBar client:idle />
     <FloatingWhatsAppButton />
 
@@ -106,6 +108,20 @@ const ogTags = generateOpenGraphTags(metadata);
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();
             window.dispatchEvent(new CustomEvent('open-contact-modal'));
+          });
+        });
+
+        // Disparadores de apertura del buscador en tiempo real
+        const searchTriggers = document.querySelectorAll('[data-open-search-modal]');
+        searchTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __searchBound?: boolean }).__searchBound) return;
+          (trigger as HTMLElement & { __searchBound?: boolean }).__searchBound = true;
+
+          trigger.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('open-search-modal'));
           });
         });
 

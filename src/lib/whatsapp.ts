@@ -158,6 +158,23 @@ export function generateSectorQuoteWhatsAppUrl(
 }
 
 /**
+ * Generates an official WhatsApp wa.me URL for the Zero-Fail search mechanism.
+ * Points to the centralized corporate line (+57 301 419 1344).
+ * If query is empty, null, or whitespace, falls back safely to DEFAULT_WHATSAPP_MESSAGE.
+ */
+export function generateSearchZeroFailWhatsAppUrl(
+  query?: string | null,
+  storage?: Storage
+): string {
+  const trimmed = query?.trim();
+  if (!trimmed) {
+    return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
+  }
+  const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y busco cotizar la referencia "${trimmed}" que no encontré listada. ¿Me pueden cotizar bajo pedido de fábrica?`;
+  return getDirectWhatsAppUrl(storage, message);
+}
+
+/**
  * Returns all active contact channels.
  * Points to the unified corporate line for both calls and WhatsApp.
  */

@@ -43,10 +43,11 @@ development_status:
   1-5-unificacion-canales-corporativos-sla-5min-y-rebalanceo-pilares: done
   epic-1-retrospective: optional
 
-  epic-2: in-progress
+  epic-2: done
   2-1-colecciones-zod-catalogo-b2b-y-brandcard: done
   2-2-vitrina-destacada-marcas-tractoras-home: done
   2-3-hubs-sectores-industriales-contenido-semantico-mantenimiento: done
+  2-4-buscador-tiempo-real-livesearchmodal-fallo-cero: done
   epic-2-retrospective: optional
 
   epic-3: backlog
