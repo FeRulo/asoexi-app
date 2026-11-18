@@ -36,42 +36,78 @@ import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Eléctrico -->
-        <div id="sector-electrico" class="p-6 bg-white border-t-4 border-t-sector-electrico border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-red-50 text-sector-electrico flex items-center justify-center mb-4 border border-red-200 rounded-industrial">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+        <div id="sector-electrico" class="p-6 bg-white border-t-4 border-t-sector-electrico border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-red-50 text-sector-electrico flex items-center justify-center mb-4 border border-red-200 rounded-industrial">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-secondary">
+              <a href="/sector-electrico" class="hover:text-primary transition-colors focus:outline-none focus:underline">
+                Sector Eléctrico
+              </a>
+            </h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              Conductores, tableros de distribución, canalización, iluminación industrial y control Schneider, Siemens, Centelsa.
+            </p>
           </div>
-          <h3 class="font-display font-bold text-lg text-secondary">Sector Eléctrico</h3>
-          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-            Conductores, tableros de distribución, canalización, iluminación industrial y control Schneider, Siemens, Centelsa.
-          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="/sector-electrico" class="inline-flex items-center gap-1.5 text-xs font-bold text-sector-electrico hover:underline focus:outline-none min-h-[44px]">
+              <span>Ver catálogo del sector</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </div>
 
         <!-- Ferretero -->
-        <div id="sector-ferretero" class="p-6 bg-white border-t-4 border-t-sector-ferretero border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-amber-50 text-sector-ferretero flex items-center justify-center mb-4 border border-amber-200 rounded-industrial">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-            </svg>
+        <div id="sector-ferretero" class="p-6 bg-white border-t-4 border-t-sector-ferretero border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-amber-50 text-sector-ferretero flex items-center justify-center mb-4 border border-amber-200 rounded-industrial">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+              </svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-secondary">
+              <a href="/sector-ferretero-construccion" class="hover:text-primary transition-colors focus:outline-none focus:underline">
+                Sector Ferretero & Construcción
+              </a>
+            </h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              Herramientas eléctricas y manuales DeWalt, Stanley, discos de corte, abrasivos, fijaciones y tornillería de grado.
+            </p>
           </div>
-          <h3 class="font-display font-bold text-lg text-secondary">Sector Ferretero & Construcción</h3>
-          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-            Herramientas eléctricas y manuales DeWalt, Stanley, discos de corte, abrasivos, fijaciones y tornillería de grado.
-          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="/sector-ferretero-construccion" class="inline-flex items-center gap-1.5 text-xs font-bold text-sector-ferretero hover:underline focus:outline-none min-h-[44px]">
+              <span>Ver catálogo del sector</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </div>
 
         <!-- Hidráulico -->
-        <div id="sector-hidraulico" class="p-6 bg-white border-t-4 border-t-sector-hidraulico border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28">
-          <div class="w-12 h-12 bg-blue-50 text-sector-hidraulico flex items-center justify-center mb-4 border border-blue-200 rounded-industrial">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-            </svg>
+        <div id="sector-hidraulico" class="p-6 bg-white border-t-4 border-t-sector-hidraulico border-x border-b border-slate-200 rounded-industrial shadow-sm hover:shadow-md transition-shadow scroll-mt-28 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 bg-blue-50 text-sector-hidraulico flex items-center justify-center mb-4 border border-blue-200 rounded-industrial">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-secondary">
+              <a href="/sector-hidraulico-pinturas" class="hover:text-primary transition-colors focus:outline-none focus:underline">
+                Sector Hidráulico & Pinturas
+              </a>
+            </h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              Tubería sanitaria y de presión Pavco Wavin, válvulas, motobombas, recubrimientos industriales y solventes.
+            </p>
           </div>
-          <h3 class="font-display font-bold text-lg text-secondary">Sector Hidráulico & Pinturas</h3>
-          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-            Tubería sanitaria y de presión Pavco Wavin, válvulas, motobombas, recubrimientos industriales y solventes.
-          </p>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="/sector-hidraulico-pinturas" class="inline-flex items-center gap-1.5 text-xs font-bold text-sector-hidraulico hover:underline focus:outline-none min-h-[44px]">
+              <span>Ver catálogo del sector</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

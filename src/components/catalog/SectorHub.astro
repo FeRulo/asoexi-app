@@ -1,0 +1,287 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BrandCard from '@/components/catalog/BrandCard.astro';
+import {
+  SECTORS_META,
+  getSectorTechnicalContent,
+  getSectorBrands,
+} from '@/lib/brands';
+import { generateSectorQuoteWhatsAppUrl } from '@/lib/whatsapp';
+import type { Brand, SectorId } from '@/content.config';
+
+export interface Props {
+  sectorId: SectorId;
+  brands?: (Brand | CollectionEntry<'brands'>)[];
+  class?: string;
+}
+
+const {
+  sectorId,
+  brands: customBrands,
+  class: customClass = '',
+} = Astro.props;
+
+const sectorMeta = SECTORS_META[sectorId] ?? SECTORS_META['electrico'];
+const technicalContent = getSectorTechnicalContent(sectorId) ?? getSectorTechnicalContent('electrico')!;
+const otherSectors = (Object.keys(SECTORS_META) as SectorId[])
+  .filter((id) => id !== sectorId)
+  .map((id) => SECTORS_META[id]);
+
+// Resolve brands: use provided prop or query collection declaratively
+let sectorBrands: (Brand | CollectionEntry<'brands'>)[] = [];
+if (customBrands !== undefined) {
+  sectorBrands = getSectorBrands(customBrands, sectorId);
+} else {
+  const allBrands = await getCollection('brands');
+  sectorBrands = getSectorBrands(allBrands, sectorId);
+}
+
+const whatsappUrl = generateSectorQuoteWhatsAppUrl(sectorMeta.name);
+---
+
+<div class={`space-y-12 sm:space-y-16 py-8 sm:py-12 ${customClass}`}>
+  <!-- Breadcrumb & Sector Navigation Header -->
+  <nav aria-label="Ruta de navegación" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <ol class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+      <li>
+        <a href="/" class="hover:text-primary transition-colors focus:outline-none focus:underline">Inicio</a>
+      </li>
+      <li aria-hidden="true" class="text-slate-400">/</li>
+      <li>
+        <a href="/#sectores" class="hover:text-primary transition-colors focus:outline-none focus:underline">Sectores</a>
+      </li>
+      <li aria-hidden="true" class="text-slate-400">/</li>
+      <li class="text-slate-800 font-semibold" aria-current="page">
+        {sectorMeta.shortName}
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Sector Hero Banner -->
+  <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class={`bg-white border-t-4 ${sectorMeta.accentBorderClass} border-x border-b border-slate-200 rounded-industrial p-6 sm:p-10 shadow-xs`}>
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class={`inline-block text-[11px] font-bold tracking-wider uppercase px-3 py-1 rounded-industrial border ${sectorMeta.badgeClass}`}>
+          {sectorMeta.name}
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200/80 rounded-industrial text-[11px] font-semibold">
+          <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          Cotización B2B • SLA &le; 5 min
+        </span>
+        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500">
+          Despacho 100% a domicilio
+        </span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-display font-extrabold text-secondary tracking-tight leading-tight mb-4">
+        {technicalContent.h1}
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl mb-6">
+        {technicalContent.subtitle}
+      </p>
+
+      <div class="p-4 bg-slate-50 border border-slate-200/80 rounded-industrial max-w-4xl">
+        <div class="flex items-start gap-3">
+          <svg class={`w-5 h-5 shrink-0 mt-0.5 ${sectorMeta.accentTextClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold text-secondary uppercase tracking-wider mb-1">
+              Enfoque en Mantenimiento Correctivo y Locativo
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {technicalContent.maintenanceFocus}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegación rápida entre otros sectores -->
+      <nav aria-label="Explorar otros sectores industriales" class="mt-6 pt-4 border-t border-slate-200/80 flex flex-wrap items-center gap-2.5">
+        <span class="text-xs font-semibold text-slate-500">Explorar otros sectores:</span>
+        <div class="flex flex-wrap gap-2">
+          {otherSectors.map((other) => (
+            <a
+              href={`/${other.slug}`}
+              class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-industrial border text-xs font-semibold transition-all hover:shadow-2xs ${other.badgeClass}`}
+              aria-label={`Ver ${other.name}`}
+            >
+              <span>{other.shortName}</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          ))}
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Technical Maintenance Lines (Semantic Content for B2B Search Intent) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-labelledby="soluciones-tecnicas-heading">
+    <div class="mb-8">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-industrial text-xs font-semibold mb-2">
+        <span>Fichas Técnicas • Cumplimiento Normativo</span>
+      </div>
+      <h2 id="soluciones-tecnicas-heading" class="text-xl sm:text-2xl font-display font-bold text-secondary">
+        {technicalContent.technicalCategoriesHeading}
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
+        Líneas especializadas para proyectos de ingeniería, renovación locativa y cuadrillas de mantenimiento industrial.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {technicalContent.technicalCategories.map((cat) => (
+        <article class="bg-white border border-slate-200 rounded-industrial p-5 shadow-2xs hover:shadow-xs transition-shadow">
+          <h3 class="font-display font-bold text-base text-secondary mb-2 flex items-center gap-2">
+            <span class={`w-2 h-2 rounded-full ${sectorMeta.accentBgClass} border border-current ${sectorMeta.accentTextClass}`} aria-hidden="true"></span>
+            {cat.title}
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+            {cat.description}
+          </p>
+          <div class="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
+            {cat.keywords.map((kw) => (
+              <span class="text-[10px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-industrial">
+                {kw}
+              </span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tractor & Allied Brands Grid Reusing BrandCard.astro -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-labelledby="marcas-tractoras-heading">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-industrial text-xs font-semibold mb-2">
+          <span>Distribución Mayorista Directa</span>
+        </div>
+        <h2 id="marcas-tractoras-heading" class="text-xl sm:text-2xl font-display font-bold text-secondary">
+          Marcas Tractoras y Fabricantes Principales
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+          Marcas líderes priorizadas con respaldo directo de fábrica, certificados de conformidad y garantía formal.
+        </p>
+      </div>
+
+      <span class="text-xs text-slate-500 font-medium whitespace-nowrap">
+        {sectorBrands.length} {sectorBrands.length === 1 ? 'marca disponible' : 'marcas disponibles'}
+      </span>
+    </div>
+
+    {sectorBrands.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sectorBrands.map((brandItem) => (
+          <BrandCard brand={brandItem} />
+        ))}
+      </div>
+    ) : (
+      <div class="bg-slate-50 border border-slate-200 rounded-industrial p-8 text-center max-w-xl mx-auto">
+        <p class="text-sm font-semibold text-secondary mb-2">
+          Catálogo del sector en actualización
+        </p>
+        <p class="text-xs text-slate-600 mb-4">
+          Comuníquese con nuestra Línea Corporativa para consultar el inventario completo de este sector.
+        </p>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-secondary text-white text-xs font-bold rounded-industrial min-h-[48px]"
+          aria-label={`Consultar catálogo del ${sectorMeta.name} por WhatsApp oficial`}
+        >
+          Consultar por WhatsApp
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- On-demand Availability Informational Block (Disponibilidad Bajo Pedido) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-labelledby="bajo-pedido-heading">
+    <div class="bg-slate-50 border border-slate-200 rounded-industrial p-6 sm:p-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="max-w-3xl space-y-3">
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 rounded-industrial text-[11px] font-bold uppercase tracking-wider">
+            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Aviso de Disponibilidad y Despacho</span>
+          </div>
+
+          <h2 id="bajo-pedido-heading" class="text-lg sm:text-xl font-display font-bold text-secondary">
+            {technicalContent.onDemandNotice.heading}
+          </h2>
+
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            {technicalContent.onDemandNotice.description}
+          </p>
+
+          <p class="text-xs font-medium text-slate-700 bg-white/80 p-2.5 rounded-industrial border border-slate-200/80">
+            <strong>Garantía ASOEXI:</strong> {technicalContent.onDemandNotice.ctaNote}
+          </p>
+        </div>
+
+        <div class="shrink-0 flex flex-col items-start md:items-end justify-center">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[48px] text-xs sm:text-sm font-bold text-secondary bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-industrial shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-secondary/20"
+          >
+            <span>Consultar Referencia Especial</span>
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prominent Multi-Brand Quotation CTA (Cotizar Lista Multimarca) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-labelledby="cta-multimarca-heading">
+    <div class="bg-secondary text-white rounded-industrial p-6 sm:p-10 border-t-4 border-primary shadow-xl">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 bg-amber-industrial/20 text-amber-industrial border border-amber-industrial/30 rounded-industrial text-xs font-semibold">
+            <span class="w-2 h-2 bg-amber-industrial rounded-full animate-pulse" aria-hidden="true"></span>
+            Línea Corporativa Oficial • SLA &le; 5 min
+          </div>
+
+          <h2 id="cta-multimarca-heading" class="text-xl sm:text-3xl font-display font-bold text-white tracking-tight">
+            Cotizar lista multimarca de este sector
+          </h2>
+
+          <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+            Envíe su listado consolidado para {sectorMeta.shortName.toLowerCase()}. Geraldine y Sonia Franco de nuestro equipo comercial le brindarán cotización formal, disponibilidad inmediata y despacho 100% a domicilio en obra o empresa.
+          </p>
+
+          <p class="text-[11px] text-slate-400">
+            Línea Corporativa Directa: +57 301 419 1344 • Despacho Bogotá desde $200.000 COP • Sabana según municipio
+          </p>
+        </div>
+
+        <div class="shrink-0 w-full sm:w-auto">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto min-h-[48px] px-8 py-4 bg-whatsapp hover:bg-whatsapp-hover active:bg-whatsapp-hover/90 text-white font-bold text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-3 rounded-industrial shadow-lg group focus:outline-none focus:ring-2 focus:ring-whatsapp/50"
+            aria-label={`Cotizar lista multimarca del ${sectorMeta.name} por WhatsApp oficial`}
+          >
+            <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+            </svg>
+            <span>Cotizar lista multimarca</span>
+            <svg class="w-4 h-4 text-emerald-300 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

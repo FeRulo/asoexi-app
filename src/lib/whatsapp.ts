@@ -1,5 +1,11 @@
 import { CONTACT_PHONES, type ContactPhone } from './constants';
 
+const SECTOR_NAME_BY_SLUG: Record<string, string> = {
+  'electrico': 'Sector Eléctrico Industrial',
+  'ferretero-construccion': 'Sector Ferretero & Construcción',
+  'hidraulico-pinturas': 'Sector Hidráulico & Pinturas',
+};
+
 export const DEFAULT_WHATSAPP_MESSAGE =
   'Hola ASOEXI (Geraldine y Sonia), vi su página web y deseo solicitar una cotización formal';
 
@@ -125,6 +131,29 @@ export function generateBrandQuoteWhatsAppUrl(
     return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
   }
   const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar una cotización formal para la marca ${trimmed}`;
+  return getDirectWhatsAppUrl(storage, message);
+}
+
+/**
+ * Generates an official WhatsApp wa.me URL contextualized for quoting a multi-brand list of a specific industrial sector.
+ * Points to the centralized corporate line (+57 301 419 1344).
+ * If sectorName is empty, null, or whitespace, falls back safely to DEFAULT_WHATSAPP_MESSAGE.
+ */
+export function generateSectorQuoteWhatsAppUrl(
+  sectorName?: string | null,
+  storage?: Storage
+): string {
+  const trimmed = sectorName?.trim();
+  if (!trimmed) {
+    return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
+  }
+  const normalizedKey = trimmed.toLowerCase();
+  const resolvedName = SECTOR_NAME_BY_SLUG[normalizedKey] ?? trimmed;
+
+  const sectorLabel = resolvedName.toLowerCase().startsWith('sector')
+    ? resolvedName
+    : `Sector ${resolvedName}`;
+  const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar una cotización formal para lista multimarca del ${sectorLabel}`;
   return getDirectWhatsAppUrl(storage, message);
 }
 

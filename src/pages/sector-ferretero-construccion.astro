@@ -1,0 +1,16 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectorHub from '@/components/catalog/SectorHub.astro';
+import { getSectorTechnicalContent } from '@/lib/brands';
+
+const technicalContent = getSectorTechnicalContent('ferretero-construccion')!;
+---
+
+<BaseLayout
+  title={technicalContent.seo.title}
+  description={technicalContent.seo.description}
+  currentPath="/sector-ferretero-construccion"
+  canonicalUrl={technicalContent.seo.canonicalPath}
+>
+  <SectorHub sectorId="ferretero-construccion" />
+</BaseLayout>

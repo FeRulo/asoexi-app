@@ -1,0 +1,16 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectorHub from '@/components/catalog/SectorHub.astro';
+import { getSectorTechnicalContent } from '@/lib/brands';
+
+const technicalContent = getSectorTechnicalContent('hidraulico-pinturas')!;
+---
+
+<BaseLayout
+  title={technicalContent.seo.title}
+  description={technicalContent.seo.description}
+  currentPath="/sector-hidraulico-pinturas"
+  canonicalUrl={technicalContent.seo.canonicalPath}
+>
+  <SectorHub sectorId="hidraulico-pinturas" />
+</BaseLayout>
