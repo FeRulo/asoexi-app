@@ -1,0 +1,16 @@
+{
+  "id": "pcp",
+  "name": "PCP",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/pcp.svg",
+  "description": "Válvulas y accesorios plásticos para control de fluidos en acometidas domiciliarias, redes de agua y griferías.",
+  "applicationNotes": "Válvulas de bola en PVC de paso total, llaves de jardín y accesorios de acople rápido para plomería residencial e institucional.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Válvulas de Bola en PVC Roscadas y Soldar",
+    "Griferías Plásticas para Lavamanos y Lavaplatos",
+    "Llaves de Jardín y Terminales",
+    "Mangueras Flexibles y Acoples"
+  ]
+}

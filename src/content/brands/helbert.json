@@ -1,0 +1,16 @@
+{
+  "id": "helbert",
+  "name": "Helbert",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/helbert.svg",
+  "description": "Bombas centrífugas, eyectoras y sistemas hidroneumáticos para elevación y presurización de agua en edificaciones.",
+  "applicationNotes": "Cuartos de bombeo en edificios residenciales e industriales, extracción de pozos y recirculación de agua limpia.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Bombas Centrífugas Monobloque",
+    "Bombas Sumergibles para Pozo Profundo",
+    "Equipos Eyectores",
+    "Tanques Hidroneumáticos"
+  ]
+}

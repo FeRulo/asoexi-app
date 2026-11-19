@@ -3,8 +3,14 @@
   "name": "DeWalt",
   "sector": "ferretero-construccion",
   "isTractor": true,
-  "logo": null,
-  "description": "Herramientas eléctricas y a batería de alto rendimiento para trabajo pesado, taladros percutores, rotomartillos SDS, pulidoras y discos de corte certificados.",
-  "applicationNotes": "Perforación en concreto y mampostería, corte de perfiles metálicos y fijación intensiva en proyectos industriales.",
-  "pdfCatalogUrl": null
+  "logo": "/brands/dewalt.svg",
+  "description": "Herramientas eléctricas y a batería de alto rendimiento para trabajo pesado continuo, perforación y corte certificado.",
+  "applicationNotes": "Perforación intensiva en concreto y mampostería, corte de perfiles estructurales y fijación pesada en proyectos industriales.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Rotomartillos SDS Plus y Max",
+    "Pulidoras Angulares Industriales",
+    "Taladros Percutores Inalámbricos XR",
+    "Discos de Corte y Diamante"
+  ]
 }

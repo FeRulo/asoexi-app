@@ -1,0 +1,16 @@
+{
+  "id": "siemens",
+  "name": "Siemens",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/siemens.svg",
+  "description": "Líder tecnológico en automatización industrial, control y distribución eléctrica inteligente en baja y media tensión.",
+  "applicationNotes": "Contactores SIRIUS, relés de sobrecarga, arrancadores suaves, guardamotores e interruptores automáticos para maquinaria pesada.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Contactores SIRIUS",
+    "Relés Térmicos",
+    "Arrancadores Suaves",
+    "Guardamotores y Breakers"
+  ]
+}

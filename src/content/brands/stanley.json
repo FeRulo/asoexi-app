@@ -3,8 +3,14 @@
   "name": "Stanley",
   "sector": "ferretero-construccion",
   "isTractor": true,
-  "logo": null,
-  "description": "Marca de referencia mundial en herramientas manuales profesionales, cintas métricas de alta precisión, niveles láser y cajas de almacenamiento industrial.",
-  "applicationNotes": "Herramientas manuales de uso diario para cuadrillas de mantenimiento, construcción liviana y ajuste mecánico.",
-  "pdfCatalogUrl": null
+  "logo": "/brands/stanley.svg",
+  "description": "Marca legendaria en herramientas manuales de alta precisión, almacenamiento y herramientas de medición profesional.",
+  "applicationNotes": "Mantenimiento general en planta, ensamble mecánico, dotación de cuadrillas de instalación y obras de construcción.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Herramientas Manuales",
+    "Cintas Métricas de Alta Resistencia",
+    "Juegos de Llaves y Copas",
+    "Niveles Láser y Manuales"
+  ]
 }

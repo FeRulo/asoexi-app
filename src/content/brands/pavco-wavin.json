@@ -3,8 +3,14 @@
   "name": "Pavco Wavin",
   "sector": "hidraulico-pinturas",
   "isTractor": true,
-  "logo": null,
-  "description": "Sistemas líderes en tuberías y accesorios de PVC, CPVC y polietileno para conducción de agua potable, desagüe sanitario, aguas lluvias y protección contra incendios.",
-  "applicationNotes": "Redes de distribución hidrosanitaria en edificaciones comerciales, centros comerciales y plantas de producción.",
-  "pdfCatalogUrl": null
+  "logo": "/brands/pavco-wavin.svg",
+  "description": "Líder indiscutible en soluciones de conducción y manejo de fluidos en tubería y accesorios de PVC, CPVC y PPR en Colombia.",
+  "applicationNotes": "Redes hidrosanitarias domiciliarias e industriales, colectores pluviales, acueducto a presión y termofusión para agua caliente.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tubería Sanitaria y Aguas Lluvias",
+    "Tubería Presión RDE para Acueducto",
+    "Sistemas de Termofusión PPR",
+    "Accesorios y Pegantes PVC"
+  ]
 }

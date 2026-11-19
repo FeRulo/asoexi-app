@@ -1,0 +1,16 @@
+{
+  "id": "yale",
+  "name": "Yale",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/yale.svg",
+  "description": "Referente mundial en cerrajería de seguridad, cerraduras electromecánicas, candados y control de acceso corporativo.",
+  "applicationNotes": "Aseguramiento de puertas cortafuego, accesos institucionales, candados de alta seguridad para bodegas y cierrapuertas.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cerraduras de Embutir y Sobreponer",
+    "Cerraduras Digitales e Inteligentes",
+    "Candados de Alta Seguridad",
+    "Cierrapuertas Hidráulicos"
+  ]
+}
