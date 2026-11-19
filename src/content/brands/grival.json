@@ -1,0 +1,16 @@
+{
+  "id": "grival",
+  "name": "Grival",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/grival.svg",
+  "description": "Griferías de calidad superior, repuestos originales y sistemas hidrosanitarios para baños, cocinas e instalaciones institucionales.",
+  "applicationNotes": "Griferías temporizadas antivandálicas para áreas públicas, fluxómetros, repuestos de vástagos y cartuchos de cierre cerámico.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Griferías Monocontrol y Mezcladores",
+    "Fluxómetros para Sanitarios y Orinales",
+    "Repuestos Originales de Válvulas y Cartuchos",
+    "Griferías Temporizadas Institucionales"
+  ]
+}

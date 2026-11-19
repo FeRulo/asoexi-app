@@ -1,0 +1,16 @@
+{
+  "id": "luminex",
+  "name": "Luminex",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/luminex.svg",
+  "description": "Conductores eléctricos especiales y cables libres de halógenos para infraestructura crítica y seguridad contra incendios.",
+  "applicationNotes": "Circuitos de emergencia en centros comerciales, hospitales y áreas de evacuación bajo norma de baja emisión de humos.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cables Libres de Halógenos",
+    "Cables para Instrumentación",
+    "Cables de Control",
+    "Conductores Especiales"
+  ]
+}

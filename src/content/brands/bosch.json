@@ -1,0 +1,16 @@
+{
+  "id": "bosch",
+  "name": "Bosch",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/bosch.svg",
+  "description": "Tecnología alemana en herramientas eléctricas profesionales Heavy Duty, demolición y medición láser de alta exactitud.",
+  "applicationNotes": "Demolición pesada de losas, fijación química, corte de perfiles metálicos y nivelación óptica en obras civiles.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Martillos Demoledores",
+    "Amoladoras Profesionales Heavy Duty",
+    "Medidores y Niveles Láser de Precisión",
+    "Sierras Ingleteadoras"
+  ]
+}

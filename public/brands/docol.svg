@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80">
+  <text x="40" y="45" font-family="Arial, sans-serif" font-weight="900" font-size="28" letter-spacing="2" fill="#1E2229">DOCOL</text>
+  <g transform="translate(170, 20)">
+    <path d="M 0 10 Q 10 0 20 10 T 40 10" fill="none" stroke="#0284C7" stroke-width="4"/>
+    <path d="M 0 18 Q 10 8 20 18 T 40 18" fill="none" stroke="#38BDF8" stroke-width="4"/>
+  </g>
+  <text x="42" y="60" font-family="Arial, sans-serif" font-weight="600" font-size="9" letter-spacing="1" fill="#64748B">METAIS SANITÁRIOS</text>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "id": "eternit",
+  "name": "Eternit",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/eternit.svg",
+  "description": "Líder en cubiertas de fibrocemento, tanques para agua, placas planas y soluciones constructivas para edificaciones.",
+  "applicationNotes": "Techado de bodegas y naves industriales, tanques de almacenamiento de agua potable y fachadas en placa plana Eterboard.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tejas Onduladas de Fibrocemento",
+    "Cubiertas Arquitectónicas",
+    "Tanques de Polietileno para Almacenamiento",
+    "Placas Planas Eterboard"
+  ]
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80">
+  <g transform="translate(15, 22)">
+    <!-- Truper double semi-oval logo mark -->
+    <path d="M 12 8 C 5 8 0 14 0 20 C 0 26 5 32 12 32 C 16 32 20 29 23 25 C 20 23 18 20 18 20 C 18 20 20 17 23 15 C 20 11 16 8 12 8 Z" fill="#EA580C"/>
+    <path d="M 34 8 C 41 8 46 14 46 20 C 46 26 41 32 34 32 C 30 32 26 29 23 25 C 26 23 28 20 28 20 C 28 20 26 17 23 15 C 26 11 30 8 34 8 Z" fill="#EA580C"/>
+  </g>
+  <text x="75" y="49" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="28" letter-spacing="2" fill="#EA580C">TRUPER</text>
+</svg>

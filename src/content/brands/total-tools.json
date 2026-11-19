@@ -1,0 +1,16 @@
+{
+  "id": "total-tools",
+  "name": "Total Tools",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/total-tools.svg",
+  "description": "Herramientas electroportátiles, manuales y accesorios con excelente relación costo-beneficio para instaladores y talleres.",
+  "applicationNotes": "Dotación versátil para talleres de mantenimiento preventivo, cuadrillas livianas de montaje y cerrajería.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Herramientas Electroportátiles",
+    "Generadores a Gasolina",
+    "Compresores Portátiles",
+    "Accesorios y Consumibles"
+  ]
+}

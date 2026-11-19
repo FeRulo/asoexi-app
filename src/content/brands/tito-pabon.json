@@ -1,0 +1,16 @@
+{
+  "id": "tito-pabon",
+  "name": "Pinturas Tito Pabón",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/tito-pabon.svg",
+  "description": "Fabricante colombiano de pinturas y esmaltes con fórmulas ecológicas de bajo olor y excelente poder cubriente.",
+  "applicationNotes": "Mantenimiento locativo de fachadas, interiores de oficinas, acabado protector en carpintería metálica y maderas.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Vinilos Arquitectónicos Tipo 1",
+    "Esmaltes Sintéticos Anticorrosivos",
+    "Pinturas para Fachadas e Impermeabilizantes",
+    "Barnices para Maderas"
+  ]
+}

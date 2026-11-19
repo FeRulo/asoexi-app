@@ -1,0 +1,16 @@
+{
+  "id": "irwin",
+  "name": "Irwin Tools",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/irwin.svg",
+  "description": "Herramientas de corte, perforación y fijación manual para profesionales del metalmecánico, plomería y carpintería.",
+  "applicationNotes": "Perforación en aceros inoxidables con brocas cobalto, prensado con alicates Vise-Grip y corte con hojas de sierra bi-metálicas.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Brocas de Cobalto y Titanio",
+    "Prensas Rápidas Quick-Grip",
+    "Alicates de Presión Vise-Grip",
+    "Hojas de Sierra Sable y Caladora"
+  ]
+}

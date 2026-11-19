@@ -3,8 +3,14 @@
   "name": "Truper",
   "sector": "ferretero-construccion",
   "isTractor": true,
-  "logo": null,
-  "description": "El catálogo más amplio de ferretería pesada, carretillas, palas, herramientas mecánicas y equipo de protección personal para obra civil e infraestructura.",
-  "applicationNotes": "Suministro integral para inicio de obra, herramientas agrícolas, de corte, cerrajería y mantenimiento locativo general.",
-  "pdfCatalogUrl": null
+  "logo": "/brands/truper.svg",
+  "description": "El mayor fabricante de herramientas de mano y equipos para construcción, ferretería pesada y jardinería en América Latina.",
+  "applicationNotes": "Abastecimiento masivo para frentes de obra, movimientos de tierra, palas, carretillas y herramientas de golpe.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Herramientas Agrícolas y de Construcción",
+    "Palas y Carretillas",
+    "Seguridad Industrial y EPP",
+    "Herramientas de Corte y Golpe"
+  ]
 }

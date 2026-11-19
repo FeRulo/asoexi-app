@@ -1,0 +1,16 @@
+{
+  "id": "caribe",
+  "name": "Caribe",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/caribe.svg",
+  "description": "Línea de herramientas de mano y albañilería pesada para mampostería, pañete, nivelación de pisos y acabados.",
+  "applicationNotes": "Palustres forjados, llanas dentadas para enchapes cerámicos, cinceles y niveles de gota para maestros de obra.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Palas Forjadas Cuadradas y Redondas",
+    "Llanas Lisas y Dentadas",
+    "Palustres y Cinceles de Albañilería",
+    "Picos y Barretas"
+  ]
+}
