@@ -15,10 +15,57 @@ describe('Catalog Zod Schemas & Content Collections Integrity (TDD - Story 2.1)'
         description: 'Líder en infraestructura física, eléctrica y de red para centros de datos y plantas.',
         applicationNotes: 'Soluciones de cableado estructurado, amarras y organizadores.',
         pdfCatalogUrl: '/catalogs/panduit-2026.pdf',
+        productFamilies: ['Cableado Estructurado', 'Bandejas Portacables'],
       };
 
       const result = brandSchema.parse(validBrand);
       expect(result).toEqual(validBrand);
+    });
+
+    it('should default productFamilies to empty array when omitted', () => {
+      const brandWithoutFamilies = {
+        id: 'panduit',
+        name: 'Panduit',
+        sector: 'electrico',
+        isTractor: true,
+        logo: '/brands/panduit.svg',
+        description: 'Líder en infraestructura física.',
+        applicationNotes: 'Cableado estructurado.',
+      };
+
+      const result = brandSchema.parse(brandWithoutFamilies);
+      expect(result.productFamilies).toEqual([]);
+    });
+
+    it('should transform productFamilies to empty array when null is passed', () => {
+      const brandWithNullFamilies = {
+        id: 'panduit',
+        name: 'Panduit',
+        sector: 'electrico',
+        isTractor: true,
+        logo: '/brands/panduit.svg',
+        description: 'Líder en infraestructura física.',
+        applicationNotes: 'Cableado estructurado.',
+        productFamilies: null,
+      };
+
+      const result = brandSchema.parse(brandWithNullFamilies);
+      expect(result.productFamilies).toEqual([]);
+    });
+
+    it('should validate brand with explicit productFamilies array', () => {
+      const brandWithFamilies = {
+        id: 'panduit',
+        name: 'Panduit',
+        sector: 'electrico',
+        isTractor: true,
+        description: 'Líder en conectividad.',
+        applicationNotes: 'Cableado estructurado.',
+        productFamilies: ['Patch Cords', 'Jacks RJ45', 'Racks y Gabinetes'],
+      };
+
+      const result = brandSchema.parse(brandWithFamilies);
+      expect(result.productFamilies).toEqual(['Patch Cords', 'Jacks RJ45', 'Racks y Gabinetes']);
     });
 
     it('should validate a valid brand with null/undefined logo (EDGE-2 fallback)', () => {

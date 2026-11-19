@@ -69,6 +69,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       description: 'Líder en cableado estructurado, amarras y conectividad industrial.',
       applicationNotes: 'Cables UTP categoría 6A, bandejas portacables y rotuladoras.',
       pdfCatalogUrl: null,
+      productFamilies: ['Cableado Estructurado', 'Bandejas Portacables'],
     },
     {
       id: 'sika',
@@ -79,6 +80,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       description: 'Impermeabilizantes, aditivos para concreto y selladores elastoméricos.',
       applicationNotes: 'Sika 1, Sikaflex 1A y membranas líquidas para cubiertas.',
       pdfCatalogUrl: null,
+      productFamilies: ['Impermeabilizantes', 'Aditivos para Concreto'],
     },
     {
       id: 'dewalt',
@@ -89,6 +91,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       description: 'Herramientas de potencia para trabajo pesado y rotomartillos SDS.',
       applicationNotes: 'Taladros percutores, pulidoras angulares y discos abrasivos.',
       pdfCatalogUrl: null,
+      productFamilies: ['Herramientas Eléctricas', 'Rotomartillos SDS'],
     },
     {
       id: 'schneider',
@@ -99,6 +102,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       description: 'Breakers termomagnéticos, contactores y tableros eléctricos.',
       applicationNotes: 'Interruptores de caja moldeada y arrancadores suaves.',
       pdfCatalogUrl: null,
+      productFamilies: ['Breakers Termomagnéticos', 'Contactores'],
     },
   ];
 

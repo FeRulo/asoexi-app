@@ -187,6 +187,138 @@ export function hasValidBrandLogo(logo?: string | null): boolean {
   return typeof logo === 'string' && logo.trim().length > 0;
 }
 
+export interface BrandLogisticsPromise {
+  isTractor: boolean;
+  headline: string;
+  promise: string;
+  description: string;
+  badgeLabel: string;
+  badgeClass: string;
+  containerClass: string;
+  urgentDelivery: boolean;
+  creditDaysNotice: string;
+  dianNotice: string;
+}
+
+/**
+ * Returns differentiated logistics promise details according to brand status (Tractor vs Secondary/On-demand).
+ */
+export function getBrandLogisticsPromise(isTractor: boolean): BrandLogisticsPromise {
+  if (isTractor) {
+    return {
+      isTractor: true,
+      headline: 'Promesa Logística Prioritaria en Obra',
+      promise: 'Entrega 24-48h regular en Bogotá y 6h urgencias en obra',
+      description:
+        'Inventario local garantizado para marcas tractoras con despacho prioritario a cuadrillas en obra o planta en Bogotá y municipios de la Sabana.',
+      badgeLabel: 'Despacho Prioritario Local',
+      badgeClass: 'text-amber-800 bg-amber-50 border-amber-300',
+      containerClass: 'bg-white border-amber-300 ring-1 ring-amber-200/60 shadow-xs',
+      urgentDelivery: true,
+      creditDaysNotice: 'Crédito comercial a 45 días para empresas registradas con RUT',
+      dianNotice: 'Facturación electrónica DIAN 100% formal',
+    };
+  }
+
+  return {
+    isTractor: false,
+    headline: 'Disponibilidad Bajo Pedido Directo a Fábrica',
+    promise: 'Suministro de portafolio completo bajo pedido directo a fábrica (~48-72h)',
+    description:
+      'Abastecimiento de portafolio integral consolidado con despacho programado directo del fabricante y garantía original.',
+    badgeLabel: 'Bajo Pedido a Fábrica',
+    badgeClass: 'text-slate-700 bg-slate-100 border-slate-200',
+    containerClass: 'bg-slate-50 border-slate-200 shadow-2xs',
+    urgentDelivery: false,
+    creditDaysNotice: 'Crédito comercial a 45 días para empresas registradas con RUT',
+    dianNotice: 'Facturación electrónica DIAN 100% formal',
+  };
+}
+
+/**
+ * Validates whether a brand has a non-empty, non-whitespace PDF catalog URL or path (EDGE-2).
+ * Rejects empty strings, '#' dummy links, and 'javascript:' pseudo-protocols.
+ */
+export function hasValidPdfCatalog(pdfCatalogUrl?: string | null): boolean {
+  if (typeof pdfCatalogUrl !== 'string') {
+    return false;
+  }
+  const trimmed = pdfCatalogUrl.trim();
+  if (trimmed.length === 0 || trimmed === '#' || trimmed.toLowerCase().startsWith('javascript:')) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Normalizes a PDF catalog URL or path ensuring absolute paths for local assets.
+ */
+export function normalizePdfCatalogUrl(pdfCatalogUrl?: string | null): string | null {
+  if (!hasValidPdfCatalog(pdfCatalogUrl)) {
+    return null;
+  }
+  const trimmed = pdfCatalogUrl!.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/')) {
+    return trimmed;
+  }
+  return `/${trimmed}`;
+}
+
+/**
+ * Resolves the list of product families for a brand.
+ * 1. Checks explicit `productFamilies` array.
+ * 2. Falls back to segmenting `applicationNotes`.
+ * 3. Falls back to sector technical categories.
+ * 4. Safe generic fallback to prevent empty displays.
+ */
+export function getBrandProductFamilies(
+  brand?: (Brand | Partial<Brand> | { data?: Brand | Partial<Brand> }) | null
+): string[] {
+  if (!brand || typeof brand !== 'object') {
+    return [];
+  }
+
+  const target: Partial<Brand> =
+    'data' in brand && brand.data ? (brand.data as Partial<Brand>) : (brand as Partial<Brand>);
+
+  // 1. Explicit product families if available and non-empty
+  if (Array.isArray(target.productFamilies)) {
+    const explicit = target.productFamilies
+      .map((f) => (typeof f === 'string' ? f.trim() : ''))
+      .filter((f) => f.length > 0);
+    if (explicit.length > 0) {
+      return explicit;
+    }
+  }
+
+  // 2. Fallback to extracting from applicationNotes
+  if (typeof target.applicationNotes === 'string' && target.applicationNotes.trim().length > 0) {
+    const rawSegments = target.applicationNotes
+      .split(/[,;]|\s+(?:y|e)\s+/i)
+      .map((s) => s.replace(/\.+$/, '').trim())
+      .filter((s) => s.length > 2);
+
+    if (rawSegments.length > 0) {
+      return rawSegments.map((seg) => seg.charAt(0).toUpperCase() + seg.slice(1));
+    }
+  }
+
+  // 3. Fallback to sector technical categories
+  if (target.sector && target.sector in SECTOR_TECHNICAL_CONTENT) {
+    const sectorContent = SECTOR_TECHNICAL_CONTENT[target.sector as SectorId];
+    if (sectorContent?.technicalCategories?.length > 0) {
+      return sectorContent.technicalCategories.slice(0, 4).map((c) => c.title);
+    }
+  }
+
+  // 4. Defensive fallback
+  return [
+    'Suministro Industrial Especializado',
+    'Insumos Técnicos para Obra',
+    'Soluciones de Mantenimiento Corporativo',
+  ];
+}
+
 export interface SectorTechnicalCategory {
   title: string;
   description: string;

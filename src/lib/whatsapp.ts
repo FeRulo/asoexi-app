@@ -135,6 +135,23 @@ export function generateBrandQuoteWhatsAppUrl(
 }
 
 /**
+ * Generates an official WhatsApp wa.me URL for requesting technical datasheet or factory catalog for a brand.
+ * Points to the centralized corporate line (+57 301 419 1344).
+ * If brandName is empty, null, or whitespace, falls back safely to DEFAULT_WHATSAPP_MESSAGE.
+ */
+export function generateBrandCatalogRequestWhatsAppUrl(
+  brandName?: string | null,
+  storage?: Storage
+): string {
+  const trimmed = brandName?.trim();
+  if (!trimmed) {
+    return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
+  }
+  const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar la ficha técnica o catálogo oficial de fábrica para la marca ${trimmed}`;
+  return getDirectWhatsAppUrl(storage, message);
+}
+
+/**
  * Generates an official WhatsApp wa.me URL contextualized for quoting a multi-brand list of a specific industrial sector.
  * Points to the centralized corporate line (+57 301 419 1344).
  * If sectorName is empty, null, or whitespace, falls back safely to DEFAULT_WHATSAPP_MESSAGE.

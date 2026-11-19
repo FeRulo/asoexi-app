@@ -4,6 +4,10 @@ import {
   getBrandH1Title,
   buildBrandBreadcrumbs,
   hasValidBrandLogo,
+  getBrandLogisticsPromise,
+  hasValidPdfCatalog,
+  normalizePdfCatalogUrl,
+  getBrandProductFamilies,
 } from '@/lib/brands';
 import { resolveCanonicalUrl, generateBreadcrumbsSchema } from '@/lib/seo';
 import { generateBrandQuoteWhatsAppUrl } from '@/lib/whatsapp';
@@ -205,6 +209,147 @@ describe('Brand Silo Unit Tests (Story 3.1: /distribuidor-[brand]-colombia)', ()
         expect(h1).toBe(`Distribuidor Autorizado ${content.name.trim()} en Colombia e Insumos Mayoristas`);
         expect(h1).toContain(content.name.trim());
       }
+    });
+  });
+
+  describe('Differentiated Logistics Promise (Story 3.2: getBrandLogisticsPromise)', () => {
+    it('should return urgent delivery promise for tractor brands (isTractor: true)', () => {
+      const promise = getBrandLogisticsPromise(true);
+      expect(promise.isTractor).toBe(true);
+      expect(promise.urgentDelivery).toBe(true);
+      expect(promise.promise).toBe('Entrega 24-48h regular en Bogotá y 6h urgencias en obra');
+      expect(promise.creditDaysNotice).toContain('45 días');
+      expect(promise.dianNotice).toContain('DIAN');
+      expect(promise.badgeLabel).toBeDefined();
+    });
+
+    it('should return on-demand direct factory delivery promise for secondary brands (isTractor: false)', () => {
+      const promise = getBrandLogisticsPromise(false);
+      expect(promise.isTractor).toBe(false);
+      expect(promise.urgentDelivery).toBe(false);
+      expect(promise.promise).toBe('Suministro de portafolio completo bajo pedido directo a fábrica (~48-72h)');
+      expect(promise.promise).not.toContain('6h urgencias');
+      expect(promise.creditDaysNotice).toContain('45 días');
+      expect(promise.badgeLabel).toBeDefined();
+    });
+  });
+
+  describe('Conditional PDF Catalog Detection (Story 3.2: hasValidPdfCatalog)', () => {
+    it('should return true for valid PDF URLs or local paths', () => {
+      expect(hasValidPdfCatalog('/catalogs/panduit-2026.pdf')).toBe(true);
+      expect(hasValidPdfCatalog('https://cdn.asoexi.com/catalogs/sika.pdf')).toBe(true);
+      expect(hasValidPdfCatalog('relative/path/catalog.pdf')).toBe(true);
+    });
+
+    it('should return false for null, undefined, empty string or whitespace (EDGE-2)', () => {
+      expect(hasValidPdfCatalog(null)).toBe(false);
+      expect(hasValidPdfCatalog(undefined)).toBe(false);
+      expect(hasValidPdfCatalog('')).toBe(false);
+      expect(hasValidPdfCatalog('   ')).toBe(false);
+    });
+
+    it('should reject dummy hashes and javascript pseudo-protocols', () => {
+      expect(hasValidPdfCatalog('#')).toBe(false);
+      expect(hasValidPdfCatalog(' # ')).toBe(false);
+      expect(hasValidPdfCatalog('javascript:void(0)')).toBe(false);
+      expect(hasValidPdfCatalog('javascript:alert(1)')).toBe(false);
+    });
+
+    it('should normalize relative PDF catalog URLs with leading slash', () => {
+      expect(normalizePdfCatalogUrl('catalogs/panduit-2026.pdf')).toBe('/catalogs/panduit-2026.pdf');
+      expect(normalizePdfCatalogUrl('/catalogs/panduit-2026.pdf')).toBe('/catalogs/panduit-2026.pdf');
+      expect(normalizePdfCatalogUrl('https://cdn.asoexi.com/catalogs/sika.pdf')).toBe(
+        'https://cdn.asoexi.com/catalogs/sika.pdf'
+      );
+      expect(normalizePdfCatalogUrl('#')).toBeNull();
+      expect(normalizePdfCatalogUrl(null)).toBeNull();
+    });
+  });
+
+  describe('Brand Product Families Extraction & Defensive Fallback (Story 3.2: getBrandProductFamilies)', () => {
+    it('should return explicit productFamilies array when defined and non-empty', () => {
+      const brand = {
+        name: 'Panduit',
+        productFamilies: ['Cableado Estructurado', 'Bandejas Portacables', 'Amarras'],
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families).toEqual(['Cableado Estructurado', 'Bandejas Portacables', 'Amarras']);
+    });
+
+    it('should trim explicit productFamilies and filter out empty elements', () => {
+      const brand = {
+        name: 'Panduit',
+        productFamilies: ['  Cableado Estructurado  ', '', '   ', 'Bandejas Portacables'],
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families).toEqual(['Cableado Estructurado', 'Bandejas Portacables']);
+    });
+
+    it('should extract families from applicationNotes when productFamilies is empty or omitted', () => {
+      const brand = {
+        name: 'Panduit',
+        applicationNotes: 'Categoría 6A/7, bandejas portacables, amarras',
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families.length).toBeGreaterThanOrEqual(3);
+      expect(families).toContain('Categoría 6A/7');
+      expect(families).toContain('Bandejas portacables');
+      expect(families).toContain('Amarras');
+    });
+
+    it('should extract families from complex applicationNotes with conjunctions (y / e) and punctuation', () => {
+      const brand = {
+        name: 'Panduit',
+        applicationNotes: 'Sistemas de cableado estructurado categoría 6A/7, bandejas portacables, amarras plásticas resistentes a intemperie y marcado industrial.',
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families.length).toBeGreaterThanOrEqual(2);
+      expect(families.some((f) => f.includes('cableado') || f.includes('Cableado'))).toBe(true);
+      expect(families.some((f) => f.includes('bandejas') || f.includes('Bandejas'))).toBe(true);
+    });
+
+    it('should preserve internal decimal numbers while stripping trailing punctuation in applicationNotes', () => {
+      const brand = {
+        name: 'Centelsa',
+        applicationNotes: 'Cables THHN 2.5 mm², acometidas de 4.0 mm, terminales a compresión.',
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families.length).toBe(3);
+      expect(families[0]).toBe('Cables THHN 2.5 mm²');
+      expect(families[1]).toBe('Acometidas de 4.0 mm');
+      expect(families[2]).toBe('Terminales a compresión');
+    });
+
+    it('should fall back to sector technical categories when productFamilies and applicationNotes are empty', () => {
+      const brand = {
+        name: 'EmptyBrand',
+        sector: 'electrico' as const,
+        applicationNotes: '',
+      };
+      const families = getBrandProductFamilies(brand);
+      expect(families.length).toBeGreaterThan(0);
+      expect(families.some((f) => f.includes('Cableado') || f.includes('Conductores'))).toBe(true);
+    });
+
+    it('should provide defensive fallback when all properties are undefined or brand is empty', () => {
+      const familiesEmpty = getBrandProductFamilies({});
+      expect(familiesEmpty.length).toBeGreaterThan(0);
+
+      const familiesNull = getBrandProductFamilies(null);
+      expect(familiesNull.length).toBe(0);
+    });
+
+    it('should handle Astro CollectionEntry-like objects with .data property', () => {
+      const entry = {
+        id: 'panduit',
+        data: {
+          name: 'Panduit',
+          sector: 'electrico' as const,
+          productFamilies: ['Patch Cords', 'Racks'],
+        },
+      };
+      const families = getBrandProductFamilies(entry as any);
+      expect(families).toEqual(['Patch Cords', 'Racks']);
     });
   });
 });

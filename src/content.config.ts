@@ -19,6 +19,7 @@ export const brandSchema = z.object({
   description: z.string().min(1),
   applicationNotes: z.string(),
   pdfCatalogUrl: z.string().nullable().optional(),
+  productFamilies: z.array(z.string()).nullable().optional().transform((v) => v ?? []),
 });
 
 export const categorySchema = z.object({

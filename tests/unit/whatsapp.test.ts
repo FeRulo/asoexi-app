@@ -11,6 +11,7 @@ import {
   getBalancedAdvisors,
   getPrimaryAdvisor,
   generateRequisitionWhatsAppUrl,
+  generateBrandCatalogRequestWhatsAppUrl,
 } from '@/lib/whatsapp';
 
 // In-memory mock storage implementation for unit tests
@@ -182,6 +183,34 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
       expect(generateRequisitionWhatsAppUrl(null, mockStorage)).toBe(
         getDirectWhatsAppUrl(mockStorage, DEFAULT_WHATSAPP_MESSAGE)
       );
+    });
+
+    describe('generateBrandCatalogRequestWhatsAppUrl (Story 3.2)', () => {
+      it('should generate official WhatsApp link to corporate line with brand catalog request message', () => {
+        const url = generateBrandCatalogRequestWhatsAppUrl('Panduit', mockStorage);
+        expect(url).toContain('https://wa.me/573014191344?text=');
+        expect(decodeURIComponent(url)).toContain(
+          'Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar la ficha técnica o catálogo oficial de fábrica para la marca Panduit'
+        );
+      });
+
+      it('should trim surrounding whitespace from brand name', () => {
+        const url = generateBrandCatalogRequestWhatsAppUrl('  Sika  ', mockStorage);
+        expect(decodeURIComponent(url)).toContain(
+          'Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar la ficha técnica o catálogo oficial de fábrica para la marca Sika'
+        );
+      });
+
+      it('should safely fall back to default message when brand name is empty, null or whitespace', () => {
+        const emptyUrl = generateBrandCatalogRequestWhatsAppUrl('', mockStorage);
+        expect(decodeURIComponent(emptyUrl)).toContain(DEFAULT_WHATSAPP_MESSAGE);
+
+        const nullUrl = generateBrandCatalogRequestWhatsAppUrl(null, mockStorage);
+        expect(decodeURIComponent(nullUrl)).toContain(DEFAULT_WHATSAPP_MESSAGE);
+
+        const whitespaceUrl = generateBrandCatalogRequestWhatsAppUrl('   ', mockStorage);
+        expect(decodeURIComponent(whitespaceUrl)).toContain(DEFAULT_WHATSAPP_MESSAGE);
+      });
     });
   });
 });
