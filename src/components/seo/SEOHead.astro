@@ -1,0 +1,66 @@
+---
+import {
+  buildPageMetadata,
+  generateOpenGraphTags,
+  type PageMetadataInput,
+  type JsonLdInput,
+} from '@/lib/seo';
+
+export interface Props extends PageMetadataInput {
+  jsonLd?: JsonLdInput | null;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  currentPath = '/',
+  image,
+  imageAlt,
+  type,
+  noindex,
+  ogTitle,
+  twitterTitle,
+  jsonLd,
+} = Astro.props;
+
+const metadata = buildPageMetadata({
+  title,
+  description,
+  canonicalUrl,
+  currentPath,
+  image,
+  imageAlt,
+  type,
+  noindex,
+  ogTitle,
+  twitterTitle,
+});
+
+const ogTags = generateOpenGraphTags(metadata);
+
+const schemas = jsonLd
+  ? Array.isArray(jsonLd)
+    ? jsonLd.filter(Boolean)
+    : [jsonLd]
+  : [];
+---
+
+<title>{metadata.title}</title>
+<meta name="description" content={metadata.description} />
+<link rel="canonical" href={metadata.canonicalUrl} />
+<meta name="robots" content={metadata.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+
+<!-- Open Graph Protocol & Twitter Cards -->
+{ogTags.map((tag) => (
+  tag.property ? (
+    <meta property={tag.property} content={tag.content} />
+  ) : (
+    <meta name={tag.name} content={tag.content} />
+  )
+))}
+
+<!-- Structured Data (JSON-LD) -->
+{schemas.map((schema) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />
+))}

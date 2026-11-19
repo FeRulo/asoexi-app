@@ -1,0 +1,58 @@
+---
+import type { BreadcrumbItem } from '@/lib/seo';
+
+export type { BreadcrumbItem };
+
+export interface Props {
+  items?: BreadcrumbItem[] | null;
+  class?: string;
+}
+
+const { items, class: customClass = '' } = Astro.props;
+const hasItems = items && Array.isArray(items) && items.length > 0;
+---
+
+{hasItems && (
+  <nav aria-label="Migas de pan" class={`py-1 text-sm font-medium ${customClass}`}>
+    <ol class="flex flex-wrap items-center gap-1 sm:gap-1.5 text-slate-600">
+      {items!.map((item, index) => {
+        const isLast = index === items!.length - 1;
+        return (
+          <li class="inline-flex items-center gap-1 sm:gap-1.5">
+            {index > 0 && (
+              <svg
+                class="w-3.5 h-3.5 text-slate-400 shrink-0 select-none"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            )}
+            {isLast || !item.url ? (
+              <span
+                class="min-h-[48px] inline-flex items-center text-slate-900 font-semibold truncate max-w-[240px] sm:max-w-none"
+                aria-current={isLast ? 'page' : undefined}
+              >
+                {item.name}
+              </span>
+            ) : (
+              <a
+                href={item.url}
+                class="min-h-[48px] inline-flex items-center px-1 hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-industrial"
+              >
+                {item.name}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+)}

@@ -5,7 +5,8 @@ import ContactChannelModal from '@/islands/ContactChannelModal';
 import LiveSearchModal from '@/islands/LiveSearchModal';
 import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
-import { buildPageMetadata, generateOpenGraphTags } from '@/lib/seo';
+import SEOHead from '@/components/seo/SEOHead.astro';
+import type { JsonLdInput } from '@/lib/seo';
 import '@/styles/global.css';
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
   noindex?: boolean;
   ogTitle?: string;
   twitterTitle?: string;
+  jsonLd?: JsonLdInput | null;
 }
 
 const {
@@ -32,22 +34,8 @@ const {
   noindex,
   ogTitle,
   twitterTitle,
+  jsonLd,
 } = Astro.props;
-
-const metadata = buildPageMetadata({
-  title,
-  description,
-  currentPath,
-  canonicalUrl,
-  image,
-  imageAlt,
-  type,
-  noindex,
-  ogTitle,
-  twitterTitle,
-});
-
-const ogTags = generateOpenGraphTags(metadata);
 ---
 
 <!doctype html>
@@ -57,19 +45,20 @@ const ogTags = generateOpenGraphTags(metadata);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{metadata.title}</title>
-    <meta name="description" content={metadata.description} />
-    <link rel="canonical" href={metadata.canonicalUrl} />
-    <meta name="robots" content={metadata.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
 
-    <!-- Open Graph Protocol & Twitter Cards -->
-    {ogTags.map((tag) => (
-      tag.property ? (
-        <meta property={tag.property} content={tag.content} />
-      ) : (
-        <meta name={tag.name} content={tag.content} />
-      )
-    ))}
+    <SEOHead
+      title={title}
+      description={description}
+      currentPath={currentPath}
+      canonicalUrl={canonicalUrl}
+      image={image}
+      imageAlt={imageAlt}
+      type={type}
+      noindex={noindex}
+      ogTitle={ogTitle}
+      twitterTitle={twitterTitle}
+      jsonLd={jsonLd}
+    />
 
     <!-- Google Fonts: Montserrat (Titulares/Display) & Inter (Cuerpo/Datos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -1,5 +1,6 @@
 import type { Brand, SectorId } from '@/content.config';
 import { SECTOR_IDS } from '@/content.config';
+import type { BreadcrumbItem } from '@/lib/seo';
 
 export interface SectorMeta {
   id: SectorId;
@@ -138,6 +139,52 @@ export function getBrandSiloUrl(id?: string | null): string {
     return '#';
   }
   return `/distribuidor-${id.trim().toLowerCase()}-colombia`;
+}
+
+/**
+ * Generates the standardized H1 title for brand silos.
+ * Defensively handles null, undefined or empty brand names.
+ */
+export function getBrandH1Title(brandName?: string | null): string {
+  const trimmed = brandName ? brandName.trim() : '';
+  if (!trimmed) {
+    return 'Distribuidor Autorizado en Colombia e Insumos Mayoristas';
+  }
+  return `Distribuidor Autorizado ${trimmed} en Colombia e Insumos Mayoristas`;
+}
+
+/**
+ * Builds the canonical 3-tier breadcrumbs hierarchy for a brand silo:
+ * Inicio > [Sector] > [Marca]
+ * Defensively handles missing sector metadata and empty strings.
+ */
+export function buildBrandBreadcrumbs(
+  brandName?: string | null,
+  brandId?: string | null,
+  sectorId?: SectorId | string | null,
+  siloUrl?: string
+): BreadcrumbItem[] {
+  const resolvedBrandName = (brandName ?? '').trim() || 'Marca';
+  const resolvedBrandId = (brandId ?? '').trim();
+  const validSectorId = (sectorId ?? '').trim().toLowerCase() as SectorId;
+  const sectorMeta = SECTORS_META[validSectorId];
+
+  const sectorName = sectorMeta ? (sectorMeta.shortName || sectorMeta.name) : 'Sector Industrial';
+  const sectorSlug = sectorMeta ? sectorMeta.slug : `sector-${validSectorId || 'industrial'}`;
+  const targetSiloUrl = siloUrl ?? getBrandSiloUrl(resolvedBrandId);
+
+  return [
+    { name: 'Inicio', url: '/' },
+    { name: sectorName, url: `/${sectorSlug}` },
+    { name: resolvedBrandName, url: targetSiloUrl },
+  ];
+}
+
+/**
+ * Validates whether a brand has a non-empty, non-whitespace logo path or URL (EDGE-2).
+ */
+export function hasValidBrandLogo(logo?: string | null): boolean {
+  return typeof logo === 'string' && logo.trim().length > 0;
 }
 
 export interface SectorTechnicalCategory {

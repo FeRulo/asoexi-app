@@ -159,3 +159,67 @@ export function generateOpenGraphTags(metadata: PageMetadata): MetaTag[] {
     { name: 'twitter:image:alt', content: metadata.twitterImageAlt },
   ];
 }
+
+export interface BreadcrumbItem {
+  name: string;
+  url?: string;
+}
+
+export interface SchemaListItem {
+  '@type': 'ListItem';
+  position: number;
+  name: string;
+  item?: string;
+}
+
+export interface SchemaBreadcrumbList {
+  '@context': 'https://schema.org';
+  '@type': 'BreadcrumbList';
+  itemListElement: SchemaListItem[];
+  [key: string]: unknown;
+}
+
+export type JsonLdInput =
+  | SchemaBreadcrumbList
+  | Record<string, unknown>
+  | Array<SchemaBreadcrumbList | Record<string, unknown>>;
+
+/**
+ * Genera el esquema Schema.org BreadcrumbList con URLs canónicas absolutas.
+ * Maneja items con URLs opcionales o vacías sin mapearlas erróneamente al dominio raíz.
+ */
+export function generateBreadcrumbsSchema(
+  items?: BreadcrumbItem[] | null,
+  baseUrl: string = SITE_METADATA.siteUrl
+): SchemaBreadcrumbList {
+  if (!items || !Array.isArray(items)) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [],
+    };
+  }
+
+  const itemListElement: SchemaListItem[] = items
+    .filter((item): item is BreadcrumbItem => Boolean(item && typeof item === 'object'))
+    .map((item, index) => {
+      const listItem: SchemaListItem = {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: (item.name ?? '').trim(),
+      };
+      if (typeof item.url === 'string' && item.url.trim().length > 0) {
+        listItem.item = resolveCanonicalUrl(item.url, baseUrl);
+      }
+      return listItem;
+    });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement,
+  };
+}
+
+export const generateBreadcrumbListSchema = generateBreadcrumbsSchema;
+
