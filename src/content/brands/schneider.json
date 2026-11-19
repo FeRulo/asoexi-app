@@ -3,7 +3,7 @@
   "name": "Schneider Electric",
   "sector": "electrico",
   "isTractor": false,
-  "logo": "/brands/schneider.svg",
+  "logo": "/brands/schneider.png",
   "description": "Transformación digital de la gestión energética y automatización en hogares, edificios, centros de datos e industrias.",
   "applicationNotes": "Interruptores termomagnéticos Acti9, tableros Square D, contactores TeSys y variadores de frecuencia Altivar.",
   "pdfCatalogUrl": null,

@@ -3,7 +3,7 @@
   "name": "Legrand",
   "sector": "electrico",
   "isTractor": false,
-  "logo": "/brands/legrand.svg",
+  "logo": "/brands/legrand.png",
   "description": "Especialista global en infraestructuras eléctricas y digitales para edificios terciarios, residenciales e industriales.",
   "applicationNotes": "Aparamenta modular, interruptores de caja moldeada, tomas e interruptores de alta gama, canalizaciones DLP y tableros.",
   "pdfCatalogUrl": null,

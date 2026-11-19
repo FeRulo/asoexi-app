@@ -3,7 +3,7 @@
   "name": "Proeléctricos",
   "sector": "electrico",
   "isTractor": false,
-  "logo": "/brands/proelectricos.svg",
+  "logo": "/brands/proelectricos.png",
   "description": "Fabricante colombiano especializado en cajas de paso, tableros de distribución y protecciones eléctricas certificadas.",
   "applicationNotes": "Instalaciones eléctricas industriales, acometidas, tableros de distribución secundaria y cajas estancas para ambientes agresivos.",
   "pdfCatalogUrl": null,

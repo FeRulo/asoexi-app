@@ -3,7 +3,7 @@
   "name": "DeWalt",
   "sector": "ferretero-construccion",
   "isTractor": true,
-  "logo": "/brands/dewalt.svg",
+  "logo": "/brands/dewalt.png",
   "description": "Herramientas eléctricas y a batería de alto rendimiento para trabajo pesado continuo, perforación y corte certificado.",
   "applicationNotes": "Perforación intensiva en concreto y mampostería, corte de perfiles estructurales y fijación pesada en proyectos industriales.",
   "pdfCatalogUrl": null,

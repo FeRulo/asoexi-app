@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 80">
-  <g transform="translate(15, 20)">
-    <rect x="4" y="4" width="24" height="24" rx="4" fill="#65A30D"/>
-    <path d="M 12 12 L 20 12 L 20 20 L 12 20 Z" fill="#FFF"/>
-  </g>
-  <text x="55" y="42" font-family="Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="1" fill="#4D7C0F">CARIBE</text>
-  <text x="56" y="56" font-family="Arial, sans-serif" font-weight="700" font-size="7.5" fill="#666" letter-spacing="0.5">HERRAMIENTA EN SUS MANOS</text>
-</svg>

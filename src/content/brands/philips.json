@@ -3,7 +3,7 @@
   "name": "Philips",
   "sector": "electrico",
   "isTractor": false,
-  "logo": "/brands/philips.svg",
+  "logo": "/brands/philips.png",
   "description": "Líder mundial en iluminación técnica profesional LED con sistemas de alta reproducibilidad cromática y eficiencia lumínica.",
   "applicationNotes": "Alumbrado de líneas de ensamblaje, campanas GentleSpace para centros logísticos y proyectores viales y arquitectónicos.",
   "pdfCatalogUrl": null,

@@ -3,7 +3,7 @@
   "name": "Panduit",
   "sector": "electrico",
   "isTractor": true,
-  "logo": "/brands/panduit.svg",
+  "logo": "/brands/panduit.png",
   "description": "Líder mundial en infraestructura de conectividad física, eléctrica y de red para centros de datos y plantas industriales.",
   "applicationNotes": "Soluciones de cableado estructurado Cat 6A, bandejas portacables, amarras de nylon resistentes a rayos UV y sistemas de puesta a tierra.",
   "pdfCatalogUrl": null,
