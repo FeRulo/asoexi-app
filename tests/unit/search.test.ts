@@ -5,7 +5,10 @@ import {
   buildSearchIndex,
   type SearchIndexItem,
 } from '@/lib/search';
-import { generateSearchZeroFailWhatsAppUrl } from '@/lib/whatsapp';
+import {
+  generateSearchZeroFailWhatsAppUrl,
+  generateRequisitionWhatsAppUrl,
+} from '@/lib/whatsapp';
 import { $cartStore, cartStore, resetCartStore, setCartStorage } from '@/stores/cart';
 import type { Brand, Category } from '@/content.config';
 
@@ -422,6 +425,20 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       expect(synced.totalItems).toBe(3);
       expect(synced.items[0].id).toBe('centelsa');
       expect(synced.items[0].quantity).toBe(3);
+    });
+
+    it('should generate properly formatted requisition WhatsApp URL from cart items', () => {
+      $cartStore.clear();
+      $cartStore.addItem({ id: 'dewalt', name: 'DeWalt', quantity: 2 });
+      $cartStore.addItem({ id: 'sika', name: 'Sika' });
+
+      const state = $cartStore.get();
+      const url = generateRequisitionWhatsAppUrl(state.items, mockStorage);
+
+      expect(url).toContain('https://wa.me/573014191344?text=');
+      expect(url).toContain(encodeURIComponent('1. DeWalt (2 unds)'));
+      expect(url).toContain(encodeURIComponent('2. Sika'));
+      expect(url).toContain(encodeURIComponent('SLA ≤ 5 min'));
     });
   });
 

@@ -10,6 +10,7 @@ import {
   getDirectWhatsAppUrl,
   getBalancedAdvisors,
   getPrimaryAdvisor,
+  generateRequisitionWhatsAppUrl,
 } from '@/lib/whatsapp';
 
 // In-memory mock storage implementation for unit tests
@@ -160,6 +161,27 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
       const advisors = getBalancedWhatsAppAdvisors(undefined);
       expect(advisors).toHaveLength(1);
       expect(advisors[0].id).toBe('corporate');
+    });
+
+    it('generateRequisitionWhatsAppUrl should format multibrand list into WhatsApp deep link', () => {
+      const items = [
+        { name: 'Panduit', quantity: 2 },
+        { name: 'Sika', quantity: 1 },
+      ];
+      const url = generateRequisitionWhatsAppUrl(items, mockStorage);
+      expect(url).toContain('https://wa.me/573014191344?text=');
+      expect(url).toContain(encodeURIComponent('1. Panduit (2 unds)'));
+      expect(url).toContain(encodeURIComponent('2. Sika'));
+      expect(url).toContain(encodeURIComponent('SLA ≤ 5 min'));
+    });
+
+    it('generateRequisitionWhatsAppUrl should fall back to default message if list is empty or null', () => {
+      expect(generateRequisitionWhatsAppUrl([], mockStorage)).toBe(
+        getDirectWhatsAppUrl(mockStorage, DEFAULT_WHATSAPP_MESSAGE)
+      );
+      expect(generateRequisitionWhatsAppUrl(null, mockStorage)).toBe(
+        getDirectWhatsAppUrl(mockStorage, DEFAULT_WHATSAPP_MESSAGE)
+      );
     });
   });
 });

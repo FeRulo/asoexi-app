@@ -175,6 +175,30 @@ export function generateSearchZeroFailWhatsAppUrl(
 }
 
 /**
+ * Generates an official WhatsApp wa.me URL for quoting a multibrand requisition list.
+ * Points to the centralized corporate line (+57 301 419 1344).
+ * If items list is empty, falls back safely to DEFAULT_WHATSAPP_MESSAGE.
+ */
+export function generateRequisitionWhatsAppUrl(
+  items?: Array<{ name: string; quantity?: number; sector?: string }> | null,
+  storage?: Storage
+): string {
+  if (!items || items.length === 0) {
+    return getDirectWhatsAppUrl(storage, DEFAULT_WHATSAPP_MESSAGE);
+  }
+
+  const listFormatted = items
+    .map((item, index) => {
+      const qty = item.quantity && item.quantity > 1 ? ` (${item.quantity} unds)` : '';
+      return `${index + 1}. ${item.name}${qty}`;
+    })
+    .join('\n');
+
+  const message = `Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar una cotización formal para la siguiente lista de requisición:\n\n${listFormatted}\n\nQuedo atento a su respuesta formal (SLA ≤ 5 min).`;
+  return getDirectWhatsAppUrl(storage, message);
+}
+
+/**
  * Returns all active contact channels.
  * Points to the unified corporate line for both calls and WhatsApp.
  */
