@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-22-2026 17:34
-last_updated: 11-06-2026 18:56
+last_updated: 11-19-2026 17:31
 project: asoexi-app
 project_key: NOKEY
 tracking_system: file-system
