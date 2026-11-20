@@ -109,7 +109,8 @@ context:
 - Se implementaron las acciones puras: `addItem`, `addCustomItem`, `updateQuantity`, `removeItem`, `clearCart`, `resetCartStore` y `syncFromStorage`.
 - Coerción estricta de cantidad (EDGE-3) implementada en el rango `[1, 99999]` con truncado de enteros y fallback a 1 para entradas no válidas o menores a 1.
 - Sincronización multi-pestaña libre de bucles de ping-pong (sin llamadas redundantes a `saveState` en storage events).
-- Actualizada la barra inferior de requisición en `src/islands/LiveSearchModal.tsx` reflejando desglose individual de cantidades (`[Nombre] ([N] und[s])`) y contador total acumulado de unidades (`totalItems`).
+- Actualizada la barra inferior de requisición en `src/islands/LiveSearchModal.tsx` con un cuadro vertical estructurado y controles interactivos de cantidad (`+` / `−`) por ítem que invocan directamente `updateQuantity` y `removeItem`, eliminando el truncamiento de texto, integrando badges en verde suave (`emerald-400`) y botón rápido de eliminación.
+- Almacenamiento exclusivo en la clave `asoexi_cart_v1`: se retiró la escritura espejo hacia `asoexi_cart` y se implementó limpieza automática de claves obsoletas para mantener `localStorage` limpio y sin duplicados en entornos de prueba y pre-producción.
 - Se creó la suite completa de pruebas unitarias TDD en `tests/unit/cart.test.ts` con 34 tests específicos pasando limpiamente.
 
 ## Spec Change Log
@@ -127,9 +128,10 @@ context:
 
 ## Design Notes
 
-- Se utiliza `persistentAtom` de `@nanostores/persistent` con codificación JSON personalizada para garantizar que el estado `{ items: CartItem[], totalItems: number }` se serialice de forma segura.
+- Se utiliza `persistentAtom` de `@nanostores/persistent` con codificación JSON personalizada para garantizar que el estado `{ items: CartItem[], totalItems: number }` se serialice de forma segura exclusivamente bajo la clave `asoexi_cart_v1`.
 - Para el entorno de pruebas y compatibilidad con SSR, se abstrae el storage de modo que en Node o en tests con `mockStorage` funcione fluidamente sin depender exclusivamente del objeto global `window.localStorage`.
 - Las acciones puras reciben o actualizan el estado de forma inmutable, recalculando automáticamente `totalItems` como `items.reduce((sum, it) => sum + it.quantity, 0)`.
+- La lista de requisición en `LiveSearchModal` renderiza un contenedor vertical scrollable en lugar de chips horizontales, proporcionando botones táctiles `+` y `−` para ajuste fino de cantidades en tiempo real, mejorando la usabilidad y eliminando cualquier truncamiento o incertidumbre visual.
 
 ## Verification
 
