@@ -573,7 +573,7 @@ export default function LiveSearchModal() {
           <div class="px-4 py-3 bg-secondary text-white border-t border-slate-700/80 flex flex-col gap-2.5 shadow-inner">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-7 h-7 rounded-industrial bg-primary/20 border border-primary/40 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                <span class="w-7 h-7 rounded-industrial bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">
                   {cartState.totalItems}
                 </span>
                 <div class="min-w-0">
@@ -612,26 +612,37 @@ export default function LiveSearchModal() {
               </div>
             </div>
 
-            {/* Chips de ítems visibles sin truncar */}
-            <div class="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
+            {/* Cuadro contenedor de lista vertical */}
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-industrial max-h-36 overflow-y-auto divide-y divide-slate-800/80 shadow-xs">
               {cartState.items.map((item) => (
                 <div
                   key={item.id}
-                  class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-slate-800/95 border border-slate-700/80 rounded-industrial text-[11px] text-slate-200 shadow-2xs hover:border-slate-600 transition-colors"
+                  class="flex items-center justify-between gap-3 px-3 py-1.5 hover:bg-slate-800/50 transition-colors"
                 >
-                  <span class="font-medium text-white">{item.name}</span>
-                  <span class="px-1 py-0.2 bg-primary/20 text-primary text-[10px] font-bold rounded">
-                    {item.quantity} {item.quantity === 1 ? 'und' : 'unds'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => $cartStore.removeItem(item.id)}
-                    class="text-slate-400 hover:text-red-400 transition-colors cursor-pointer text-xs font-bold leading-none px-0.5"
-                    title={`Eliminar ${item.name}`}
-                    aria-label={`Eliminar ${item.name}`}
-                  >
-                    &times;
-                  </button>
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                    <span class="text-xs font-medium text-white truncate">{item.name}</span>
+                    {'isTractor' in item && Boolean(item.isTractor) && (
+                      <span class="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">
+                        Tractora
+                      </span>
+                    )}
+                  </div>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold rounded">
+                      {item.quantity} {item.quantity === 1 ? 'und' : 'unds'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => $cartStore.removeItem(item.id)}
+                      class="text-slate-400 hover:text-red-400 transition-colors cursor-pointer text-sm font-bold leading-none px-1"
+                      title={`Eliminar ${item.name}`}
+                      aria-label={`Eliminar ${item.name}`}
+                    >
+                      &times;
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
