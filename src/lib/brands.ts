@@ -621,11 +621,14 @@ export function getBrandSourcingNotes(
   const target: Partial<Brand> =
     'data' in brand && brand.data ? (brand.data as Partial<Brand>) : (brand as Partial<Brand>);
 
-  if (typeof target.sourcingNotes === 'string' && target.sourcingNotes.trim().length > 0) {
+  if (typeof target.sourcingNotes === 'string' && target.sourcingNotes.trim().length >= 60) {
     return target.sourcingNotes.trim();
   }
 
-  const brandName = (target.name ?? '').trim() || 'la marca';
+  const brandName =
+    typeof target.name === 'string' && target.name.trim().length > 0
+      ? target.name.trim()
+      : 'la marca';
 
   return `Como distribuidor mayorista en Colombia, ASOEXI S.A.S. gestiona el abastecimiento integral de todo el portafolio de ${brandName} bajo pedido directo a fábrica, con despacho consolidado en obra para Bogotá y municipios de la Sabana, facturación electrónica DIAN y crédito comercial a 45 días para empresas registradas con RUT.`;
 }
@@ -635,7 +638,7 @@ export function getBrandSourcingNotes(
  * Requirements:
  * - description >= 60 characters
  * - applicationNotes >= 60 characters
- * - at least 3 non-empty product families in productFamilies
+ * - at least 3 unique non-empty product families in productFamilies
  * - sourcingNotes >= 60 characters
  */
 export function isBrandContentSubstantial(
@@ -662,10 +665,11 @@ export function isBrandContentSubstantial(
   if (!Array.isArray(target.productFamilies)) {
     return false;
   }
-  const validFamilies = target.productFamilies.filter(
-    (f) => typeof f === 'string' && f.trim().length > 0
-  );
-  if (validFamilies.length < 3) {
+  const validFamilies = target.productFamilies
+    .map((f) => (typeof f === 'string' ? f.trim() : ''))
+    .filter((f) => f.length > 0);
+  const uniqueFamilies = new Set(validFamilies);
+  if (uniqueFamilies.size < 3) {
     return false;
   }
 

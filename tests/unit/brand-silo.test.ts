@@ -391,6 +391,13 @@ describe('Brand Silo Unit Tests (Story 3.1: /distribuidor-[brand]-colombia)', ()
       expect(fallbackWhitespace).toContain('Sika');
     });
 
+    it('should return institutional wholesale fallback when explicit sourcingNotes is shorter than 60 characters', () => {
+      const fallbackShort = getBrandSourcingNotes({ name: 'Sika', sourcingNotes: 'Demasiado corto.' });
+      expect(fallbackShort).toContain('Sika');
+      expect(fallbackShort).toContain('45 días');
+      expect(fallbackShort.length).toBeGreaterThanOrEqual(60);
+    });
+
     it('should handle Astro CollectionEntry-like objects with .data property', () => {
       const entry = {
         id: 'centelsa',
@@ -412,6 +419,9 @@ describe('Brand Silo Unit Tests (Story 3.1: /distribuidor-[brand]-colombia)', ()
 
       const fallbackNoName = getBrandSourcingNotes({});
       expect(fallbackNoName).toContain('la marca');
+
+      const fallbackNonStringName = getBrandSourcingNotes({ name: 123 as any });
+      expect(fallbackNonStringName).toContain('la marca');
     });
   });
 
@@ -470,11 +480,25 @@ describe('Brand Silo Unit Tests (Story 3.1: /distribuidor-[brand]-colombia)', ()
       ).toBe(false);
     });
 
-    it('should return false if productFamilies has fewer than 3 items', () => {
+    it('should return false if productFamilies has fewer than 3 items or duplicate items', () => {
       expect(
         isBrandContentSubstantial({
           ...validSubstantialBrand,
           productFamilies: ['Familia 1', 'Familia 2'],
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: ['Familia 1', 'Familia 1', 'Familia 1'],
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: ['Familia 1', 'Familia 2', 'Familia 1'],
         })
       ).toBe(false);
 

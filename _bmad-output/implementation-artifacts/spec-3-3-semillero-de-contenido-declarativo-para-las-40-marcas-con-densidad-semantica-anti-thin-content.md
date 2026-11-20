@@ -2,7 +2,7 @@
 title: 'Story 3.3: Semillero de Contenido Declarativo para las ~40 Marcas con Densidad Semántica Anti-Thin-Content'
 type: 'feature'
 created: '2026-11-20'
-status: 'completed'
+status: 'in-review'
 baseline_commit: '12a6b978855d7cb878c15a3ed8a8572baffd03d8'
 route: 'dispatch'
 review_loop_iteration: 0

@@ -50,10 +50,10 @@ development_status:
   2-4-buscador-tiempo-real-livesearchmodal-fallo-cero: done
   epic-2-retrospective: optional
 
-  epic-3: done
+  epic-3: in-progress
   3-1-plantilla-dinamica-canonica-ssg-silos-de-marca: done
   3-2-vitrina-portafolio-marca-promesa-logistica-descarga-pdf: done
-  3-3-semillero-de-contenido-declarativo-para-las-40-marcas-con-densidad-semantica-anti-thin-content: done
+  3-3-semillero-de-contenido-declarativo-para-las-40-marcas-con-densidad-semantica-anti-thin-content: in-review
   epic-3-retrospective: optional
 
   epic-4: backlog
