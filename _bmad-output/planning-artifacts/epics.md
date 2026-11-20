@@ -483,6 +483,10 @@ So that consolide todos los materiales de mi obra en un único requerimiento cla
 **When** el usuario inspecciona las opciones de edición,  
 **Then** dispone de controles para ajustar cantidades, eliminar ítems y el campo interactivo `+ Agregar insumo o nota libre` para referencias personalizadas fuera de catálogo.
 
+**Given** la visualización de marcas agregadas en el cajón y en el buscador,  
+**When** el usuario interactúa con los ítems del catálogo en `QuoteDrawer` o revisa los resultados de `LiveSearchModal`,  
+**Then** se renderiza el logotipo oficial de la marca (`logo` normalizado en WebP/SVG con fallback tipográfico), integrando la propiedad `logo` en el índice de búsqueda estático `SearchIndexItem`.
+
 **Given** la sección informativa del Drawer,  
 **When** el usuario revisa las condiciones de despacho,  
 **Then** visualiza el recordatorio de ticket mínimo sugerido ($200.000 COP en Bogotá / $100k-$300k Sabana) y el atajo contextual: *"¿Tienes listado completo en Excel o PDF? Puedes adjuntarlo directamente en WhatsApp tras abrir el chat"*.

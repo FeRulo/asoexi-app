@@ -56,8 +56,8 @@ development_status:
   3-3-semillero-de-contenido-declarativo-para-las-40-marcas-con-densidad-semantica-anti-thin-content: done
   epic-3-retrospective: optional
 
-  epic-4: backlog
-  4-1-almacen-reactivo-persistente-nano-stores-cartstore-para-requisicion-b2b: backlog
+  epic-4: in-progress
+  4-1-almacen-reactivo-persistente-nano-stores-cartstore-para-requisicion-b2b: done
   4-2-isla-preact-cajon-de-cotizacion-persistente-quotedrawer-y-badge-flotante: backlog
   4-3-generador-seguro-de-deep-links-whatsapp-con-salvaguarda-de-longitud: backlog
   4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito: backlog
