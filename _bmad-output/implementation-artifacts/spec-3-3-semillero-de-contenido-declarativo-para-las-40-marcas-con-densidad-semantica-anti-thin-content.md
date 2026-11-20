@@ -2,7 +2,7 @@
 title: 'Story 3.3: Semillero de Contenido Declarativo para las ~40 Marcas con Densidad Semántica Anti-Thin-Content'
 type: 'feature'
 created: '2026-11-20'
-status: 'in-review'
+status: 'done'
 baseline_commit: '12a6b978855d7cb878c15a3ed8a8572baffd03d8'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -76,9 +76,30 @@ context:
 
 ## Implementation Notes
 
+- Incorporado el campo `sourcingNotes` a `brandSchema` con normalización nulable y opcional para compatibilidad total con datos históricos.
+- Poblados y auditados los 44 archivos JSON en `src/content/brands/` garantizando descripciones técnicas de fabricante, aplicaciones en obra, 4 familias de productos y notas sustanciales de abastecimiento de fábrica.
+- Implementadas funciones de dominio puras `getBrandSourcingNotes` (con fallback institucional para crédito a 45 días y facturación DIAN) e `isBrandContentSubstantial` con validación de unicidad de familias.
+- Renderizado 100% estático SSG en `src/pages/distribuidor-[brand]-colombia.astro` con sección accesible de "Garantía de Abastecimiento Integral y Pedidos a Fábrica" (0 KB JS cliente).
+
 ## Spec Change Log
 
 ## Review Triage Log
+
+| Finding Location | Verdict | Evidence & Action |
+|---|---|---|
+| `src/content/brands/caribe.json:16` | `medium` | `sourcingNotes` describía válvulas hidráulicas en lugar de herramientas pesadas de albañilería (palas, llanas, palustres). Corregido a insumos de albañilería y obra civil. |
+| `src/content/brands/goya.json:16` | `medium` | `sourcingNotes` describía fabricación química de pintura en lugar de herramientas aplicadoras (rodillos, brochas, espátulas). Corregido a herramientas profesionales de aplicación. |
+| `src/content/brands/luminex.json:16` | `medium` | `sourcingNotes` describía placas y tomas en lugar de conductores eléctricos especiales e instrumentación. Corregido a cables y conductores especiales en carretes. |
+| `src/content/brands/mercury.json:16` | `medium` | `sourcingNotes` describía material de conexión y clavijas en lugar de luminarias LED, paneles y reflectores. Corregido a iluminación LED comercial e industrial. |
+| `src/content/brands/multipack.json:16` | `medium` | `sourcingNotes` describía cartuchos de silicona para ventanería en lugar de cintas de teflón y selladores de roscas hidrosanitarias. Corregido a selladores de roscas y teflón PTFE. |
+| `src/content/brands/proelectricos.json:16` | `medium` | `sourcingNotes` describía cintas aislantes y terminales en lugar de tableros de distribución metálicos y encerramientos. Corregido a tableros de distribución y cajas de paso. |
+| `src/lib/brands.ts:694` | `medium` | `getBrandSourcingNotes` no exigía longitud mínima (>= 60c) en notas explícitas. Corregido añadiendo `target.sourcingNotes.trim().length >= 60`. |
+| `src/lib/brands.ts:697` | `low` | `target.name` sin guarda `typeof === 'string'` antes de `.trim()`. Corregido con verificación de tipo string segura. |
+| `src/lib/brands.ts:738` | `low` | `isBrandContentSubstantial` no comprobaba unicidad en familias de producto. Corregido exigiendo `new Set(validFamilies).size >= 3`. |
+| `src/pages/distribuidor-[brand]-colombia.astro:415` | `low` | Disparidad de tamaño tipográfico entre los `<h2>` de notas de aplicación (`text-xl`) y notas de abastecimiento (`text-xl sm:text-2xl`). Unificado a `text-xl sm:text-2xl`. |
+| `src/pages/distribuidor-[brand]-colombia.astro:801` | `false` | Badges de beneficios reportados sin áreas táctiles interactivas; son microcopy informativo de confianza B2B, no botones de navegación. |
+| `src/pages/distribuidor-[brand]-colombia.astro:84` | `false` | Reportada ausencia de Schema.org para abastecimiento; fuera de alcance de la historia (BreadcrumbList semántico normado por ARCH-6 / Story 3.1). |
+| `src/lib/search.ts` | `false` | Reportada omisión de indexación de `sourcingNotes` en el buscador en vivo; fuera del alcance de la historia (contrato de Story 2.4). |
 
 ## Design Notes
 
