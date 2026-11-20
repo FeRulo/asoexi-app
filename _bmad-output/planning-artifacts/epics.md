@@ -111,10 +111,11 @@ Siguiendo una estrategia de entrega continua e incremental, la **Epic 1** se enc
 - **FR-8:** Epic 4 - Plantilla Estructurada multi-ítem para WhatsApp con notas libres y degradación elegante para listas extensas.
 - **FR-9:** Epic 1 - Directorio Corporativo, Correos oficiales y Políticas de despacho sin mostrador (Story 1.1, Story 1.4, Story 1.5).
 - **FR-10:** Epic 5 - Sitemap XML Dinámico & Clúster Semántico de Búsqueda para mantenimiento y marcas.
-- **FR-11:** Epic 5 - Marcado Estructurado Schema JSON-LD B2B (Organization, B2BSupplier, LocalBusiness y BreadcrumbList).
+- **FR-11:** Epic 5 - Marcado Estructurado Schema JSON-LD B2B y LocalBusiness (`HardwareStore`, `WholesaleStore`, dirección en Barrio Venecia, geolocalización Bogotá/Sabana, BreadcrumbList y OfferCatalog).
 - **FR-12:** Epic 1 - Metadatos Open Graph y Previews Enriquecidas para compartir en WhatsApp y redes sociales (Story 1.4).
 - **FR-13:** Epic 5 - Telemetría de Conversión por Canal Corporativo y Marca (eventos GA4/GTM para auditoría comercial).
-- **FR-14:** Epic 5 - Integración con Google Maps & Google Search Console para la sede administrativa sin mostrador.
+- **FR-14:** Epic 5 - SEO On-Page Local, Integración con Google Maps & Google Search Console y perfil Google Business Profile para la sede administrativa en Venecia sin mostrador.
+- **FR-15:** Epic 5 - Infraestructura Técnica para Pauta Local y Medición de Conversiones Google Ads (SEM Geofenced en Bogotá).
 
 ## Epic List
 
@@ -139,8 +140,8 @@ Los compradores corporativos pueden consolidar listas de abastecimiento de múlt
 - **Requisitos técnicos y UX asociados:** ARCH-3, ARCH-4, ARCH-5, UX-DR8, NFR-4.
 
 ### Epic 5: Infraestructura SEO B2B, Esquemas Estructurados, Medición y Presencia Local
-La plataforma queda completamente optimizada e indexada en Google y motores de búsqueda de IA con sitemap.xml dinámico, esquemas estructurados Schema.org JSON-LD (Organization, B2BSupplier, LocalBusiness y BreadcrumbList), telemetría de eventos analíticos en GA4/GTM atribuidos al canal corporativo oficial para auditar el volumen y origen de cotizaciones por marca y sector, y vinculación oficial con Google Search Console y perfil de Google Maps para la sede administrativa sin mostrador.
-- **FRs cubiertos:** FR-10, FR-11, FR-13, FR-14
+La plataforma queda completamente optimizada e indexada en Google y motores de búsqueda de IA con sitemap.xml dinámico, esquemas estructurados Schema.org JSON-LD (`Organization`, `HardwareStore`, `WholesaleStore` georreferenciados en Barrio Venecia, Bogotá y `BreadcrumbList`), SEO On-Page local por zona, telemetría de eventos analíticos en GA4/GTM atribuidos al canal corporativo oficial para auditar el volumen y origen de cotizaciones por marca y sector, vinculación oficial con Google Search Console, perfil de Google Business Profile para la sede administrativa sin mostrador, y preparación técnica no intrusiva para pauta geolocalizada en Google Ads.
+- **FRs cubiertos:** FR-10, FR-11, FR-13, FR-14, FR-15
 - **Requisitos técnicos y UX asociados:** ARCH-6, ARCH-7, NFR-1, NFR-5.
 
 ---
@@ -538,7 +539,7 @@ So that el equipo comercial de ASOEXI reciba mi requerimiento y estudie nuestro 
 
 ## Epic 5: Infraestructura SEO B2B, Esquemas Estructurados, Medición y Presencia Local
 
-La plataforma queda completamente optimizada e indexada en Google y motores de búsqueda de IA con sitemap.xml dinámico, esquemas estructurados Schema.org JSON-LD (Organization, B2BSupplier, LocalBusiness y BreadcrumbList), telemetría de eventos analíticos en GA4/GTM atribuida a la línea corporativa oficial para auditar el volumen y origen de cotizaciones por marca y sector, y vinculación oficial con Google Search Console y perfil de Google Maps para la sede administrativa sin mostrador.
+La plataforma queda completamente optimizada e indexada en Google y motores de búsqueda de IA con sitemap.xml dinámico, esquemas estructurados Schema.org JSON-LD (`Organization`, `HardwareStore`, `WholesaleStore` georreferenciados en Barrio Venecia, Bogotá y `BreadcrumbList`), SEO On-Page local por zona, telemetría de eventos analíticos en GA4/GTM atribuida a la línea corporativa oficial para auditar el volumen y origen de cotizaciones por marca y sector, vinculación oficial con Google Search Console, perfil de Google Business Profile para la sede administrativa sin mostrador, y preparación técnica no intrusiva para pauta geolocalizada en Google Ads.
 
 ### Story 5.1: Sitemap XML Dinámico & Optimización Semántica para Motores de Búsqueda e IA (AEO)
 
@@ -560,23 +561,30 @@ So that Google y los motores de IA rastreen y comprendan inmediatamente la total
 **When** se analizan las etiquetas `h1`, `h2` y metadatos,  
 **Then** incorporan los clústeres semánticos de alta intención de compra ("distribuidor mayorista de insumos para mantenimiento", "breakers y conductores eléctricos bogota", "distribuidor autorizado [marca] colombia").
 
-### Story 5.2: Marcado Estructurado Schema.org JSON-LD B2B y Jerarquía de BreadcrumbList
+### Story 5.2: Marcado Estructurado Schema.org JSON-LD LocalBusiness (`HardwareStore`) y Jerarquía de BreadcrumbList
 
 As a buscador o motor de IA procesando la web,  
-I want leer datos estructurados en formato JSON-LD que identifiquen formalmente a ASOEXI como proveedor mayorista y reflejen la jerarquía del catálogo,  
-So that se presenten resultados enriquecidos y precisos en las páginas de resultados de búsqueda.
+I want leer datos estructurados en formato JSON-LD que identifiquen formalmente a ASOEXI como comercio ferretero y distribuidor mayorista (`HardwareStore`, `WholesaleStore`) con geolocalización precisa en Barrio Venecia, Bogotá, y reflejen la jerarquía del catálogo (`BreadcrumbList`),  
+So that se presenten resultados enriquecidos y de alta relevancia en búsquedas locales y transaccionales en Bogotá y Colombia.
 
 **Acceptance Criteria:**
 
 **Given** el componente central `<SEOHead />` (`src/components/seo/SEOHead.astro`),  
-**When** se renderiza en cualquier página del sitio,  
-**Then** inyecta el bloque `<script type="application/ld+json">` con las entidades `Organization`, `B2BSupplier` y `LocalBusiness` con los datos oficiales de ASOEXI S.A.S. (NIT 900480460-8, coordenadas de Bogotá y Sabana, y enlace a `serviciocliente@asoexi.com`).
+**When** se renderiza en la página principal y páginas institucionales,  
+**Then** inyecta el bloque `<script type="application/ld+json">` con las entidades `@type: ["HardwareStore", "WholesaleStore"]` y `Organization` con los datos oficiales:
+  - Razón social: "ASOEXI S.A.S." y nombre comercial "ASOEXI"
+  - NIT: "900480460-8"
+  - Dirección postal estructurada (`PostalAddress`): `streetAddress: "Carrera 55 A No. 51 A 28 Sur"`, `addressLocality: "Bogotá"`, `addressRegion: "Bogotá D.C."`, `neighborhood: "Venecia"`, `postalCode: "110611"`, `addressCountry: "CO"`.
+  - Coordenadas geográficas (`GeoCoordinates`): `latitude: 4.5937`, `longitude: -74.1378`.
+  - Canales oficiales: `telephone: "+573014191344"`, `email: "serviciocliente@asoexi.com"`, `url: "https://asoexi.com"`.
+  - Parámetros comerciales: `priceRange: "$$"`, `currenciesAccepted: "COP"`, `paymentAccepted: "Cash, Credit Card, Bank Transfer"`.
+  - Radio de cobertura (`areaServed`): Bogotá, Sabana de Bogotá, Colombia.
 
 **Given** cualquier página de sector o silo de marca,  
 **When** se procesa la jerarquía de navegación,  
 **Then** inyecta la entidad `BreadcrumbList` semántica mapeando la ruta piramidal (`Home > Sector > [Marca]`).
 
-**Given** la validación en la herramienta Rich Results Test de Google,  
+**Given** la validación en la herramienta Rich Results Test y Schema Markup Validator de Google,  
 **When** se auditan los esquemas JSON-LD,  
 **Then** pasan al 100% sin errores críticos de marcado ni advertencias de campos requeridos.
 
@@ -600,11 +608,11 @@ So that pueda evaluar qué insumos generan mayor volumen de negocio y auditar la
 **When** se revisan las métricas de atribución (SEC-3, CM-2),  
 **Then** se puede segmentar el volumen de clics por procedencia de sector y marcas tractoras vs secundarias para verificar la generación de leads mayoristas calificados.
 
-### Story 5.4: Verificación en Google Search Console y Presencia Local en Google Maps
+### Story 5.4: Verificación en Google Search Console, SEO On-Page Local (Bogotá / Venecia) y Google Business Profile
 
-As a director de operaciones y comprador validando la empresa,  
-I want verificar la propiedad en Google Search Console y disponer de enlace directo al perfil de Google Business Profile (Google Maps),  
-So that se audite la indexación y los clientes confirmen la existencia física y legal de la sede administrativa en Bogotá.
+As a director de operaciones, especialista en SEO y comprador validando la empresa,  
+I want verificar la propiedad en Google Search Console, optimizar los contenidos on-page con georreferenciación en Venecia/Bogotá y disponer del perfil verificado de Google Business Profile enlazado,  
+So that Google Maps y el buscador orgánico muestren a ASOEXI ante búsquedas locales de ferretería en Bogotá y el barrio Venecia, confirmando la legitimidad física y legal de la sede.
 
 **Acceptance Criteria:**
 
@@ -612,8 +620,36 @@ So that se audite la indexación y los clientes confirmen la existencia física 
 **When** se despliega en producción,  
 **Then** incluye la meta-etiqueta de verificación de propiedad de Google Search Console configurada mediante variable de entorno o constante del proyecto.
 
-**Given** la sección de pie de página (`Footer.astro`) y página institucional `Nosotros`,  
-**When** el usuario consulta los datos de contacto y ubicación física,  
-**Then** encuentra el enlace directo hacia el perfil verificado en Google Business Profile / Google Maps para la sede administrativa (Carrera 55 A No. 51 A 28 Sur, Bogotá), reiterando la política de despacho a domicilio sin mostrador.
+**Given** el pie de página (`Footer.astro`) y la página institucional `Nosotros` (`src/pages/nosotros.astro`),  
+**When** se renderiza la información de la empresa,  
+**Then** explicita la ubicación física: *"Sede administrativa y logística: Carrera 55 A No. 51 A 28 Sur, Barrio Venecia, Bogotá D.C."* y refuerza la política operativa: *"Despacho centralizado a domicilio a obras y bodegas en Bogotá y Sabana — Sin venta de mostrador ni retiro en bodega"*.
+
+**Given** los metadatos y textos institucionales de Home y Nosotros,  
+**When** los rastreadores indexan la página,  
+**Then** identifican los términos de búsqueda local B2B (*"distribuidor ferretero bogotá"*, *"proveedor de insumos industriales venecia bogotá"*, *"materiales eléctricos sur de bogotá"*).
+
+**Given** el perfil corporativo en Google Business Profile (Google Mi Negocio),  
+**When** se configura y enlaza en el pie de página y página de contacto/nosotros,  
+**Then** apunta a la ficha verificada con dirección en Venecia, categorías primarias/secundarias optimizadas (*Ferretería*, *Proveedor de equipos industriales*), radio de servicio en Bogotá y Sabana, y enlace web con parámetros de atribución (`?utm_source=gbp&utm_medium=organic&utm_campaign=local`).
+
+### Story 5.5: Infraestructura de Medición para Pauta y Conversiones Google Ads (SEM Geofenced)
+
+As a director comercial y responsable de adquisición digital,  
+I want disponer de la infraestructura técnica de tracking de conversiones de Google Ads (Gtag / Google Tag Manager) conectada de forma no intrusiva a los eventos de cotización (WhatsApp y QuoteFormalModal),  
+So that cuando se decida activar campañas de pauta paga en Google Ads geolocalizadas en Bogotá, la medición de retorno (ROAS) y costo por lead (CPL) opere de inmediato sin alterar el código de la aplicación.
+
+**Acceptance Criteria:**
+
+**Given** la arquitectura de telemetría del proyecto (`src/lib/telemetry.ts` o módulo analítico de Astro),  
+**When** se define la variable de entorno o constante `PUBLIC_GOOGLE_ADS_ID` y `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL`,  
+**Then** el sistema inicializa de forma asíncrona y diferida la etiqueta de conversión sin penalizar los Core Web Vitals ni el puntaje Lighthouse (>95).
+
+**Given** una interacción de cotización exitosa (clic a WhatsApp `lead_whatsapp_click` o envío exitoso de formulario de cotización formal/crédito `/api/quote`),  
+**When** se registra el evento,  
+**Then** se dispara de forma no bloqueante el evento de conversión `conversion` hacia Google Ads reportando `send_to: AW-XXXXXXXXX/LABEL` y parámetros de contexto (origen, sector, marca).
+
+**Given** un usuario navegando con bloqueador de anuncios o navegadores con protección estricta (Brave, Firefox Tracking Protection),  
+**When** ejecuta una cotización,  
+**Then** los scripts de pauta fallan silenciosamente en `try/catch` sin bloquear la apertura de WhatsApp ni congelar la interfaz de usuario.
 
 ---
