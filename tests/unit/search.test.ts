@@ -392,8 +392,8 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
         name: 'Panduit',
       });
 
-      expect(mockStorage.getItem('asoexi_cart')).not.toBeNull();
-      const stored = JSON.parse(mockStorage.getItem('asoexi_cart') || '{}');
+      expect(mockStorage.getItem('asoexi_cart_v1')).not.toBeNull();
+      const stored = JSON.parse(mockStorage.getItem('asoexi_cart_v1') || '{}');
       expect(stored.items[0].id).toBe('panduit');
     });
 
@@ -424,7 +424,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
         ],
         totalItems: 3,
       };
-      mockStorage.setItem('asoexi_cart', JSON.stringify(externalCartState));
+      mockStorage.setItem('asoexi_cart_v1', JSON.stringify(externalCartState));
 
       // Trigger sync directly or via storage event
       cartStore.syncFromStorage();

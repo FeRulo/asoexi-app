@@ -612,12 +612,12 @@ export default function LiveSearchModal() {
               </div>
             </div>
 
-            {/* Cuadro contenedor de lista vertical */}
-            <div class="bg-slate-900/80 border border-slate-700/80 rounded-industrial max-h-36 overflow-y-auto divide-y divide-slate-800/80 shadow-xs">
+            {/* Cuadro contenedor de lista vertical con controles de cantidad */}
+            <div class="bg-slate-900/80 border border-slate-700/80 rounded-industrial max-h-44 overflow-y-auto divide-y divide-slate-800/80 shadow-xs">
               {cartState.items.map((item) => (
                 <div
                   key={item.id}
-                  class="flex items-center justify-between gap-3 px-3 py-1.5 hover:bg-slate-800/50 transition-colors"
+                  class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-slate-800/50 transition-colors"
                 >
                   <div class="flex items-center gap-2 min-w-0">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
@@ -629,18 +629,51 @@ export default function LiveSearchModal() {
                     )}
                   </div>
 
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold rounded">
-                      {item.quantity} {item.quantity === 1 ? 'und' : 'unds'}
-                    </span>
+                  <div class="flex items-center gap-2.5 shrink-0">
+                    {/* Controles interactivos para sumar o restar unidades */}
+                    <div class="flex items-center bg-slate-800 border border-slate-700 rounded-industrial overflow-hidden shadow-2xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (item.quantity > 1) {
+                            $cartStore.updateQuantity(item.id, item.quantity - 1);
+                          } else {
+                            $cartStore.removeItem(item.id);
+                          }
+                        }}
+                        class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
+                        title={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
+                        aria-label={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
+                      >
+                        &minus;
+                      </button>
+
+                      <span class="px-2 py-0.5 text-xs font-semibold text-emerald-400 min-w-[30px] text-center select-none bg-emerald-500/10">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => $cartStore.updateQuantity(item.id, item.quantity + 1)}
+                        class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
+                        title={`Sumar una unidad más de ${item.name}`}
+                        aria-label={`Sumar una unidad más de ${item.name}`}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* Botón rápido para remover completamente el ítem */}
                     <button
                       type="button"
                       onClick={() => $cartStore.removeItem(item.id)}
-                      class="text-slate-400 hover:text-red-400 transition-colors cursor-pointer text-sm font-bold leading-none px-1"
-                      title={`Eliminar ${item.name}`}
-                      aria-label={`Eliminar ${item.name}`}
+                      class="text-slate-400 hover:text-red-400 p-1 transition-colors cursor-pointer text-sm font-bold leading-none"
+                      title={`Eliminar completamente ${item.name}`}
+                      aria-label={`Eliminar completamente ${item.name}`}
                     >
-                      &times;
+                      <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
                   </div>
                 </div>

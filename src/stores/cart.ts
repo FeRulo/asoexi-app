@@ -197,7 +197,10 @@ function loadInitialState(): CartState {
       }
       const rawLegacy = storage.getItem(LEGACY_CART_STORAGE_KEY);
       if (rawLegacy !== null) {
-        return safeDecode(rawLegacy);
+        const migrated = safeDecode(rawLegacy);
+        storage.removeItem(LEGACY_CART_STORAGE_KEY);
+        storage.setItem(CART_STORAGE_KEY, JSON.stringify(migrated));
+        return migrated;
       }
     } catch {
       // Storage access error fallback
@@ -212,7 +215,10 @@ function saveState(state: CartState): void {
     try {
       const serialized = JSON.stringify(state);
       storage.setItem(CART_STORAGE_KEY, serialized);
-      storage.setItem(LEGACY_CART_STORAGE_KEY, serialized);
+      // Clean up legacy key so only asoexi_cart_v1 exists in storage
+      if (storage.getItem(LEGACY_CART_STORAGE_KEY) !== null) {
+        storage.removeItem(LEGACY_CART_STORAGE_KEY);
+      }
     } catch {
       // Storage quota or write error fallback
     }
@@ -412,7 +418,7 @@ export const cartStore = $cartStore;
 export function initCartStorageListener(): () => void {
   if (typeof window === 'undefined') return () => {};
   const handler = (event: StorageEvent) => {
-    if (event.key === CART_STORAGE_KEY || event.key === LEGACY_CART_STORAGE_KEY) {
+    if (event.key === CART_STORAGE_KEY) {
       syncFromStorage();
     }
   };
