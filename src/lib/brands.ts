@@ -604,3 +604,76 @@ export function getSectorBrands<
 
   return [...tractorBrands, ...secondaryBrands];
 }
+
+/**
+ * Resolves the sourcing notes for a brand.
+ * Returns the explicit sourcing notes if available, or a robust institutional wholesale fallback
+ * emphasizing ASOEXI's capacity for direct factory dispatch, delivery across Bogotá and the Sabana,
+ * DIAN electronic invoicing, and 45-day commercial credit.
+ */
+export function getBrandSourcingNotes(
+  brand?: (Brand | Partial<Brand> | { data?: Brand | Partial<Brand> }) | null
+): string {
+  if (!brand || typeof brand !== 'object') {
+    return 'Como distribuidor mayorista en Colombia, ASOEXI S.A.S. gestiona el abastecimiento integral del portafolio bajo pedido directo a fábrica, con despacho consolidado en obra para Bogotá y la Sabana, facturación electrónica DIAN y crédito comercial a 45 días para empresas registradas.';
+  }
+
+  const target: Partial<Brand> =
+    'data' in brand && brand.data ? (brand.data as Partial<Brand>) : (brand as Partial<Brand>);
+
+  if (typeof target.sourcingNotes === 'string' && target.sourcingNotes.trim().length > 0) {
+    return target.sourcingNotes.trim();
+  }
+
+  const brandName = (target.name ?? '').trim() || 'la marca';
+
+  return `Como distribuidor mayorista en Colombia, ASOEXI S.A.S. gestiona el abastecimiento integral de todo el portafolio de ${brandName} bajo pedido directo a fábrica, con despacho consolidado en obra para Bogotá y municipios de la Sabana, facturación electrónica DIAN y crédito comercial a 45 días para empresas registradas con RUT.`;
+}
+
+/**
+ * Audits whether a brand object has substantial semantic density (anti-thin-content).
+ * Requirements:
+ * - description >= 60 characters
+ * - applicationNotes >= 60 characters
+ * - at least 3 non-empty product families in productFamilies
+ * - sourcingNotes >= 60 characters
+ */
+export function isBrandContentSubstantial(
+  brand?: (Brand | Partial<Brand> | { data?: Brand | Partial<Brand> }) | null
+): boolean {
+  if (!brand || typeof brand !== 'object') {
+    return false;
+  }
+
+  const target: Partial<Brand> =
+    'data' in brand && brand.data ? (brand.data as Partial<Brand>) : (brand as Partial<Brand>);
+
+  const description = typeof target.description === 'string' ? target.description.trim() : '';
+  if (description.length < 60) {
+    return false;
+  }
+
+  const applicationNotes =
+    typeof target.applicationNotes === 'string' ? target.applicationNotes.trim() : '';
+  if (applicationNotes.length < 60) {
+    return false;
+  }
+
+  if (!Array.isArray(target.productFamilies)) {
+    return false;
+  }
+  const validFamilies = target.productFamilies.filter(
+    (f) => typeof f === 'string' && f.trim().length > 0
+  );
+  if (validFamilies.length < 3) {
+    return false;
+  }
+
+  const sourcingNotes =
+    typeof target.sourcingNotes === 'string' ? target.sourcingNotes.trim() : '';
+  if (sourcingNotes.length < 60) {
+    return false;
+  }
+
+  return true;
+}

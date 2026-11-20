@@ -70,6 +70,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       applicationNotes: 'Cables UTP categoría 6A, bandejas portacables y rotuladoras.',
       pdfCatalogUrl: null,
       productFamilies: ['Cableado Estructurado', 'Bandejas Portacables'],
+      sourcingNotes: null,
     },
     {
       id: 'sika',
@@ -81,6 +82,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       applicationNotes: 'Sika 1, Sikaflex 1A y membranas líquidas para cubiertas.',
       pdfCatalogUrl: null,
       productFamilies: ['Impermeabilizantes', 'Aditivos para Concreto'],
+      sourcingNotes: null,
     },
     {
       id: 'dewalt',
@@ -92,6 +94,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       applicationNotes: 'Taladros percutores, pulidoras angulares y discos abrasivos.',
       pdfCatalogUrl: null,
       productFamilies: ['Herramientas Eléctricas', 'Rotomartillos SDS'],
+      sourcingNotes: null,
     },
     {
       id: 'schneider',
@@ -103,6 +106,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       applicationNotes: 'Interruptores de caja moldeada y arrancadores suaves.',
       pdfCatalogUrl: null,
       productFamilies: ['Breakers Termomagnéticos', 'Contactores'],
+      sourcingNotes: null,
     },
   ];
 

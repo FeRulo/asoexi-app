@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { brandSchema, categorySchema, SECTOR_IDS } from '@/content.config';
+import { isBrandContentSubstantial } from '@/lib/brands';
 import fs from 'fs';
 import path from 'path';
 
@@ -16,10 +17,31 @@ describe('Catalog Zod Schemas & Content Collections Integrity (TDD - Story 2.1)'
         applicationNotes: 'Soluciones de cableado estructurado, amarras y organizadores.',
         pdfCatalogUrl: '/catalogs/panduit-2026.pdf',
         productFamilies: ['Cableado Estructurado', 'Bandejas Portacables'],
+        sourcingNotes: 'Suministro directo de planta en carretes y cajas organizadoras con despacho en obra.',
       };
 
       const result = brandSchema.parse(validBrand);
       expect(result).toEqual(validBrand);
+    });
+
+    it('should normalize sourcingNotes to null when omitted or null', () => {
+      const brandWithoutSourcing = {
+        id: 'panduit',
+        name: 'Panduit',
+        sector: 'electrico',
+        isTractor: true,
+        description: 'Líder en infraestructura física, eléctrica y de red.',
+        applicationNotes: 'Soluciones de cableado estructurado.',
+      };
+
+      const parsedOmitted = brandSchema.parse(brandWithoutSourcing);
+      expect(parsedOmitted.sourcingNotes).toBeNull();
+
+      const parsedNull = brandSchema.parse({
+        ...brandWithoutSourcing,
+        sourcingNotes: null,
+      });
+      expect(parsedNull.sourcingNotes).toBeNull();
     });
 
     it('should default productFamilies to empty array when omitted', () => {
@@ -260,6 +282,61 @@ describe('Catalog Zod Schemas & Content Collections Integrity (TDD - Story 2.1)'
         expect(parsed.id).toBe(id);
         expect(parsed.isTractor).toBe(true);
         expect(SECTOR_IDS).toContain(parsed.sector);
+      }
+    });
+
+    it('should validate all 44 brand JSON files on disk against brandSchema and semantic density (Story 3.3)', () => {
+      expect(fs.existsSync(brandsDir)).toBe(true);
+      const files = fs.readdirSync(brandsDir).filter((f) => f.endsWith('.json'));
+      expect(files.length).toBe(44);
+
+      const seenIds = new Set<string>();
+
+      for (const file of files) {
+        const filePath = path.join(brandsDir, file);
+        const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        const parsed = brandSchema.parse(raw);
+
+        // ID must match file name without extension
+        const expectedId = path.basename(file, '.json');
+        expect(parsed.id, `Brand ID in ${file} must match filename`).toBe(expectedId);
+
+        // ID uniqueness
+        expect(seenIds.has(parsed.id), `Duplicate brand id found: ${parsed.id}`).toBe(false);
+        seenIds.add(parsed.id);
+
+        // ID slug format (lowercase alphanumeric and dashes)
+        expect(parsed.id).toMatch(/^[a-z0-9-]+$/);
+
+        // Valid sector
+        expect(SECTOR_IDS).toContain(parsed.sector);
+
+        // Semantic density anti-thin-content verification
+        expect(
+          parsed.description.trim().length,
+          `Brand ${parsed.id} description must have >= 60 characters`
+        ).toBeGreaterThanOrEqual(60);
+
+        expect(
+          parsed.applicationNotes.trim().length,
+          `Brand ${parsed.id} applicationNotes must have >= 60 characters`
+        ).toBeGreaterThanOrEqual(60);
+
+        expect(
+          parsed.productFamilies.length,
+          `Brand ${parsed.id} must define at least 3 product families`
+        ).toBeGreaterThanOrEqual(3);
+
+        expect(
+          typeof parsed.sourcingNotes === 'string' && parsed.sourcingNotes.trim().length >= 60,
+          `Brand ${parsed.id} must have substantive sourcingNotes (>= 60 characters)`
+        ).toBe(true);
+
+        // isBrandContentSubstantial helper validation
+        expect(
+          isBrandContentSubstantial(parsed),
+          `Brand ${parsed.id} must pass isBrandContentSubstantial`
+        ).toBe(true);
       }
     });
   });

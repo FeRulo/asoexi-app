@@ -8,6 +8,8 @@ import {
   hasValidPdfCatalog,
   normalizePdfCatalogUrl,
   getBrandProductFamilies,
+  getBrandSourcingNotes,
+  isBrandContentSubstantial,
 } from '@/lib/brands';
 import { resolveCanonicalUrl, generateBreadcrumbsSchema } from '@/lib/seo';
 import { generateBrandQuoteWhatsAppUrl } from '@/lib/whatsapp';
@@ -350,6 +352,187 @@ describe('Brand Silo Unit Tests (Story 3.1: /distribuidor-[brand]-colombia)', ()
       };
       const families = getBrandProductFamilies(entry as any);
       expect(families).toEqual(['Patch Cords', 'Racks']);
+    });
+  });
+
+  describe('Brand Sourcing Notes & Fallback (Story 3.3: getBrandSourcingNotes)', () => {
+    it('should return explicit sourcingNotes when defined and non-empty', () => {
+      const brand = {
+        name: 'Panduit',
+        sourcingNotes:
+          'Suministro directo de planta en carretes de cable UTP, racks de telecomunicaciones y accesorios de montaje con entrega programada.',
+      };
+      const notes = getBrandSourcingNotes(brand);
+      expect(notes).toBe(
+        'Suministro directo de planta en carretes de cable UTP, racks de telecomunicaciones y accesorios de montaje con entrega programada.'
+      );
+    });
+
+    it('should return institutional wholesale fallback when sourcingNotes is null or undefined', () => {
+      const brand = {
+        name: 'Panduit',
+        sourcingNotes: null,
+      };
+      const fallback = getBrandSourcingNotes(brand);
+      expect(fallback).toContain('Panduit');
+      expect(fallback).toContain('45 días');
+      expect(fallback).toContain('DIAN');
+      expect(fallback).toContain('Bogotá');
+      expect(fallback).toContain('Sabana');
+      expect(fallback.length).toBeGreaterThanOrEqual(60);
+    });
+
+    it('should return institutional wholesale fallback when sourcingNotes is empty string or whitespace', () => {
+      const fallbackEmpty = getBrandSourcingNotes({ name: 'Sika', sourcingNotes: '' });
+      expect(fallbackEmpty).toContain('Sika');
+      expect(fallbackEmpty.length).toBeGreaterThanOrEqual(60);
+
+      const fallbackWhitespace = getBrandSourcingNotes({ name: 'Sika', sourcingNotes: '   ' });
+      expect(fallbackWhitespace).toContain('Sika');
+    });
+
+    it('should handle Astro CollectionEntry-like objects with .data property', () => {
+      const entry = {
+        id: 'centelsa',
+        data: {
+          name: 'Centelsa by Nexans',
+          sourcingNotes: 'Despacho directo de bobinas industriales con certificación RETIE.',
+        },
+      };
+      expect(getBrandSourcingNotes(entry as any)).toBe(
+        'Despacho directo de bobinas industriales con certificación RETIE.'
+      );
+    });
+
+    it('should provide robust default brand name if brand or brand name is omitted', () => {
+      const fallbackNull = getBrandSourcingNotes(null);
+      expect(fallbackNull).toContain('45 días');
+      expect(fallbackNull).toContain('DIAN');
+      expect(fallbackNull.length).toBeGreaterThanOrEqual(60);
+
+      const fallbackNoName = getBrandSourcingNotes({});
+      expect(fallbackNoName).toContain('la marca');
+    });
+  });
+
+  describe('Brand Semantic Density Audit (Story 3.3: isBrandContentSubstantial)', () => {
+    const validSubstantialBrand = {
+      id: 'panduit',
+      name: 'Panduit',
+      sector: 'electrico' as const,
+      isTractor: true,
+      description:
+        'Líder mundial en infraestructura de conectividad física, eléctrica y de red para centros de datos y plantas industriales.',
+      applicationNotes:
+        'Soluciones de cableado estructurado Cat 6A, bandejas portacables, amarras de nylon resistentes a rayos UV y sistemas de puesta a tierra.',
+      productFamilies: [
+        'Cableado Estructurado',
+        'Bandejas Portacables',
+        'Sistemas de Puesta a Tierra',
+      ],
+      sourcingNotes:
+        'Suministro integral de todo el catálogo Panduit con entrega programada a obra y soporte de ingeniería.',
+    };
+
+    it('should return true when all semantic density criteria are met (>= 60 chars and >= 3 families)', () => {
+      expect(isBrandContentSubstantial(validSubstantialBrand)).toBe(true);
+    });
+
+    it('should return false if description is shorter than 60 characters or empty', () => {
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          description: 'Demasiado corto.',
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          description: '',
+        })
+      ).toBe(false);
+    });
+
+    it('should return false if applicationNotes is shorter than 60 characters or empty', () => {
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          applicationNotes: 'Notas cortas.',
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          applicationNotes: '',
+        })
+      ).toBe(false);
+    });
+
+    it('should return false if productFamilies has fewer than 3 items', () => {
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: ['Familia 1', 'Familia 2'],
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: ['Familia 1', '', '   '],
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: [],
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          productFamilies: null as any,
+        })
+      ).toBe(false);
+    });
+
+    it('should return false if sourcingNotes is shorter than 60 characters or missing', () => {
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          sourcingNotes: 'Notas breves.',
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          sourcingNotes: null,
+        })
+      ).toBe(false);
+
+      expect(
+        isBrandContentSubstantial({
+          ...validSubstantialBrand,
+          sourcingNotes: '',
+        })
+      ).toBe(false);
+    });
+
+    it('should handle null, undefined and collection entries gracefully', () => {
+      expect(isBrandContentSubstantial(null)).toBe(false);
+      expect(isBrandContentSubstantial(undefined)).toBe(false);
+      expect(isBrandContentSubstantial({})).toBe(false);
+
+      const entry = {
+        id: 'panduit',
+        data: validSubstantialBrand,
+      };
+      expect(isBrandContentSubstantial(entry as any)).toBe(true);
     });
   });
 });
