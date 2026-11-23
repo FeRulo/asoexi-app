@@ -315,7 +315,7 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
       expect(outcome.payload.whatsappUrl).toContain('https://wa.me/573014191344?text=');
     });
 
-    it('should copy fullMessage and return safeguard-copied outcome with confirmationNotice when $cartStore has > 8 items', async () => {
+    it('should copy clipboardMessage (without duplicated headers) and return safeguard-copied outcome with confirmationNotice when $cartStore has > 8 items', async () => {
       for (let i = 1; i <= 9; i++) {
         addCustomItem(`Material eléctrico referencia #${i}`, i);
       }
@@ -328,7 +328,9 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
 
       expect(outcome.mode).toBe('safeguard-copied');
       expect(outcome.copied).toBe(true);
-      expect(copyMock).toHaveBeenCalledWith(outcome.payload.fullMessage);
+      expect(copyMock).toHaveBeenCalledWith(outcome.payload.clipboardMessage);
+      expect(outcome.payload.clipboardMessage).not.toContain('Hola ASOEXI');
+      expect(outcome.payload.clipboardMessage).toContain('9. Material eléctrico referencia #9');
       expect(outcome.payload.confirmationNotice).toBe(
         '¡Lista de 9 materiales copiada al portapapeles! Pégala en el chat de WhatsApp'
       );
@@ -352,9 +354,9 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
 
       expect(outcome.mode).toBe('safeguard-fallback');
       expect(outcome.copied).toBe(false);
-      expect(copyMock).toHaveBeenCalledWith(outcome.payload.fullMessage);
+      expect(copyMock).toHaveBeenCalledWith(outcome.payload.clipboardMessage);
       expect(outcome.payload.requiresSafeguard).toBe(true);
-      expect(outcome.payload.fullMessage).toContain('X'.repeat(310));
+      expect(outcome.payload.clipboardMessage).toContain('X'.repeat(310));
     });
 
     it('should NOT call event.preventDefault() when synchronous copy succeeds on an extensive list (allowing native <a target="_blank"> navigation without popup blocker)', async () => {

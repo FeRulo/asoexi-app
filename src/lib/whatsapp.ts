@@ -39,6 +39,7 @@ export interface RequisitionWhatsAppPayload {
   requiresSafeguard: boolean;
   whatsappUrl: string;
   fullMessage: string;
+  clipboardMessage: string;
   safeIntroMessage: string;
   confirmationNotice: string;
   itemCount: number;
@@ -241,29 +242,10 @@ function normalizePositiveQuantity(quantity?: number): number {
     : 1;
 }
 
-/**
- * Formats the complete B2B requisition message structured around the 6 key corporate data points:
- * 1. Razón Social
- * 2. NIT
- * 3. Teléfono
- * 4. Dirección de entrega
- * 5. Referencias con cantidades
- * 6. Notas de insumos libres
- */
-export function formatRequisitionFullMessage(
-  items?: ReadonlyArray<RequisitionWhatsAppItem> | null,
+function buildRequisitionReferencesAndNotesSection(
+  items: ReadonlyArray<RequisitionWhatsAppItem>,
   customer?: RequisitionCustomerData
-): string {
-  if (!items || items.length === 0) {
-    return DEFAULT_WHATSAPP_MESSAGE;
-  }
-
-  const companyName = customer?.companyName?.trim() || '(Pendiente completar en el chat)';
-  const nit = customer?.nit?.trim() || '(Pendiente completar en el chat)';
-  const phone = customer?.phone?.trim() || '(Pendiente completar en el chat)';
-  const deliveryAddress =
-    customer?.deliveryAddress?.trim() || '(Ciudad / dirección de entrega en obra)';
-
+): { referencesLines: string[]; notesBlock: string } {
   const referencesLines = items.map((item, index) => {
     const qtyNum = normalizePositiveQuantity(item.quantity);
     const qtyLabel = `(${qtyNum} ${qtyNum === 1 ? 'und' : 'unds'})`;
@@ -295,16 +277,78 @@ export function formatRequisitionFullMessage(
       ? collectedNotes.join('\n')
       : '   - Sin notas de insumos libres adicionales';
 
+  return { referencesLines, notesBlock };
+}
+
+/**
+ * Formats ONLY the references, custom notes, and closing SLA line for the clipboard
+ * when EDGE-3 length safeguard triggers (> 8 items or > 1,200 characters), so that
+ * when pasted beneath `formatRequisitionSafeIntroMessage` in WhatsApp, it assembles
+ * one single message without duplicating the greeting or the 4 company fields.
+ */
+export function formatRequisitionClipboardBlock(
+  items?: ReadonlyArray<RequisitionWhatsAppItem> | null,
+  customer?: RequisitionCustomerData
+): string {
+  if (!items || items.length === 0) {
+    return DEFAULT_WHATSAPP_MESSAGE;
+  }
+
+  const { referencesLines, notesBlock } = buildRequisitionReferencesAndNotesSection(
+    items,
+    customer
+  );
+
+  return [
+    '• *Referencias con cantidades:*',
+    referencesLines.join('\n'),
+    '• *Notas de insumos libres:*',
+    notesBlock,
+    '',
+    'Quedo atento a su respuesta formal (SLA ≤ 5 min).',
+  ].join('\n');
+}
+
+/**
+ * Formats the complete B2B requisition message structured around the 6 key corporate data points
+ * using bulleted headers (`• *Campo:*`) for the 6 sections and reserving numbers (`1.`, `2.`, ...)
+ * exclusively for the material references:
+ * - Razón Social
+ * - NIT
+ * - Teléfono
+ * - Dirección de entrega
+ * - Referencias con cantidades (1..N)
+ * - Notas de insumos libres
+ */
+export function formatRequisitionFullMessage(
+  items?: ReadonlyArray<RequisitionWhatsAppItem> | null,
+  customer?: RequisitionCustomerData
+): string {
+  if (!items || items.length === 0) {
+    return DEFAULT_WHATSAPP_MESSAGE;
+  }
+
+  const companyName = customer?.companyName?.trim() || '(Pendiente completar en el chat)';
+  const nit = customer?.nit?.trim() || '(Pendiente completar en el chat)';
+  const phone = customer?.phone?.trim() || '(Pendiente completar en el chat)';
+  const deliveryAddress =
+    customer?.deliveryAddress?.trim() || '(Ciudad / dirección de entrega en obra)';
+
+  const { referencesLines, notesBlock } = buildRequisitionReferencesAndNotesSection(
+    items,
+    customer
+  );
+
   return [
     'Hola ASOEXI (Geraldine y Sonia), vi su catálogo web y deseo solicitar una cotización formal B2B:',
     '',
-    `1. Razón Social: ${companyName}`,
-    `2. NIT: ${nit}`,
-    `3. Teléfono: ${phone}`,
-    `4. Dirección de entrega: ${deliveryAddress}`,
-    '5. Referencias con cantidades:',
+    `• *Razón Social:* ${companyName}`,
+    `• *NIT:* ${nit}`,
+    `• *Teléfono:* ${phone}`,
+    `• *Dirección de entrega:* ${deliveryAddress}`,
+    '• *Referencias con cantidades:*',
     referencesLines.join('\n'),
-    '6. Notas de insumos libres:',
+    '• *Notas de insumos libres:*',
     notesBlock,
     '',
     'Quedo atento a su respuesta formal (SLA ≤ 5 min).',
@@ -313,8 +357,9 @@ export function formatRequisitionFullMessage(
 
 /**
  * Formats a short, URL-safe introductory WhatsApp message when EDGE-3 length safeguard triggers
- * (> 8 items or > 1,200 characters). Preserves the corporate greeting, item/unit summary,
- * and company data placeholders while instructing the buyer to paste the copied full list below.
+ * (> 8 items or > 1,200 characters). Contains ONLY the greeting, the 4 company fields, and a clear
+ * instruction at the bottom to paste the copied references list (Ctrl+V on PC or "Pegar" on mobile),
+ * preventing any duplicated headers or closing lines when the buyer pastes from the clipboard.
  */
 export function formatRequisitionSafeIntroMessage(
   items?: ReadonlyArray<RequisitionWhatsAppItem> | null,
@@ -336,15 +381,14 @@ export function formatRequisitionSafeIntroMessage(
   );
 
   return [
-    `Hola ASOEXI (Geraldine y Sonia), deseo solicitar una cotización formal B2B para una lista extensa de ${itemCount} materiales (${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'}).`,
+    `Hola ASOEXI (Geraldine y Sonia), deseo solicitar una cotización formal B2B para una lista de ${itemCount} materiales (${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'}):`,
     '',
-    `1. Razón Social: ${companyName}`,
-    `2. NIT: ${nit}`,
-    `3. Teléfono: ${phone}`,
-    `4. Dirección de entrega: ${deliveryAddress}`,
-    '5. Referencias con cantidades y 6. Notas de insumos libres: (Pego el listado completo copiado a continuación)',
+    `• *Razón Social:* ${companyName}`,
+    `• *NIT:* ${nit}`,
+    `• *Teléfono:* ${phone}`,
+    `• *Dirección de entrega:* ${deliveryAddress}`,
     '',
-    'Quedo atento a su respuesta formal (SLA ≤ 5 min).',
+    '👇 *[PEGA AQUÍ ABAJO TU LISTA COPIADA: presiona Ctrl+V en computador o mantén presionado y toca "Pegar" en tu celular]*',
   ].join('\n');
 }
 
@@ -363,6 +407,7 @@ export function buildRequisitionWhatsAppPayload(
       requiresSafeguard: false,
       whatsappUrl: defaultUrl,
       fullMessage: DEFAULT_WHATSAPP_MESSAGE,
+      clipboardMessage: DEFAULT_WHATSAPP_MESSAGE,
       safeIntroMessage: DEFAULT_WHATSAPP_MESSAGE,
       confirmationNotice: '',
       itemCount: 0,
@@ -375,6 +420,7 @@ export function buildRequisitionWhatsAppPayload(
   const totalUnits = items.reduce((acc, item) => acc + normalizePositiveQuantity(item.quantity), 0);
 
   const fullMessage = formatRequisitionFullMessage(items, customer);
+  const clipboardMessage = formatRequisitionClipboardBlock(items, customer);
   const safeIntroMessage = formatRequisitionSafeIntroMessage(items, customer);
   const characterCount = fullMessage.length;
 
@@ -389,6 +435,7 @@ export function buildRequisitionWhatsAppPayload(
     requiresSafeguard,
     whatsappUrl,
     fullMessage,
+    clipboardMessage,
     safeIntroMessage,
     confirmationNotice,
     itemCount,

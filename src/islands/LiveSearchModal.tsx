@@ -749,7 +749,7 @@ export default function LiveSearchModal() {
                   readOnly
                   rows={3}
                   aria-label="Texto completo de la requisición para copiar a WhatsApp"
-                  value={safeguardFallbackPayload.fullMessage}
+                  value={safeguardFallbackPayload.clipboardMessage}
                   onFocus={(e) => (e.target as HTMLTextAreaElement).select()}
                   class="w-full p-2 text-[11px] font-mono bg-slate-900 border border-slate-600 rounded-industrial text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
@@ -761,7 +761,7 @@ export default function LiveSearchModal() {
                         safeguardTextareaRef.current.focus();
                         safeguardTextareaRef.current.select();
                       }
-                      const ok = await copyTextToClipboard(safeguardFallbackPayload.fullMessage);
+                      const ok = await copyTextToClipboard(safeguardFallbackPayload.clipboardMessage);
                       if (ok) {
                         setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
                         setSafeguardFallbackPayload(null);
@@ -777,7 +777,7 @@ export default function LiveSearchModal() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {
-                      const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.fullMessage);
+                      const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.clipboardMessage);
                       if (copiedNow) {
                         setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
                       }

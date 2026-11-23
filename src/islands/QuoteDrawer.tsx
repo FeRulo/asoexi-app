@@ -83,7 +83,7 @@ export async function executeRequisitionWhatsAppAction(
   const asyncCopy =
     options.asyncCopyFn ?? copyTextToClipboard;
 
-  const copiedSync = syncCopy(payload.fullMessage);
+  const copiedSync = syncCopy(payload.clipboardMessage);
   if (copiedSync) {
     // Do NOT call event.preventDefault() so native <a target="_blank"> opens in user gesture
     options.onSafeguardCopied?.(payload, true);
@@ -98,7 +98,7 @@ export async function executeRequisitionWhatsAppAction(
   // Synchronous copy was not possible; prevent immediate link navigation while we try async or show fallback
   options.event?.preventDefault();
 
-  const copiedAsync = await asyncCopy(payload.fullMessage);
+  const copiedAsync = await asyncCopy(payload.clipboardMessage);
   if (copiedAsync) {
     options.onSafeguardCopied?.(payload, false);
     const openWin =
@@ -1287,7 +1287,7 @@ export default function QuoteDrawer() {
                 readOnly
                 rows={4}
                 aria-label="Texto completo de la requisición para copiar a WhatsApp"
-                value={safeguardFallbackPayload.fullMessage}
+                value={safeguardFallbackPayload.clipboardMessage}
                 onFocus={(e) => (e.target as HTMLTextAreaElement).select()}
                 class="w-full p-2 text-[11px] font-mono bg-white border border-amber-300 rounded-industrial text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -1300,7 +1300,7 @@ export default function QuoteDrawer() {
                       safeguardTextareaRef.current.focus();
                       safeguardTextareaRef.current.select();
                     }
-                    const ok = await copyTextToClipboard(safeguardFallbackPayload.fullMessage);
+                    const ok = await copyTextToClipboard(safeguardFallbackPayload.clipboardMessage);
                     if (ok) {
                       setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
                       setSafeguardFallbackPayload(null);
@@ -1316,7 +1316,7 @@ export default function QuoteDrawer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => {
-                    const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.fullMessage);
+                    const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.clipboardMessage);
                     if (copiedNow) {
                       setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
                     }

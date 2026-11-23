@@ -207,7 +207,7 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
         expect(WHATSAPP_MAX_SAFE_CHARS).toBe(1200);
       });
 
-      it('formatRequisitionFullMessage should include all 6 key B2B data fields with provided or placeholder customer values and custom notes', () => {
+      it('formatRequisitionFullMessage should include all 6 key B2B data fields with bulleted headers (avoiding number collisions with references) and custom notes', () => {
         const items: RequisitionWhatsAppItem[] = [
           { name: 'Panduit', quantity: 3, sector: 'electrico' },
           { name: 'Tubería Conduit EMT 3/4"', quantity: 20, isCustom: true, notes: 'Certificación RETIE urgente' },
@@ -215,16 +215,19 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
 
         const msgWithPlaceholders = formatRequisitionFullMessage(items);
         expect(msgWithPlaceholders).toContain('Hola ASOEXI (Geraldine y Sonia)');
-        expect(msgWithPlaceholders).toContain('1. Razón Social:');
-        expect(msgWithPlaceholders).toContain('2. NIT:');
-        expect(msgWithPlaceholders).toContain('3. Teléfono:');
-        expect(msgWithPlaceholders).toContain('4. Dirección de entrega:');
-        expect(msgWithPlaceholders).toContain('5. Referencias con cantidades:');
+        expect(msgWithPlaceholders).toContain('• *Razón Social:*');
+        expect(msgWithPlaceholders).toContain('• *NIT:*');
+        expect(msgWithPlaceholders).toContain('• *Teléfono:*');
+        expect(msgWithPlaceholders).toContain('• *Dirección de entrega:*');
+        expect(msgWithPlaceholders).toContain('• *Referencias con cantidades:*');
         expect(msgWithPlaceholders).toContain('1. Panduit (3 unds) — Sector Eléctrico Industrial');
         expect(msgWithPlaceholders).toContain('2. Tubería Conduit EMT 3/4" (20 unds) [Insumo Libre]');
-        expect(msgWithPlaceholders).toContain('6. Notas de insumos libres:');
+        expect(msgWithPlaceholders).toContain('• *Notas de insumos libres:*');
         expect(msgWithPlaceholders).toContain('Tubería Conduit EMT 3/4": Certificación RETIE urgente');
         expect(msgWithPlaceholders).toContain('SLA ≤ 5 min');
+        // Ensure the 6 fields are NOT numbered 1..6 so they never collide with item numbers 1..N
+        expect(msgWithPlaceholders).not.toContain('1. Razón Social:');
+        expect(msgWithPlaceholders).not.toContain('5. Referencias con cantidades:');
 
         const msgWithCustomer = formatRequisitionFullMessage(items, {
           companyName: 'Constructora Bolívar S.A.',
@@ -233,10 +236,10 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
           deliveryAddress: 'Obra Parque Central, Chía, Cundinamarca',
           additionalNotes: 'Entregar en portería norte antes de las 4pm',
         });
-        expect(msgWithCustomer).toContain('1. Razón Social: Constructora Bolívar S.A.');
-        expect(msgWithCustomer).toContain('2. NIT: 860034313-1');
-        expect(msgWithCustomer).toContain('3. Teléfono: +57 310 555 9988');
-        expect(msgWithCustomer).toContain('4. Dirección de entrega: Obra Parque Central, Chía, Cundinamarca');
+        expect(msgWithCustomer).toContain('• *Razón Social:* Constructora Bolívar S.A.');
+        expect(msgWithCustomer).toContain('• *NIT:* 860034313-1');
+        expect(msgWithCustomer).toContain('• *Teléfono:* +57 310 555 9988');
+        expect(msgWithCustomer).toContain('• *Dirección de entrega:* Obra Parque Central, Chía, Cundinamarca');
         expect(msgWithCustomer).toContain('Entregar en portería norte antes de las 4pm');
       });
 
@@ -284,16 +287,25 @@ describe('WhatsApp Utilities & Corporate Channel Unification (TDD)', () => {
         expect(payload.confirmationNotice).toBe(
           '¡Lista de 9 materiales copiada al portapapeles! Pégala en el chat de WhatsApp'
         );
-        // Full message preserves all 9 items without truncation
+        // Full message and clipboardMessage preserve all 9 items without truncation
         expect(payload.fullMessage).toContain('9. Ref 9');
+        expect(payload.clipboardMessage).toContain('9. Ref 9');
+        // clipboardMessage contains ONLY the references, notes, and SLA closing so pasting below safeIntroMessage causes zero duplicated greeting or company headers
+        expect(payload.clipboardMessage).toContain('• *Referencias con cantidades:*');
+        expect(payload.clipboardMessage).toContain('• *Notas de insumos libres:*');
+        expect(payload.clipboardMessage).not.toContain('Hola ASOEXI');
+        expect(payload.clipboardMessage).not.toContain('Razón Social');
         // WhatsApp URL uses the safe introductory message instead of the full list
         expect(payload.whatsappUrl).toBe(
           getDirectWhatsAppUrl(mockStorage, payload.safeIntroMessage)
         );
         expect(payload.safeIntroMessage.length).toBeLessThan(700);
         expect(payload.safeIntroMessage).toContain('9 materiales');
-        expect(payload.safeIntroMessage).toContain('Razón Social:');
-        expect(payload.safeIntroMessage).toContain('NIT:');
+        expect(payload.safeIntroMessage).toContain('• *Razón Social:*');
+        expect(payload.safeIntroMessage).toContain('• *NIT:*');
+        expect(payload.safeIntroMessage).toContain('Ctrl+V');
+        expect(payload.safeIntroMessage).toContain('Pegar');
+        expect(payload.safeIntroMessage).not.toContain('SLA ≤ 5 min');
       });
 
       it('buildRequisitionWhatsAppPayload SHOULD trigger safeguard when fullMessage.length > 1200 even if items.length <= 8 (EDGE-3)', () => {
