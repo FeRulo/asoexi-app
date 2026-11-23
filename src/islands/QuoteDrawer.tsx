@@ -8,9 +8,26 @@ import {
   type CatalogItem,
   type CustomItem,
 } from '@/stores/cart';
+import {
+  type SearchIndexItem,
+  sanitizeSearchQuery,
+  filterSearchIndex,
+} from '@/lib/search';
 import { generateRequisitionWhatsAppUrl } from '@/lib/whatsapp';
 
 export { resolveItemLogoUrl, getBrandTypographicInitials };
+
+/**
+ * Filters the search index inside QuoteDrawer returning only actionable brand items.
+ */
+export function filterDrawerCatalogBrands(
+  index: SearchIndexItem[],
+  rawQuery?: string | null,
+  maxLimit: number = 6
+): SearchIndexItem[] {
+  const matches = filterSearchIndex(index, rawQuery);
+  return matches.filter((item) => item.type === 'brand').slice(0, maxLimit);
+}
 
 function isCustomCartItem(item: CartItem): item is CustomItem {
   return 'isCustom' in item && item.isCustom === true;
@@ -120,6 +137,13 @@ export default function QuoteDrawer() {
   const [cartState, setCartState] = useState<CartState>(() => $cartStore.get());
   const [brokenLogos, setBrokenLogos] = useState<Record<string, boolean>>({});
 
+  // Integrated catalog brand search state inside QuoteDrawer
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchIndex, setSearchIndex] = useState<SearchIndexItem[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchIndexItem[]>([]);
+  const [isLoadingIndex, setIsLoadingIndex] = useState(false);
+  const [addedBrandIds, setAddedBrandIds] = useState<Record<string, boolean>>({});
+
   // Custom item form state
   const [isCustomFormExpanded, setIsCustomFormExpanded] = useState(false);
   const [customDescription, setCustomDescription] = useState('');
@@ -130,10 +154,28 @@ export default function QuoteDrawer() {
 
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const customInputRef = useRef<HTMLInputElement | null>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const mouseDownTargetRef = useRef<EventTarget | null>(null);
   const customSuccessTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchDebounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const loadCatalogSearchIndex = async () => {
+    if (searchIndex.length > 0 || isLoadingIndex) return;
+    setIsLoadingIndex(true);
+    try {
+      const response = await fetch('/search-index.json');
+      if (response.ok) {
+        const data: SearchIndexItem[] = await response.json();
+        setSearchIndex(data);
+      }
+    } catch {
+      // Silent fallback: user can still add custom items freely
+    } finally {
+      setIsLoadingIndex(false);
+    }
+  };
 
   const closeDrawer = () => {
     setIsOpen(false);
@@ -153,8 +195,19 @@ export default function QuoteDrawer() {
         clearTimeout(customSuccessTimerRef.current);
         customSuccessTimerRef.current = null;
       }
+      if (searchDebounceTimerRef.current) {
+        clearTimeout(searchDebounceTimerRef.current);
+        searchDebounceTimerRef.current = null;
+      }
     };
   }, []);
+
+  // Re-filter when searchIndex finishes loading if user already typed a query
+  useEffect(() => {
+    if (searchIndex.length > 0 && searchQuery.trim().length > 0) {
+      setSearchResults(filterDrawerCatalogBrands(searchIndex, searchQuery));
+    }
+  }, [searchIndex]);
 
   // Global open-quote-drawer / close-quote-drawer listeners
   useEffect(() => {
@@ -169,6 +222,7 @@ export default function QuoteDrawer() {
         }
         return true;
       });
+      loadCatalogSearchIndex();
     };
 
     const handleClose = () => {
@@ -275,6 +329,43 @@ export default function QuoteDrawer() {
     });
   };
 
+  const handleSearchInputChange = (val: string) => {
+    setSearchQuery(val);
+    if (searchIndex.length === 0 && !isLoadingIndex) {
+      loadCatalogSearchIndex();
+    }
+
+    if (searchDebounceTimerRef.current) {
+      clearTimeout(searchDebounceTimerRef.current);
+    }
+
+    searchDebounceTimerRef.current = setTimeout(() => {
+      const sanitized = sanitizeSearchQuery(val);
+      if (!sanitized) {
+        setSearchResults([]);
+        return;
+      }
+      setSearchResults(filterDrawerCatalogBrands(searchIndex, sanitized));
+    }, 120);
+  };
+
+  const handleQuickAddCatalogBrand = (brand: SearchIndexItem) => {
+    $cartStore.addItem({
+      id: brand.id,
+      name: brand.name,
+      sector: brand.sector,
+      url: brand.url,
+      isTractor: brand.isTractor,
+      type: brand.type,
+      logo: brand.logo ?? null,
+    });
+
+    setAddedBrandIds((prev) => ({ ...prev, [brand.id]: true }));
+    setTimeout(() => {
+      setAddedBrandIds((prev) => ({ ...prev, [brand.id]: false }));
+    }, 1200);
+  };
+
   const handleAddCustomSubmit = (e: Event) => {
     e.preventDefault();
     const trimmedDesc = customDescription.trim();
@@ -368,8 +459,169 @@ export default function QuoteDrawer() {
           </button>
         </div>
 
-        {/* Scrollable Body: Items List + Custom Item Form + Logistics Info */}
+        {/* Scrollable Body: Integrated Brand Search + Items List + Custom Item Form + Logistics Info */}
         <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 bg-slate-50/60">
+          {/* Integrated Catalog Brand Search inside QuoteDrawer */}
+          <div class="bg-white border border-slate-200 rounded-industrial p-3.5 shadow-2xs space-y-2.5">
+            <label
+              for="drawer-brand-search-input"
+              class="block font-display font-bold text-xs uppercase tracking-wider text-secondary"
+            >
+              Buscar y agregar marca del catálogo (~40 marcas)
+            </label>
+            <div class="relative flex items-center">
+              <svg
+                class="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                ref={searchInputRef}
+                id="drawer-brand-search-input"
+                type="search"
+                value={searchQuery}
+                onInput={(e) =>
+                  handleSearchInputChange((e.target as HTMLInputElement).value)
+                }
+                placeholder="Escribe marca o sector (Panduit, Sika, DeWalt, Pavco...)"
+                class="w-full pl-9 pr-9 py-2.5 text-xs sm:text-sm bg-slate-50 focus:bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px] [&::-webkit-search-cancel-button]:hidden"
+              />
+              {searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchResults([]);
+                    searchInputRef.current?.focus();
+                  }}
+                  aria-label="Limpiar búsqueda de marca en el cajón"
+                  class="absolute right-2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-secondary rounded-industrial cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            {/* Instant Search Results inside QuoteDrawer */}
+            {sanitizeSearchQuery(searchQuery).length > 0 && (
+              <div class="pt-1">
+                {isLoadingIndex ? (
+                  <p class="text-xs text-slate-500 py-2 text-center">
+                    Cargando catálogo de marcas...
+                  </p>
+                ) : searchResults.length > 0 ? (
+                  <ul
+                    role="list"
+                    aria-label="Resultados de búsqueda en el cajón"
+                    class="divide-y divide-slate-100 border border-slate-200 rounded-industrial bg-slate-50/60 max-h-56 overflow-y-auto"
+                  >
+                    {searchResults.map((brand) => {
+                      const logoKey = `search:${brand.id}:${brand.logo ?? ''}`;
+                      const validLogo = !brokenLogos[logoKey]
+                        ? resolveItemLogoUrl(brand.logo)
+                        : null;
+                      const isRecentlyAdded = addedBrandIds[brand.id];
+                      const inCartItem = cartState.items.find((i) => i.id === brand.id);
+
+                      return (
+                        <li
+                          key={brand.id}
+                          class="p-2.5 flex items-center justify-between gap-2.5 hover:bg-white transition-colors"
+                        >
+                          <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-10 h-10 rounded-industrial border border-slate-200 bg-white flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                              {validLogo ? (
+                                <img
+                                  src={validLogo}
+                                  alt={`Logotipo oficial de ${brand.name}`}
+                                  width="36"
+                                  height="28"
+                                  loading="lazy"
+                                  onError={() =>
+                                    setBrokenLogos((prev) => ({ ...prev, [logoKey]: true }))
+                                  }
+                                  class="max-h-7 max-w-[34px] w-auto h-auto object-contain"
+                                />
+                              ) : (
+                                <span class="font-display font-extrabold text-[10px] tracking-wider uppercase text-secondary">
+                                  {getBrandTypographicInitials(brand.name)}
+                                </span>
+                              )}
+                            </div>
+                            <div class="min-w-0">
+                              <p class="font-display font-bold text-xs text-secondary truncate flex items-center gap-1.5">
+                                <span>{brand.name}</span>
+                                {inCartItem && (
+                                  <span class="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 rounded-industrial">
+                                    En lista: {inCartItem.quantity}
+                                  </span>
+                                )}
+                              </p>
+                              <p class="text-[11px] text-slate-500 truncate">
+                                {brand.sectorName}
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleQuickAddCatalogBrand(brand)}
+                            aria-label={`Agregar ${brand.name} a la requisición`}
+                            class={`px-3 py-2 min-h-[48px] text-xs font-bold rounded-industrial shrink-0 inline-flex items-center gap-1 transition-colors cursor-pointer ${
+                              isRecentlyAdded
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-primary hover:bg-primary-hover text-white'
+                            }`}
+                          >
+                            {isRecentlyAdded ? (
+                              <span>¡Agregado!</span>
+                            ) : (
+                              <>
+                                <span class="text-sm font-bold">+</span>
+                                <span>{inCartItem ? 'Sumar +1' : 'Agregar'}</span>
+                              </>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <div class="p-3 bg-amber-50/70 border border-amber-200 rounded-industrial flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <span class="text-amber-900">
+                      ¿No está en catálogo web? Agrégalo como insumo libre bajo pedido:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cleanTerm = sanitizeSearchQuery(searchQuery);
+                        setCustomDescription(cleanTerm);
+                        setIsCustomFormExpanded(true);
+                        setSearchQuery('');
+                        setSearchResults([]);
+                        setTimeout(() => customInputRef.current?.focus(), 50);
+                      }}
+                      class="px-3 py-2 min-h-[48px] bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-industrial shrink-0 cursor-pointer"
+                    >
+                      + Usar &ldquo;{sanitizeSearchQuery(searchQuery)}&rdquo; como insumo libre
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Toolbar: Count & Clear Cart */}
           {cartState.items.length > 0 && (
             <div class="flex items-center justify-between text-xs text-slate-600 pb-1 border-b border-slate-200">

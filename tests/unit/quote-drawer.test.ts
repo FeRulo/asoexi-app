@@ -17,7 +17,9 @@ import {
   getBrandTypographicInitials,
   buildRequisitionMailtoUrl,
   dispatchQuoteFormalModalEvent,
+  filterDrawerCatalogBrands,
 } from '@/islands/QuoteDrawer';
+import { buildSearchIndex, type SearchIndexItem } from '@/lib/search';
 import { generateRequisitionWhatsAppUrl } from '@/lib/whatsapp';
 
 class MockStorage implements Storage {
@@ -229,6 +231,63 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
       const target = new EventTarget();
       const handled = dispatchQuoteFormalModalEvent(true, target);
       expect(handled).toBe(false);
+    });
+  });
+
+  describe('5. Integrated Catalog Brand Search inside QuoteDrawer (filterDrawerCatalogBrands)', () => {
+    const mockSearchIndex: SearchIndexItem[] = buildSearchIndex(
+      [
+        {
+          id: 'panduit',
+          name: 'Panduit',
+          sector: 'electrico',
+          isTractor: true,
+          logo: '/brands/panduit.png',
+          description: 'Cableado estructurado y conectividad.',
+        },
+        {
+          id: 'sika',
+          name: 'Sika',
+          sector: 'hidraulico-pinturas',
+          isTractor: true,
+          logo: '/brands/sika.svg',
+          description: 'Impermeabilizantes y aditivos.',
+        },
+        {
+          id: 'dewalt',
+          name: 'DeWalt',
+          sector: 'ferretero-construccion',
+          isTractor: true,
+          logo: '/brands/dewalt.png',
+          description: 'Herramientas eléctricas.',
+        },
+      ],
+      [
+        {
+          id: 'electrico',
+          name: 'Sector Eléctrico Industrial',
+          slug: 'sector-electrico',
+          description: 'Conductores y breakers.',
+        },
+      ]
+    );
+
+    it('should filter only brand items (excluding sectors) matching the query inside QuoteDrawer', () => {
+      const results = filterDrawerCatalogBrands(mockSearchIndex, 'electrico');
+      expect(results.every((item) => item.type === 'brand')).toBe(true);
+      expect(results.some((item) => item.id === 'panduit')).toBe(true);
+    });
+
+    it('should return matching brands with logo and limit results up to maxLimit', () => {
+      const results = filterDrawerCatalogBrands(mockSearchIndex, 'sika', 5);
+      expect(results).toHaveLength(1);
+      expect(results[0].id).toBe('sika');
+      expect(results[0].logo).toBe('/brands/sika.svg');
+    });
+
+    it('should return empty array when query is empty or whitespace', () => {
+      expect(filterDrawerCatalogBrands(mockSearchIndex, '')).toEqual([]);
+      expect(filterDrawerCatalogBrands(mockSearchIndex, '   ')).toEqual([]);
     });
   });
 });
