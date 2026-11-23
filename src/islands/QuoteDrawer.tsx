@@ -20,6 +20,11 @@ import {
   type RequisitionWhatsAppPayload,
 } from '@/lib/whatsapp';
 import {
+  deriveRequisitionAnalyticsContext,
+  readPageAnalyticsContext,
+  trackWhatsAppLead,
+} from '@/lib/analytics';
+import {
   CREDIT_CONTRACTUAL_NOTICE,
   MAX_RUT_FILE_SIZE_BYTES,
   OFFICIAL_QUOTE_RECIPIENT_EMAIL,
@@ -914,14 +919,22 @@ export default function QuoteDrawer() {
   };
 
   const handlePrimaryWhatsAppClick = async (e: MouseEvent) => {
+    const analyticsContext = {
+      ...readPageAnalyticsContext(),
+      ...deriveRequisitionAnalyticsContext(cartState.items),
+      ctaLocation: 'quote_drawer_requisition',
+    };
+
     await executeRequisitionWhatsAppAction(cartState.items, {
       event: e,
       onDirectNavigate: () => {
+        trackWhatsAppLead(analyticsContext);
         setSafeguardConfirmationNotice('');
         setSafeguardFallbackPayload(null);
         closeDrawer();
       },
       onSafeguardCopied: (payload) => {
+        trackWhatsAppLead(analyticsContext);
         setSafeguardFallbackPayload(null);
         setSafeguardConfirmationNotice(payload.confirmationNotice);
         if (safeguardNoticeTimerRef.current) {
@@ -1691,7 +1704,14 @@ export default function QuoteDrawer() {
                   href={safeguardFallbackPayload.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-wa-managed="island"
+                  data-wa-location="quote_drawer_safeguard_fallback"
                   onClick={() => {
+                    trackWhatsAppLead({
+                      ...readPageAnalyticsContext(),
+                      ...deriveRequisitionAnalyticsContext(cartState.items),
+                      ctaLocation: 'quote_drawer_safeguard_fallback',
+                    });
                     const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.clipboardMessage);
                     if (copiedNow) {
                       setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
@@ -1711,6 +1731,8 @@ export default function QuoteDrawer() {
             href={whatsappRequisitionUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-wa-managed="island"
+            data-wa-location="quote_drawer_requisition"
             onClick={handlePrimaryWhatsAppClick}
             class="w-full min-h-[48px] px-4 py-3 bg-whatsapp hover:bg-whatsapp-hover text-white font-display font-bold text-xs sm:text-sm rounded-industrial shadow-sm transition-colors flex items-center justify-center gap-2 text-center focus:outline-none focus:ring-2 focus:ring-whatsapp"
           >

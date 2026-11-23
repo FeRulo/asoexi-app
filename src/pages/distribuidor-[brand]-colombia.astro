@@ -85,6 +85,9 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
   image={hasValidLogo ? data.logo! : undefined}
   imageAlt={`Logotipo oficial de ${data.name}`}
   jsonLd={breadcrumbsSchema}
+  pageBrand={data.name}
+  pageSector={data.sector}
+  pageBrandIsTractor={Boolean(data.isTractor)}
 >
   <div class="bg-surface py-6 sm:py-10 border-b border-slate-200">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
@@ -179,6 +182,10 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
                 href={whatsappQuoteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-wa-brand={data.name}
+                data-wa-sector={data.sector}
+                data-wa-tractor={data.isTractor ? 'true' : 'false'}
+                data-wa-location="brand_silo_hero_quote"
                 class="min-h-[52px] px-6 py-3.5 inline-flex items-center justify-center gap-3 text-base font-bold text-white bg-secondary hover:bg-secondary-hover active:bg-secondary-hover/90 rounded-industrial shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary/50 group/cta"
                 aria-label={`Cotizar portafolio de ${data.name} por WhatsApp oficial de ASOEXI`}
               >
@@ -225,6 +232,10 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
                   href={whatsappCatalogUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-wa-brand={data.name}
+                  data-wa-sector={data.sector}
+                  data-wa-tractor={data.isTractor ? 'true' : 'false'}
+                  data-wa-location="brand_silo_hero_catalog"
                   class="min-h-[48px] px-5 py-3 inline-flex items-center justify-center gap-2.5 text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-industrial shadow-2xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                   aria-label={`Solicitar catálogo técnico de fábrica para ${data.name} por WhatsApp`}
                 >
@@ -391,6 +402,10 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
                 href={whatsappCatalogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-wa-brand={data.name}
+                data-wa-sector={data.sector}
+                data-wa-tractor={data.isTractor ? 'true' : 'false'}
+                data-wa-location="brand_silo_portfolio_catalog"
                 class="min-h-[48px] px-4 py-2.5 inline-flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-industrial transition-colors"
                 aria-label={`Solicitar catálogo técnico de fábrica para ${data.name} por WhatsApp`}
               >

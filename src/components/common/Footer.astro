@@ -186,6 +186,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
                       href={generateWhatsAppUrl(phone.e164)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-wa-location="footer_contact"
                       aria-label={`WhatsApp con ${phone.name}`}
                       title={`Chatear por WhatsApp con ${phone.name}`}
                       class="px-3.5 py-2.5 min-h-[48px] rounded-industrial bg-whatsapp hover:bg-whatsapp-hover text-white transition-colors flex items-center gap-2 text-xs font-semibold"

@@ -1,5 +1,6 @@
 import { CONTACT_PHONES } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
+import { readPageAnalyticsContext, trackWhatsAppLead } from '@/lib/analytics';
 
 export default function MobileStickyBar() {
   const corporatePhone = CONTACT_PHONES[0];
@@ -43,6 +44,14 @@ export default function MobileStickyBar() {
           href={whatsAppUrl}
           target="_blank"
           rel="noopener noreferrer"
+          data-wa-managed="island"
+          data-wa-location="mobile_sticky_bar"
+          onClick={() => {
+            trackWhatsAppLead({
+              ...readPageAnalyticsContext(),
+              ctaLocation: 'mobile_sticky_bar',
+            });
+          }}
           aria-label="Cotizar por WhatsApp a la Línea Corporativa"
           class="flex-1 min-w-0 bg-whatsapp hover:bg-whatsapp-hover text-white font-display font-bold text-xs uppercase tracking-normal px-4 py-3 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 shadow-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-whatsapp focus-visible:ring-offset-1 text-center"
         >

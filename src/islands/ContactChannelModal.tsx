@@ -5,6 +5,7 @@ import {
   QUOTE_SLA_NOTICE,
 } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
+import { readPageAnalyticsContext, trackWhatsAppLead } from '@/lib/analytics';
 import { dispatchQuoteFormalModalEvent } from '@/islands/QuoteDrawer';
 import { OFFICIAL_QUOTE_RECIPIENT_EMAIL } from '@/lib/quote-formal';
 
@@ -213,7 +214,15 @@ export default function ContactChannelModal() {
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={closeModal}
+              data-wa-managed="island"
+              data-wa-location="contact_channel_modal"
+              onClick={() => {
+                trackWhatsAppLead({
+                  ...readPageAnalyticsContext(),
+                  ctaLocation: 'contact_channel_modal',
+                });
+                closeModal();
+              }}
               aria-label="Chatear por WhatsApp con la Línea Corporativa"
               class="w-full bg-whatsapp hover:bg-whatsapp-hover text-white font-semibold text-xs px-3.5 py-3.5 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-1 text-center"
             >

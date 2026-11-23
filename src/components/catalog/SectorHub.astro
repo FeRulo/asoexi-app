@@ -190,6 +190,10 @@ const whatsappUrl = generateSectorQuoteWhatsAppUrl(sectorMeta.name);
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
+          data-wa-brand="general"
+          data-wa-sector={sectorId}
+          data-wa-tractor="false"
+          data-wa-location="sector_hub_empty"
           class="inline-flex items-center gap-2 px-4 py-2.5 bg-secondary text-white text-xs font-bold rounded-industrial min-h-[48px]"
           aria-label={`Consultar catálogo del ${sectorMeta.name} por WhatsApp oficial`}
         >
@@ -229,6 +233,10 @@ const whatsappUrl = generateSectorQuoteWhatsAppUrl(sectorMeta.name);
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-wa-brand="general"
+            data-wa-sector={sectorId}
+            data-wa-tractor="false"
+            data-wa-location="sector_hub_on_demand"
             class="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[48px] text-xs sm:text-sm font-bold text-secondary bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-industrial shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-secondary/20"
           >
             <span>Consultar Referencia Especial</span>
@@ -269,6 +277,10 @@ const whatsappUrl = generateSectorQuoteWhatsAppUrl(sectorMeta.name);
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-wa-brand="general"
+            data-wa-sector={sectorId}
+            data-wa-tractor="false"
+            data-wa-location="sector_hub_multibrand_cta"
             class="w-full sm:w-auto min-h-[48px] px-8 py-4 bg-whatsapp hover:bg-whatsapp-hover active:bg-whatsapp-hover/90 text-white font-bold text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-3 rounded-industrial shadow-lg group focus:outline-none focus:ring-2 focus:ring-whatsapp/50"
             aria-label={`Cotizar lista multimarca del ${sectorMeta.name} por WhatsApp oficial`}
           >

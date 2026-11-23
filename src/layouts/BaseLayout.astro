@@ -8,6 +8,7 @@ import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
 import SEOHead from '@/components/seo/SEOHead.astro';
 import type { JsonLdInput } from '@/lib/seo';
+import { sanitizeGa4MeasurementId } from '@/lib/analytics';
 import '@/styles/global.css';
 
 interface Props {
@@ -22,6 +23,9 @@ interface Props {
   ogTitle?: string;
   twitterTitle?: string;
   jsonLd?: JsonLdInput | null;
+  pageBrand?: string;
+  pageSector?: string;
+  pageBrandIsTractor?: boolean;
 }
 
 const {
@@ -36,7 +40,14 @@ const {
   ogTitle,
   twitterTitle,
   jsonLd,
+  pageBrand,
+  pageSector,
+  pageBrandIsTractor,
 } = Astro.props;
+
+const ga4MeasurementId = sanitizeGa4MeasurementId(
+  import.meta.env.PUBLIC_GA4_MEASUREMENT_ID
+);
 ---
 
 <!doctype html>
@@ -68,8 +79,31 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400..700&family=Montserrat:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    {ga4MeasurementId && (
+      <>
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
+        ></script>
+        <script is:inline define:vars={{ ga4MeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          window.gtag = window.gtag || gtag;
+          window.gtag('js', new Date());
+          window.gtag('config', ga4MeasurementId, { transport_type: 'beacon' });
+        </script>
+      </>
+    )}
   </head>
-  <body class="flex flex-col min-h-screen bg-surface text-slate-900 font-body antialiased pb-20 md:pb-0">
+  <body
+    class="flex flex-col min-h-screen bg-surface text-slate-900 font-body antialiased pb-20 md:pb-0"
+    data-page-brand={pageBrand || undefined}
+    data-page-sector={pageSector || undefined}
+    data-page-tractor={typeof pageBrandIsTractor === 'boolean' ? String(pageBrandIsTractor) : undefined}
+  >
     <Header currentPath={currentPath} />
     <main class="flex-grow">
       <slot />
@@ -86,6 +120,7 @@ const {
     <!-- Interceptor global para disparadores de contacto y cotización -->
     <script>
       import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
+      import { handleDelegatedWhatsAppClick } from '@/lib/analytics';
       import { $cartStore } from '@/stores/cart';
 
       let cartBadgeUnsubscribe: (() => void) | null = null;
@@ -280,10 +315,24 @@ const {
         currentMascotObserver.observe(quoteBanner);
       }
 
+      function setupWhatsAppAnalyticsDelegation() {
+        if (window.__waAnalyticsBound) return;
+        window.__waAnalyticsBound = true;
+
+        document.addEventListener('click', (evt) => {
+          try {
+            handleDelegatedWhatsAppClick(evt.target);
+          } catch {
+            // Degradación silenciosa ante bloqueadores o entornos restringidos
+          }
+        });
+      }
+
       function initLayoutInteractions() {
         setupContactTriggers();
         setupQuoteDrawerAndCartTriggers();
         setupSingletonMascotObserver();
+        setupWhatsAppAnalyticsDelegation();
       }
 
       if (document.readyState === 'loading') {

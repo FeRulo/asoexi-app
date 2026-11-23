@@ -11,6 +11,11 @@ import {
 } from '@/lib/whatsapp';
 import { executeRequisitionWhatsAppAction } from '@/islands/QuoteDrawer';
 import {
+  deriveRequisitionAnalyticsContext,
+  readPageAnalyticsContext,
+  trackWhatsAppLead,
+} from '@/lib/analytics';
+import {
   $cartStore,
   resolveItemLogoUrl,
   getBrandTypographicInitials,
@@ -260,14 +265,22 @@ export default function LiveSearchModal() {
   };
 
   const handleRequisitionWhatsAppClick = async (e: MouseEvent) => {
+    const analyticsContext = {
+      ...readPageAnalyticsContext(),
+      ...deriveRequisitionAnalyticsContext(cartState.items),
+      ctaLocation: 'live_search_requisition_bar',
+    };
+
     await executeRequisitionWhatsAppAction(cartState.items, {
       event: e,
       onDirectNavigate: () => {
+        trackWhatsAppLead(analyticsContext);
         setSafeguardConfirmationNotice('');
         setSafeguardFallbackPayload(null);
         closeModal();
       },
       onSafeguardCopied: (payload) => {
+        trackWhatsAppLead(analyticsContext);
         setSafeguardFallbackPayload(null);
         setSafeguardConfirmationNotice(payload.confirmationNotice);
         if (safeguardNoticeTimerRef.current) {
@@ -464,6 +477,18 @@ export default function LiveSearchModal() {
                 href={generateSearchZeroFailWhatsAppUrl(sanitizedQuery || 'Catálogo general')}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-wa-managed="island"
+                data-wa-location="live_search_index_error"
+                onClick={() => {
+                  trackWhatsAppLead({
+                    originPage: readPageAnalyticsContext().originPage,
+                    brandOrigin: 'general',
+                    sectorOrigin: 'general',
+                    brandTier: 'general',
+                    ctaLocation: 'live_search_index_error',
+                  });
+                  closeModal();
+                }}
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-whatsapp hover:bg-whatsapp-hover text-white text-xs font-semibold rounded-industrial min-h-[48px]"
               >
                 Cotizar por WhatsApp
@@ -605,7 +630,18 @@ export default function LiveSearchModal() {
                             href={generateBrandQuoteWhatsAppUrl(item.name)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={closeModal}
+                            data-wa-managed="island"
+                            data-wa-location="live_search_brand_result"
+                            onClick={() => {
+                              trackWhatsAppLead({
+                                ...readPageAnalyticsContext(),
+                                brandOrigin: item.name,
+                                sectorOrigin: item.sector,
+                                isTractor: Boolean(item.isTractor),
+                                ctaLocation: 'live_search_brand_result',
+                              });
+                              closeModal();
+                            }}
                             class="p-2 text-slate-400 hover:text-whatsapp hover:bg-emerald-50 rounded-industrial transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center border border-slate-200"
                             title={`Cotizar solo ${item.name} por WhatsApp`}
                             aria-label={`Cotizar ${item.name} directamente por WhatsApp`}
@@ -690,7 +726,18 @@ export default function LiveSearchModal() {
                   href={zeroFailWhatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={closeModal}
+                  data-wa-managed="island"
+                  data-wa-location="live_search_zero_fail"
+                  onClick={() => {
+                    trackWhatsAppLead({
+                      originPage: readPageAnalyticsContext().originPage,
+                      brandOrigin: 'general',
+                      sectorOrigin: 'general',
+                      brandTier: 'general',
+                      ctaLocation: 'live_search_zero_fail',
+                    });
+                    closeModal();
+                  }}
                   aria-label={`Cotizar ${sanitizedQuery} por WhatsApp`}
                   class="w-full sm:w-auto flex-1 bg-whatsapp hover:bg-whatsapp-hover text-white font-semibold text-xs px-4 py-3 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-whatsapp"
                 >
@@ -776,7 +823,14 @@ export default function LiveSearchModal() {
                     href={safeguardFallbackPayload.whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-wa-managed="island"
+                    data-wa-location="live_search_requisition_safeguard_fallback"
                     onClick={() => {
+                      trackWhatsAppLead({
+                        ...readPageAnalyticsContext(),
+                        ...deriveRequisitionAnalyticsContext(cartState.items),
+                        ctaLocation: 'live_search_requisition_safeguard_fallback',
+                      });
                       const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.clipboardMessage);
                       if (copiedNow) {
                         setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
@@ -832,6 +886,8 @@ export default function LiveSearchModal() {
                   href={buildRequisitionWhatsAppPayload(cartState.items).whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-wa-managed="island"
+                  data-wa-location="live_search_requisition_bar"
                   onClick={handleRequisitionWhatsAppClick}
                   class="inline-flex items-center gap-2 px-3.5 py-2 bg-whatsapp hover:bg-whatsapp-hover text-white text-xs font-semibold rounded-industrial min-h-[48px] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-whatsapp"
                   title="Cotizar lista multimarca por WhatsApp"
