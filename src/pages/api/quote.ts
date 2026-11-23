@@ -12,6 +12,8 @@ import {
   type QuoteApiResponse,
 } from '@/lib/quote-formal';
 
+export const prerender = false;
+
 const MAX_REQUEST_BODY_BYTES = MAX_RUT_FILE_SIZE_BYTES + 262144;
 
 interface RuntimeLocals {

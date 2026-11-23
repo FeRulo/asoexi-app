@@ -17,8 +17,8 @@
 
 ## Deferred from: code review of spec-4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito.md (2026-11-23)
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito.md`
-  summary: Instalar y configurar `@astrojs/cloudflare` en `astro.config.mjs` y agregar `export const prerender = false` en `src/pages/api/quote.ts` al habilitar el despliegue live en Cloudflare Pages (ARCH-7).
+- [x] source_spec: `_bmad-output/implementation-artifacts/spec-4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito.md`
+  summary: Instalar y configurar `@astrojs/cloudflare` en `astro.config.mjs` y agregar `export const prerender = false` en `src/pages/api/quote.ts` al habilitar el despliegue live en Cloudflare Pages (ARCH-7). **Resuelto en fix(spec-4-4).**
   evidence: Actualmente `astro.config.mjs` compila con `output: 'static'` sin adaptador de servidor, por lo que `astro build` prerenderiza únicamente `GET /api/quote` (405) en `dist/api/quote` hasta habilitar el adaptador Cloudflare Workers/Pages.
 - source_spec: `_bmad-output/implementation-artifacts/spec-4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito.md`
   summary: Añadir protección anti-abuso (Cloudflare Turnstile o honeypot, rate limiting y validación de `Origin`/`Referer`) en `POST /api/quote` antes de exponer el envío público con Resend en producción.
