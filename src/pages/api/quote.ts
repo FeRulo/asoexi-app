@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env as cloudflareEnv } from 'cloudflare:workers';
 import {
   MAX_RUT_FILE_SIZE_BYTES,
   OFFICIAL_QUOTE_RECIPIENT_EMAIL,
@@ -32,19 +33,15 @@ function jsonResponse(body: QuoteApiResponse, status: number): Response {
   });
 }
 
-async function readEnvVar(locals: unknown, key: string): Promise<string | undefined> {
-  // 1. Astro v6+ / @astrojs/cloudflare v14+: read from `cloudflare:workers` `env`
+function readEnvVar(locals: unknown, key: string): string | undefined {
+  // 1. Astro v6+ / @astrojs/cloudflare v14+: read from static `cloudflare:workers` `env` (.dev.vars & Cloudflare secrets)
   try {
-    const cfWorkersSpecifier: string = 'cloudflare:workers';
-    const cfWorkers = (await import(/* @vite-ignore */ cfWorkersSpecifier)) as {
-      env?: Record<string, unknown>;
-    };
-    const fromCf = cfWorkers?.env?.[key];
+    const fromCf = cloudflareEnv?.[key];
     if (typeof fromCf === 'string' && fromCf.trim()) {
       return fromCf.trim();
     }
   } catch {
-    // Not running inside Cloudflare Workers runtime (e.g., Node/Vitest)
+    // Ignore if cloudflare:workers env is unavailable in the current context
   }
 
   // 2. Fallback for mock/legacy locals.runtime.env (guarded because Astro v6+ throws on getter)
@@ -323,7 +320,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     };
   }
 
-  const resendApiKey = await readEnvVar(locals, 'RESEND_API_KEY');
+  const resendApiKey = readEnvVar(locals, 'RESEND_API_KEY');
   if (!resendApiKey) {
     return jsonResponse(
       {
@@ -337,7 +334,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  const fromEmail = await readEnvVar(locals, 'RESEND_FROM_EMAIL');
+  const fromEmail = readEnvVar(locals, 'RESEND_FROM_EMAIL');
   const emailPayload = buildQuoteEmailPayload({
     request: validatedRequest,
     rutAttachment,

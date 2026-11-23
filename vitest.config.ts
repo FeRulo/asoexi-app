@@ -10,6 +10,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       'astro:content': 'astro/content/config',
+      'cloudflare:workers': fileURLToPath(
+        new URL('./tests/mocks/cloudflare-workers.ts', import.meta.url)
+      ),
     },
   },
 });

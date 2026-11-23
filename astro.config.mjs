@@ -13,5 +13,8 @@ export default defineConfig({
   integrations: [preact()],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ['preact', 'preact/hooks', 'preact/compat'],
+    },
   },
 });
