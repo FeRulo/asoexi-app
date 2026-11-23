@@ -3,9 +3,13 @@ import type { SearchIndexItem } from '@/lib/search';
 import { sanitizeSearchQuery, filterSearchIndex } from '@/lib/search';
 import {
   generateSearchZeroFailWhatsAppUrl,
-  generateRequisitionWhatsAppUrl,
   generateBrandQuoteWhatsAppUrl,
+  buildRequisitionWhatsAppPayload,
+  copyTextToClipboard,
+  copyTextToClipboardSync,
+  type RequisitionWhatsAppPayload,
 } from '@/lib/whatsapp';
+import { executeRequisitionWhatsAppAction } from '@/islands/QuoteDrawer';
 import {
   $cartStore,
   resolveItemLogoUrl,
@@ -30,6 +34,9 @@ export default function LiveSearchModal() {
   const [addedItemIds, setAddedItemIds] = useState<Record<string, boolean>>({});
   const [brokenLogos, setBrokenLogos] = useState<Record<string, boolean>>({});
   const [cartState, setCartState] = useState<CartState>(() => $cartStore.get());
+  const [safeguardConfirmationNotice, setSafeguardConfirmationNotice] = useState('');
+  const [safeguardFallbackPayload, setSafeguardFallbackPayload] =
+    useState<RequisitionWhatsAppPayload | null>(null);
 
   useEffect(() => {
     const unsubscribe = $cartStore.subscribe((state) => {
@@ -40,9 +47,45 @@ export default function LiveSearchModal() {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const modalContentRef = useRef<HTMLDivElement | null>(null);
+  const safeguardTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const mouseDownTargetRef = useRef<EventTarget | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const safeguardNoticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const safeguardFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      if (safeguardNoticeTimerRef.current) {
+        clearTimeout(safeguardNoticeTimerRef.current);
+        safeguardNoticeTimerRef.current = null;
+      }
+      if (safeguardFocusTimerRef.current) {
+        clearTimeout(safeguardFocusTimerRef.current);
+        safeguardFocusTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!safeguardConfirmationNotice && !safeguardFallbackPayload) return;
+    const freshPayload = buildRequisitionWhatsAppPayload(cartState.items);
+    if (!freshPayload.requiresSafeguard) {
+      setSafeguardConfirmationNotice('');
+      setSafeguardFallbackPayload(null);
+      return;
+    }
+    if (safeguardFallbackPayload) {
+      setSafeguardFallbackPayload(freshPayload);
+    }
+    if (safeguardConfirmationNotice) {
+      setSafeguardConfirmationNotice('');
+    }
+  }, [cartState.items]);
 
   // Lazy load the static search index on-demand
   const loadSearchIndex = async () => {
@@ -200,10 +243,56 @@ export default function LiveSearchModal() {
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
+    if (safeguardNoticeTimerRef.current) {
+      clearTimeout(safeguardNoticeTimerRef.current);
+      safeguardNoticeTimerRef.current = null;
+    }
+    if (safeguardFocusTimerRef.current) {
+      clearTimeout(safeguardFocusTimerRef.current);
+      safeguardFocusTimerRef.current = null;
+    }
+    setSafeguardConfirmationNotice('');
+    setSafeguardFallbackPayload(null);
     setIsOpen(false);
     if (previousActiveElement.current) {
       previousActiveElement.current.focus();
     }
+  };
+
+  const handleRequisitionWhatsAppClick = async (e: MouseEvent) => {
+    await executeRequisitionWhatsAppAction(cartState.items, {
+      event: e,
+      onDirectNavigate: () => {
+        setSafeguardConfirmationNotice('');
+        setSafeguardFallbackPayload(null);
+        closeModal();
+      },
+      onSafeguardCopied: (payload) => {
+        setSafeguardFallbackPayload(null);
+        setSafeguardConfirmationNotice(payload.confirmationNotice);
+        if (safeguardNoticeTimerRef.current) {
+          clearTimeout(safeguardNoticeTimerRef.current);
+        }
+        safeguardNoticeTimerRef.current = setTimeout(() => {
+          setSafeguardConfirmationNotice('');
+          safeguardNoticeTimerRef.current = null;
+        }, 9000);
+      },
+      onSafeguardFallback: (payload) => {
+        setSafeguardConfirmationNotice('');
+        setSafeguardFallbackPayload(payload);
+        if (safeguardFocusTimerRef.current) {
+          clearTimeout(safeguardFocusTimerRef.current);
+        }
+        safeguardFocusTimerRef.current = setTimeout(() => {
+          safeguardFocusTimerRef.current = null;
+          if (safeguardTextareaRef.current) {
+            safeguardTextareaRef.current.focus();
+            safeguardTextareaRef.current.select();
+          }
+        }, 40);
+      },
+    });
   };
 
   // Debounced search (150ms)
@@ -618,6 +707,90 @@ export default function LiveSearchModal() {
         {/* Requisition Bar (Active when >= 1 item in cart) */}
         {cartState.items.length > 0 && (
           <div class="px-4 py-3 bg-secondary text-white border-t border-slate-700/80 flex flex-col gap-2.5 shadow-inner">
+            {safeguardConfirmationNotice && (
+              <div
+                role="status"
+                aria-live="polite"
+                class="p-2.5 bg-emerald-500/20 border border-emerald-400/50 text-emerald-200 rounded-industrial text-xs flex items-center justify-between gap-2 animate-fade-in"
+              >
+                <span class="font-bold">{safeguardConfirmationNotice}</span>
+                <button
+                  type="button"
+                  onClick={() => setSafeguardConfirmationNotice('')}
+                  aria-label="Cerrar aviso de portapapeles"
+                  class="text-emerald-200 hover:text-white p-1 rounded-industrial cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {safeguardFallbackPayload && (
+              <div
+                role="region"
+                aria-label="Copia manual de lista extensa para WhatsApp"
+                class="p-3 bg-slate-800 border border-amber-400/60 rounded-industrial space-y-2 text-xs animate-fade-in"
+              >
+                <div class="flex items-start justify-between gap-2">
+                  <p class="font-bold text-amber-300">
+                    Copia tu lista extensa ({safeguardFallbackPayload.itemCount} materiales) y pégala en el chat de WhatsApp:
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSafeguardFallbackPayload(null)}
+                    aria-label="Cerrar panel de copia manual"
+                    class="text-slate-300 hover:text-white p-1 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <textarea
+                  ref={safeguardTextareaRef}
+                  readOnly
+                  rows={3}
+                  aria-label="Texto completo de la requisición para copiar a WhatsApp"
+                  value={safeguardFallbackPayload.fullMessage}
+                  onFocus={(e) => (e.target as HTMLTextAreaElement).select()}
+                  class="w-full p-2 text-[11px] font-mono bg-slate-900 border border-slate-600 rounded-industrial text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <div class="flex flex-wrap items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (safeguardTextareaRef.current) {
+                        safeguardTextareaRef.current.focus();
+                        safeguardTextareaRef.current.select();
+                      }
+                      const ok = await copyTextToClipboard(safeguardFallbackPayload.fullMessage);
+                      if (ok) {
+                        setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
+                        setSafeguardFallbackPayload(null);
+                      }
+                    }}
+                    class="px-3 py-2 min-h-[48px] bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded-industrial transition-colors cursor-pointer"
+                  >
+                    Seleccionar y copiar lista
+                  </button>
+
+                  <a
+                    href={safeguardFallbackPayload.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.fullMessage);
+                      if (copiedNow) {
+                        setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
+                      }
+                      setSafeguardFallbackPayload(null);
+                    }}
+                    class="px-3 py-2 min-h-[48px] bg-whatsapp hover:bg-whatsapp-hover text-white font-bold text-xs rounded-industrial inline-flex items-center gap-1.5"
+                  >
+                    <span>Abrir WhatsApp para pegar lista →</span>
+                  </a>
+                </div>
+              </div>
+            )}
+
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div class="flex items-center gap-2.5 min-w-0">
                 <span class="w-7 h-7 rounded-industrial bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">
@@ -656,10 +829,10 @@ export default function LiveSearchModal() {
                 </button>
 
                 <a
-                  href={generateRequisitionWhatsAppUrl(cartState.items)}
+                  href={buildRequisitionWhatsAppPayload(cartState.items).whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={closeModal}
+                  onClick={handleRequisitionWhatsAppClick}
                   class="inline-flex items-center gap-2 px-3.5 py-2 bg-whatsapp hover:bg-whatsapp-hover text-white text-xs font-semibold rounded-industrial min-h-[48px] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-whatsapp"
                   title="Cotizar lista multimarca por WhatsApp"
                 >

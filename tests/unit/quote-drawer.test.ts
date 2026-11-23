@@ -18,9 +18,13 @@ import {
   buildRequisitionMailtoUrl,
   dispatchQuoteFormalModalEvent,
   filterDrawerCatalogBrands,
+  executeRequisitionWhatsAppAction,
 } from '@/islands/QuoteDrawer';
 import { buildSearchIndex, type SearchIndexItem } from '@/lib/search';
-import { generateRequisitionWhatsAppUrl } from '@/lib/whatsapp';
+import {
+  generateRequisitionWhatsAppUrl,
+  buildRequisitionWhatsAppPayload,
+} from '@/lib/whatsapp';
 
 class MockStorage implements Storage {
   private store: Record<string, string> = {};
@@ -180,11 +184,13 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
 
       const items = $cartStore.get().items;
       const waUrl = generateRequisitionWhatsAppUrl(items, mockStorage);
+      const decoded = decodeURIComponent(waUrl);
 
       expect(waUrl).toContain('https://wa.me/573014191344?text=');
-      expect(waUrl).toContain(encodeURIComponent('1. Panduit (2 unds)'));
-      expect(waUrl).toContain(encodeURIComponent('2. Curvas EMT 3/4 (10 unds)'));
-      expect(waUrl).toContain(encodeURIComponent('SLA ≤ 5 min'));
+      expect(decoded).toContain('1. Panduit (2 unds)');
+      expect(decoded).toContain('2. Curvas EMT 3/4 (10 unds) [Insumo Libre]');
+      expect(decoded).toContain('Razón Social:');
+      expect(decoded).toContain('SLA ≤ 5 min');
     });
 
     it('should build structured fallback mailto URL exclusively to serviciocliente@asoexi.com for standard requisition and 45-day credit', () => {
@@ -288,6 +294,120 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
     it('should return empty array when query is empty or whitespace', () => {
       expect(filterDrawerCatalogBrands(mockSearchIndex, '')).toEqual([]);
       expect(filterDrawerCatalogBrands(mockSearchIndex, '   ')).toEqual([]);
+    });
+  });
+
+  describe('6. Story 4.3: WhatsApp Length Safeguard Integration in QuoteDrawer ($cartStore -> Safeguard Action)', () => {
+    it('should return direct navigation without safeguard when $cartStore has <= 8 items and <= 1200 chars', async () => {
+      addItem({ id: 'panduit', name: 'Panduit', sector: 'electrico', quantity: 3 });
+      addCustomItem('Caja metálica 20x20', 5, 'Calibre 16');
+
+      const items = $cartStore.get().items;
+      const payload = buildRequisitionWhatsAppPayload(items, undefined, mockStorage);
+      expect(payload.requiresSafeguard).toBe(false);
+
+      const copyMock = vi.fn().mockResolvedValue(true);
+      const outcome = await executeRequisitionWhatsAppAction(items, copyMock, mockStorage);
+
+      expect(outcome.mode).toBe('direct');
+      expect(outcome.copied).toBe(false);
+      expect(copyMock).not.toHaveBeenCalled();
+      expect(outcome.payload.whatsappUrl).toContain('https://wa.me/573014191344?text=');
+    });
+
+    it('should copy fullMessage and return safeguard-copied outcome with confirmationNotice when $cartStore has > 8 items', async () => {
+      for (let i = 1; i <= 9; i++) {
+        addCustomItem(`Material eléctrico referencia #${i}`, i);
+      }
+
+      const items = $cartStore.get().items;
+      expect(items).toHaveLength(9);
+
+      const copyMock = vi.fn().mockResolvedValue(true);
+      const outcome = await executeRequisitionWhatsAppAction(items, copyMock, mockStorage);
+
+      expect(outcome.mode).toBe('safeguard-copied');
+      expect(outcome.copied).toBe(true);
+      expect(copyMock).toHaveBeenCalledWith(outcome.payload.fullMessage);
+      expect(outcome.payload.confirmationNotice).toBe(
+        '¡Lista de 9 materiales copiada al portapapeles! Pégala en el chat de WhatsApp'
+      );
+      expect(outcome.payload.whatsappUrl).toContain(
+        encodeURIComponent(outcome.payload.safeIntroMessage)
+      );
+    });
+
+    it('should return safeguard-fallback outcome when clipboard permissions are blocked on an extensive list (> 1200 chars)', async () => {
+      for (let i = 1; i <= 4; i++) {
+        addCustomItem(
+          `Transformador seco trifásico clase H referencia industrial #${i}`,
+          2,
+          `Especificación técnica detallada para obra: ${'X'.repeat(310)}`
+        );
+      }
+
+      const items = $cartStore.get().items;
+      const copyMock = vi.fn().mockResolvedValue(false);
+      const outcome = await executeRequisitionWhatsAppAction(items, copyMock, mockStorage);
+
+      expect(outcome.mode).toBe('safeguard-fallback');
+      expect(outcome.copied).toBe(false);
+      expect(copyMock).toHaveBeenCalledWith(outcome.payload.fullMessage);
+      expect(outcome.payload.requiresSafeguard).toBe(true);
+      expect(outcome.payload.fullMessage).toContain('X'.repeat(310));
+    });
+
+    it('should NOT call event.preventDefault() when synchronous copy succeeds on an extensive list (allowing native <a target="_blank"> navigation without popup blocker)', async () => {
+      for (let i = 1; i <= 9; i++) {
+        addCustomItem(`Insumo eléctrico #${i}`, 1);
+      }
+
+      const items = $cartStore.get().items;
+      const preventDefaultSpy = vi.fn();
+      const syncCopyMock = vi.fn().mockReturnValue(true);
+      const asyncCopyMock = vi.fn().mockResolvedValue(true);
+      const onSafeguardCopiedSpy = vi.fn();
+
+      const outcome = await executeRequisitionWhatsAppAction(items, {
+        event: { preventDefault: preventDefaultSpy },
+        syncCopyFn: syncCopyMock,
+        asyncCopyFn: asyncCopyMock,
+        onSafeguardCopied: onSafeguardCopiedSpy,
+        storage: mockStorage,
+      });
+
+      expect(outcome.mode).toBe('safeguard-copied');
+      expect(outcome.copied).toBe(true);
+      expect(outcome.copiedSync).toBe(true);
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+      expect(asyncCopyMock).not.toHaveBeenCalled();
+      expect(onSafeguardCopiedSpy).toHaveBeenCalledWith(outcome.payload, true);
+    });
+
+    it('SHOULD call event.preventDefault() and invoke onSafeguardFallback when both sync and async clipboard copies fail', async () => {
+      for (let i = 1; i <= 9; i++) {
+        addCustomItem(`Insumo eléctrico #${i}`, 1);
+      }
+
+      const items = $cartStore.get().items;
+      const preventDefaultSpy = vi.fn();
+      const syncCopyMock = vi.fn().mockReturnValue(false);
+      const asyncCopyMock = vi.fn().mockResolvedValue(false);
+      const onSafeguardFallbackSpy = vi.fn();
+
+      const outcome = await executeRequisitionWhatsAppAction(items, {
+        event: { preventDefault: preventDefaultSpy },
+        syncCopyFn: syncCopyMock,
+        asyncCopyFn: asyncCopyMock,
+        onSafeguardFallback: onSafeguardFallbackSpy,
+        storage: mockStorage,
+      });
+
+      expect(outcome.mode).toBe('safeguard-fallback');
+      expect(outcome.copied).toBe(false);
+      expect(outcome.copiedSync).toBe(false);
+      expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
+      expect(onSafeguardFallbackSpy).toHaveBeenCalledWith(outcome.payload);
     });
   });
 });

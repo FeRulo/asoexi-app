@@ -13,9 +13,118 @@ import {
   sanitizeSearchQuery,
   filterSearchIndex,
 } from '@/lib/search';
-import { generateRequisitionWhatsAppUrl } from '@/lib/whatsapp';
+import {
+  buildRequisitionWhatsAppPayload,
+  copyTextToClipboard,
+  copyTextToClipboardSync,
+  type RequisitionWhatsAppPayload,
+} from '@/lib/whatsapp';
 
 export { resolveItemLogoUrl, getBrandTypographicInitials };
+
+export interface RequisitionWhatsAppActionOutcome {
+  mode: 'direct' | 'safeguard-copied' | 'safeguard-fallback';
+  copied: boolean;
+  copiedSync: boolean;
+  payload: RequisitionWhatsAppPayload;
+}
+
+export interface RequisitionWhatsAppClickHandlers {
+  event?: { preventDefault: () => void };
+  onDirectNavigate?: (payload: RequisitionWhatsAppPayload) => void;
+  onSafeguardCopied?: (payload: RequisitionWhatsAppPayload, copiedSync: boolean) => void;
+  onSafeguardFallback?: (payload: RequisitionWhatsAppPayload) => void;
+  syncCopyFn?: (text: string) => boolean;
+  asyncCopyFn?: (text: string) => Promise<boolean>;
+  openWindowFn?: (url: string) => void;
+  storage?: Storage;
+}
+
+/**
+ * Evaluates the requisition WhatsApp payload and executes clipboard copy when
+ * EDGE-3 length safeguard is required (> 8 items or > 1,200 characters).
+ * Preserves the native `<a target="_blank">` user gesture when synchronous copy succeeds,
+ * avoiding mobile popup blockers (iOS Safari), and only calls `event.preventDefault()`
+ * when falling back to async Clipboard API or manual selection panel.
+ */
+export async function executeRequisitionWhatsAppAction(
+  items: CartItem[],
+  copyFnOrOptions?:
+    | ((text: string) => Promise<boolean>)
+    | RequisitionWhatsAppClickHandlers,
+  storage?: Storage
+): Promise<RequisitionWhatsAppActionOutcome> {
+  const isOptions =
+    typeof copyFnOrOptions === 'object' && copyFnOrOptions !== null;
+  const options: RequisitionWhatsAppClickHandlers = isOptions
+    ? copyFnOrOptions
+    : {
+        asyncCopyFn: copyFnOrOptions,
+        storage,
+      };
+
+  const resolvedStorage = options.storage ?? storage;
+  const payload = buildRequisitionWhatsAppPayload(items, undefined, resolvedStorage);
+
+  if (!payload.requiresSafeguard) {
+    options.onDirectNavigate?.(payload);
+    return {
+      mode: 'direct',
+      copied: false,
+      copiedSync: false,
+      payload,
+    };
+  }
+
+  // If caller injected only a custom asyncCopyFn (e.g., unit test mock) without syncCopyFn, skip default sync copy
+  const syncCopy =
+    options.syncCopyFn ??
+    (isOptions || !copyFnOrOptions ? copyTextToClipboardSync : () => false);
+  const asyncCopy =
+    options.asyncCopyFn ?? copyTextToClipboard;
+
+  const copiedSync = syncCopy(payload.fullMessage);
+  if (copiedSync) {
+    // Do NOT call event.preventDefault() so native <a target="_blank"> opens in user gesture
+    options.onSafeguardCopied?.(payload, true);
+    return {
+      mode: 'safeguard-copied',
+      copied: true,
+      copiedSync: true,
+      payload,
+    };
+  }
+
+  // Synchronous copy was not possible; prevent immediate link navigation while we try async or show fallback
+  options.event?.preventDefault();
+
+  const copiedAsync = await asyncCopy(payload.fullMessage);
+  if (copiedAsync) {
+    options.onSafeguardCopied?.(payload, false);
+    const openWin =
+      options.openWindowFn ??
+      ((url: string) => {
+        if (typeof window !== 'undefined' && typeof window.open === 'function') {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      });
+    openWin(payload.whatsappUrl);
+    return {
+      mode: 'safeguard-copied',
+      copied: true,
+      copiedSync: false,
+      payload,
+    };
+  }
+
+  options.onSafeguardFallback?.(payload);
+  return {
+    mode: 'safeguard-fallback',
+    copied: false,
+    copiedSync: false,
+    payload,
+  };
+}
 
 /**
  * Filters the search index inside QuoteDrawer returning only actionable brand items.
@@ -152,14 +261,22 @@ export default function QuoteDrawer() {
   const [customError, setCustomError] = useState('');
   const [customSuccess, setCustomSuccess] = useState(false);
 
+  // Story 4.3: WhatsApp EDGE-3 Length Safeguard state (confirmation banner & clipboard fallback panel)
+  const [safeguardConfirmationNotice, setSafeguardConfirmationNotice] = useState('');
+  const [safeguardFallbackPayload, setSafeguardFallbackPayload] =
+    useState<RequisitionWhatsAppPayload | null>(null);
+
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const customInputRef = useRef<HTMLInputElement | null>(null);
+  const safeguardTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const mouseDownTargetRef = useRef<EventTarget | null>(null);
   const customSuccessTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchDebounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const safeguardNoticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const safeguardFocusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadCatalogSearchIndex = async () => {
     if (searchIndex.length > 0 || isLoadingIndex) return;
@@ -179,6 +296,16 @@ export default function QuoteDrawer() {
 
   const closeDrawer = () => {
     setIsOpen(false);
+    setSafeguardConfirmationNotice('');
+    setSafeguardFallbackPayload(null);
+    if (safeguardNoticeTimerRef.current) {
+      clearTimeout(safeguardNoticeTimerRef.current);
+      safeguardNoticeTimerRef.current = null;
+    }
+    if (safeguardFocusTimerRef.current) {
+      clearTimeout(safeguardFocusTimerRef.current);
+      safeguardFocusTimerRef.current = null;
+    }
     if (previousActiveElement.current) {
       previousActiveElement.current.focus();
     }
@@ -199,8 +326,33 @@ export default function QuoteDrawer() {
         clearTimeout(searchDebounceTimerRef.current);
         searchDebounceTimerRef.current = null;
       }
+      if (safeguardNoticeTimerRef.current) {
+        clearTimeout(safeguardNoticeTimerRef.current);
+        safeguardNoticeTimerRef.current = null;
+      }
+      if (safeguardFocusTimerRef.current) {
+        clearTimeout(safeguardFocusTimerRef.current);
+        safeguardFocusTimerRef.current = null;
+      }
     };
   }, []);
+
+  // Keep safeguard notice / fallback payload synchronized when cart items change
+  useEffect(() => {
+    if (!safeguardConfirmationNotice && !safeguardFallbackPayload) return;
+    const freshPayload = buildRequisitionWhatsAppPayload(cartState.items);
+    if (!freshPayload.requiresSafeguard) {
+      setSafeguardConfirmationNotice('');
+      setSafeguardFallbackPayload(null);
+      return;
+    }
+    if (safeguardFallbackPayload) {
+      setSafeguardFallbackPayload(freshPayload);
+    }
+    if (safeguardConfirmationNotice) {
+      setSafeguardConfirmationNotice('');
+    }
+  }, [cartState.items]);
 
   // Re-filter when searchIndex finishes loading if user already typed a query
   useEffect(() => {
@@ -409,9 +561,46 @@ export default function QuoteDrawer() {
     }
   };
 
+  const handlePrimaryWhatsAppClick = async (e: MouseEvent) => {
+    await executeRequisitionWhatsAppAction(cartState.items, {
+      event: e,
+      onDirectNavigate: () => {
+        setSafeguardConfirmationNotice('');
+        setSafeguardFallbackPayload(null);
+        closeDrawer();
+      },
+      onSafeguardCopied: (payload) => {
+        setSafeguardFallbackPayload(null);
+        setSafeguardConfirmationNotice(payload.confirmationNotice);
+        if (safeguardNoticeTimerRef.current) {
+          clearTimeout(safeguardNoticeTimerRef.current);
+        }
+        safeguardNoticeTimerRef.current = setTimeout(() => {
+          setSafeguardConfirmationNotice('');
+          safeguardNoticeTimerRef.current = null;
+        }, 9000);
+      },
+      onSafeguardFallback: (payload) => {
+        setSafeguardConfirmationNotice('');
+        setSafeguardFallbackPayload(payload);
+        if (safeguardFocusTimerRef.current) {
+          clearTimeout(safeguardFocusTimerRef.current);
+        }
+        safeguardFocusTimerRef.current = setTimeout(() => {
+          safeguardFocusTimerRef.current = null;
+          if (safeguardTextareaRef.current) {
+            safeguardTextareaRef.current.focus();
+            safeguardTextareaRef.current.select();
+          }
+        }, 40);
+      },
+    });
+  };
+
   if (!isOpen) return null;
 
-  const whatsappRequisitionUrl = generateRequisitionWhatsAppUrl(cartState.items);
+  const whatsappPayload = buildRequisitionWhatsAppPayload(cartState.items);
+  const whatsappRequisitionUrl = whatsappPayload.whatsappUrl;
   const emailFallbackUrl = buildRequisitionMailtoUrl(cartState.items, false);
   const creditFallbackUrl = buildRequisitionMailtoUrl(cartState.items, true);
 
@@ -1028,12 +1217,125 @@ export default function QuoteDrawer() {
 
         {/* Bottom Triple Commercial Action Bar */}
         <div class="p-4 sm:p-5 bg-white border-t border-slate-200 space-y-2.5 shrink-0 shadow-lg">
+          {/* EDGE-3 Length Safeguard: Confirmation Notice Banner */}
+          {safeguardConfirmationNotice && (
+            <div
+              role="status"
+              aria-live="polite"
+              class="p-3 bg-emerald-50 border border-emerald-300 text-emerald-950 rounded-industrial text-xs flex items-start justify-between gap-2.5 shadow-2xs animate-fade-in"
+            >
+              <div class="flex items-start gap-2">
+                <svg
+                  class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <p class="font-bold leading-snug">{safeguardConfirmationNotice}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSafeguardConfirmationNotice('')}
+                aria-label="Cerrar aviso de portapapeles"
+                class="text-emerald-700 hover:text-emerald-950 p-1 rounded-industrial shrink-0 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          )}
+
+          {/* EDGE-3 Length Safeguard: Visual Fallback Panel when browser blocks clipboard permissions */}
+          {safeguardFallbackPayload && (
+            <div
+              role="region"
+              aria-label="Copia manual de lista extensa para WhatsApp"
+              class="p-3.5 bg-amber-50 border border-amber-300 rounded-industrial space-y-2.5 text-xs shadow-xs animate-fade-in"
+            >
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <p class="font-display font-bold text-amber-950">
+                    Copia tu lista extensa ({safeguardFallbackPayload.itemCount} materiales)
+                  </p>
+                  <p class="text-[11px] text-amber-900 mt-0.5 leading-snug">
+                    Tu navegador bloqueó el copiado automático. Presiona <strong>Seleccionar y copiar lista</strong> (o Ctrl+C) y luego continúa al chat de WhatsApp:
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSafeguardFallbackPayload(null)}
+                  aria-label="Cerrar panel de copia manual"
+                  class="text-amber-800 hover:text-amber-950 p-1 rounded-industrial shrink-0 cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <textarea
+                ref={safeguardTextareaRef}
+                readOnly
+                rows={4}
+                aria-label="Texto completo de la requisición para copiar a WhatsApp"
+                value={safeguardFallbackPayload.fullMessage}
+                onFocus={(e) => (e.target as HTMLTextAreaElement).select()}
+                class="w-full p-2 text-[11px] font-mono bg-white border border-amber-300 rounded-industrial text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+
+              <div class="flex flex-col sm:flex-row items-center gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (safeguardTextareaRef.current) {
+                      safeguardTextareaRef.current.focus();
+                      safeguardTextareaRef.current.select();
+                    }
+                    const ok = await copyTextToClipboard(safeguardFallbackPayload.fullMessage);
+                    if (ok) {
+                      setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
+                      setSafeguardFallbackPayload(null);
+                    }
+                  }}
+                  class="w-full sm:w-auto px-3 py-2 min-h-[48px] bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-industrial transition-colors cursor-pointer"
+                >
+                  Seleccionar y copiar lista
+                </button>
+
+                <a
+                  href={safeguardFallbackPayload.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    const copiedNow = copyTextToClipboardSync(safeguardFallbackPayload.fullMessage);
+                    if (copiedNow) {
+                      setSafeguardConfirmationNotice(safeguardFallbackPayload.confirmationNotice);
+                    }
+                    setSafeguardFallbackPayload(null);
+                  }}
+                  class="w-full sm:flex-1 px-3 py-2 min-h-[48px] bg-whatsapp hover:bg-whatsapp-hover text-white font-bold text-xs rounded-industrial flex items-center justify-center gap-1.5 text-center transition-colors"
+                >
+                  <span>Abrir WhatsApp para pegar lista →</span>
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* 1. Primary Action: WhatsApp with SLA <= 5 min */}
           <a
             href={whatsappRequisitionUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={closeDrawer}
+            onClick={handlePrimaryWhatsAppClick}
             class="w-full min-h-[48px] px-4 py-3 bg-whatsapp hover:bg-whatsapp-hover text-white font-display font-bold text-xs sm:text-sm rounded-industrial shadow-sm transition-colors flex items-center justify-center gap-2 text-center focus:outline-none focus:ring-2 focus:ring-whatsapp"
           >
             <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
