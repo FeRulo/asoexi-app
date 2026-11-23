@@ -1,0 +1,17 @@
+{
+  "id": "colmena",
+  "name": "Colmena",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/colmena.png",
+  "description": "Consorcio Metalúrgico Nacional líder en tubería conduit metálica y sistemas de canalización estructural bajo norma RETIE.",
+  "applicationNotes": "Canalización y protección mecánica de conductores eléctricos en obras comerciales, industriales e infraestructura civil.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tubería Conduit Metálica EMT",
+    "Tubería Conduit IMC",
+    "Tubería Rígida Galvanizada",
+    "Accesorios y Uniones"
+  ],
+  "sourcingNotes": "Despacho directo de fábrica en atados estandarizados de tubería conduit metálica EMT e IMC y curvas galvanizadas con entrega coordinada en obra o bodega industrial."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "toto",
+  "name": "TOTO",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/toto.png",
+  "description": "Líder mundial en tecnología sanitaria, aparatos de bajo consumo de agua, fluxómetros automáticos y griferías ecológicas.",
+  "applicationNotes": "Edificaciones sustentables con certificación LEED, hoteles corporativos y sedes bancarias con sistemas touchless.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Sanitarios de Ultra Alta Eficiencia (UHET)",
+    "Fluxómetros Electrónicos Automáticos",
+    "Griferías Sensorizadas Touchless",
+    "Urinarios Ecológicos sin Agua"
+  ],
+  "sourcingNotes": "Suministro directo bajo pedido de importación y bodega del fabricante con embalaje reforzado de exportación y garantía oficial de producto sanitario premium."
+}

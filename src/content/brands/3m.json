@@ -1,0 +1,17 @@
+{
+  "id": "3m",
+  "name": "3M",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/3m.png",
+  "description": "Tecnología aplicada en cintas aislantes eléctricas, abrasivos de alto rendimiento, adhesivos estructurales y seguridad industrial.",
+  "applicationNotes": "Aislamiento dieléctrico con cintas Scotch 33+, empalmes subterráneos, desbaste con discos Cubitron y mascarillas de protección N95.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cintas Eléctricas Scotch 33+ y Temflex",
+    "Abrasivos y Discos de Desbaste Cubitron",
+    "Cintas Doble Faz VHB de Montaje",
+    "Respiradores y EPP Certificado"
+  ],
+  "sourcingNotes": "Abastecimiento programado directo de planta en cajas selladas de cintas industriales VHB, respiradores N95 y discos abrasivos con fichas de seguridad y garantía original del fabricante."
+}

@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-22-2026 17:34
-last_updated: 10-11-2026 13:56
+last_updated: 11-23-2026 18:12
 project: asoexi-app
 project_key: NOKEY
 tracking_system: file-system
@@ -43,14 +43,30 @@ development_status:
   1-5-unificacion-canales-corporativos-sla-5min-y-rebalanceo-pilares: done
   epic-1-retrospective: optional
 
-  epic-2: backlog
+  epic-2: done
+  2-1-colecciones-zod-catalogo-b2b-y-brandcard: done
+  2-2-vitrina-destacada-marcas-tractoras-home: done
+  2-3-hubs-sectores-industriales-contenido-semantico-mantenimiento: done
+  2-4-buscador-tiempo-real-livesearchmodal-fallo-cero: done
   epic-2-retrospective: optional
 
-  epic-3: backlog
+  epic-3: done
+  3-1-plantilla-dinamica-canonica-ssg-silos-de-marca: done
+  3-2-vitrina-portafolio-marca-promesa-logistica-descarga-pdf: done
+  3-3-semillero-de-contenido-declarativo-para-las-40-marcas-con-densidad-semantica-anti-thin-content: done
   epic-3-retrospective: optional
 
-  epic-4: backlog
+  epic-4: done
+  4-1-almacen-reactivo-persistente-nano-stores-cartstore-para-requisicion-b2b: done
+  4-2-isla-preact-cajon-de-cotizacion-persistente-quotedrawer-y-badge-flotante: done
+  4-3-generador-seguro-de-deep-links-whatsapp-con-salvaguarda-de-longitud: done
+  4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito: done
   epic-4-retrospective: optional
 
-  epic-5: backlog
+  epic-5: in-progress
+  5-1-sitemap-xml-dinamico-optimizacion-semantica-para-motores-de-busqueda-e-ia-aeo: done
+  5-2-marcado-estructurado-schema-org-json-ld-localbusiness-hardwarestore-y-jerarquia-de-breadcrumblist: done
+  5-3-telemetria-de-conversion-por-canal-corporativo-y-auditoria-de-prospectos-calificados: review
+  5-4-verificacion-en-google-search-console-seo-on-page-local-y-google-business-profile: backlog
+  5-5-infraestructura-de-medicion-para-pauta-y-conversiones-google-ads-sem-geofenced: backlog
   epic-5-retrospective: optional

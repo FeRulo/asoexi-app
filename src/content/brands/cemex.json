@@ -1,0 +1,17 @@
+{
+  "id": "cemex",
+  "name": "Cemex",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/cemex.svg",
+  "description": "Compañía global de materiales para la construcción de alta resistencia, soluciones para infraestructura y pavimentos.",
+  "applicationNotes": "Cimentaciones profundas, placas de contrapiso industrial, pavimentos rígidos y prefabricados de alta durabilidad.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cemento Gris de Alta Resistencia",
+    "Morteros de Pega y Pañete",
+    "Agregados y Gravas Seleccionadas",
+    "Concretos Especiales"
+  ],
+  "sourcingNotes": "Abastecimiento directo de planta en viajes completos o paletizados para obras civiles, con certificación de calidad de laboratorio por lote y entrega a pie de obra con descargue programado."
+}

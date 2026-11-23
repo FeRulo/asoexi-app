@@ -1,0 +1,17 @@
+{
+  "id": "philips",
+  "name": "Philips",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/philips.png",
+  "description": "Líder mundial en iluminación técnica profesional LED con sistemas de alta reproducibilidad cromática y eficiencia lumínica.",
+  "applicationNotes": "Alumbrado de líneas de ensamblaje, campanas GentleSpace para centros logísticos y proyectores viales y arquitectónicos.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tubos LED Master",
+    "Campanas Industriales GentleSpace",
+    "Proyectores de Iluminación",
+    "Sistemas de Control Inteligente"
+  ],
+  "sourcingNotes": "Suministro programado directo de fabricante para proyectos de iluminación profesional LED de alta eficiencia, empaque por cajas máster y garantía oficial de fábrica."
+}

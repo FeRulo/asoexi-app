@@ -1,0 +1,17 @@
+{
+  "id": "supermastick",
+  "name": "Supermastick PR",
+  "sector": "ferretero-construccion",
+  "isTractor": true,
+  "logo": "/brands/supermastick.png",
+  "description": "Compuestos listos para juntas y masillas líderes para acabados lisos en sistemas de construcción liviana en seco (Drywall).",
+  "applicationNotes": "Tratamiento de juntas en placas de yeso, encintado, acabado liso nivel 4 y 5 en muros interiores y cielos rasos.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Masilla Lista para Drywall",
+    "Compuestos para Juntas",
+    "Cintas de Papel Microperforadas",
+    "Esquineros y Perfiles de Remate"
+  ],
+  "sourcingNotes": "Suministro prioritario directo de fábrica en cuñetes de 5 galones y cajas de masilla en pasta con entrega en obra para frentes continuos de acabado en construcción liviana."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "tesa",
+  "name": "Tesa",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/tesa.png",
+  "description": "Cintas adhesivas técnicas y soluciones de fijación para la industria manufacturera, automotriz, construcción y pintura.",
+  "applicationNotes": "Enmascarado de precisión en pintura arquitectónica, fijación de canaletas y perfiles sin taladro con cintas de montaje de alta adhesión.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cintas Adhesivas de Doble Faz Industrial",
+    "Cintas para Enmascarado de Alta Temperatura",
+    "Cintas de Embalaje y Marcación de Pisos",
+    "Cintas de Reparación Ultra Resistentes"
+  ],
+  "sourcingNotes": "Suministro directo de fabricante en cajas maestras de cintas masking para pintura automotriz y cintas doble faz estructurales para fijación de paneles en fachadas."
+}

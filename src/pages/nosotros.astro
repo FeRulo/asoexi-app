@@ -2,12 +2,20 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ClientLogos from '@/components/home/ClientLogos.astro';
 import { COMPANY_INFO, OFFICIAL_EMAILS, ABOUT_DATA } from '@/lib/constants';
+import { generateBreadcrumbsSchema, generateInstitutionalSchemas } from '@/lib/seo';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
 const directWhatsAppUrl = getDirectWhatsAppUrl();
 const pageTitle = `Nosotros | ${COMPANY_INFO.name} - Distribuidor Mayorista B2B`;
 const pageDescription =
   'Conoce la trayectoria de más de 7 años de ASOEXI S.A.S. Abastecimiento técnico B2B, protocolos de seguridad SG-SST y despacho directo a obra sin venta en mostrador.';
+const pageSchemas = [
+  ...generateInstitutionalSchemas(),
+  generateBreadcrumbsSchema([
+    { name: 'Inicio', url: '/' },
+    { name: 'Nosotros', url: '/nosotros' },
+  ]),
+];
 ---
 
 <BaseLayout
@@ -15,6 +23,7 @@ const pageDescription =
   ogTitle={`Nosotros | ${COMPANY_INFO.name}`}
   description={pageDescription}
   currentPath="/nosotros"
+  jsonLd={pageSchemas}
 >
   <!-- Hero Institucional -->
   <section class="relative bg-secondary text-white py-16 sm:py-20 lg:py-24 border-b border-slate-800 overflow-hidden">

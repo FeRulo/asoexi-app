@@ -1,0 +1,17 @@
+{
+  "id": "pintuco",
+  "name": "Pintuco",
+  "sector": "hidraulico-pinturas",
+  "isTractor": true,
+  "logo": "/brands/pintuco.png",
+  "description": "Compañía de pinturas y recubrimientos de alto rendimiento para el sector arquitectónico, industrial, marítimo y automotriz.",
+  "applicationNotes": "Protección de estructuras metálicas con anticorrosivos epóxicos, pisos industriales, vinilos lavables y pinturas de demarcación vial.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Pinturas Epóxicas y Poliuretanos",
+    "Vinilos Lavables Tipo 1 Koraza",
+    "Esmaltes Anticorrosivos Pintulux",
+    "Pinturas de Demarcación Vial"
+  ],
+  "sourcingNotes": "Despacho prioritario de fábrica en cuñetes de 5 galones y canecas de recubrimientos epóxicos y poliuretanos industriales con certificación técnica de lote y asesoría técnica."
+}

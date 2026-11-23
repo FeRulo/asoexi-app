@@ -1,0 +1,17 @@
+{
+  "id": "argos",
+  "name": "Argos",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/argos.svg",
+  "description": "Productor y comercializador líder de cemento gris, cemento blanco, morteros y concretos estructurales certificados.",
+  "applicationNotes": "Fundición de estructuras de concreto reforzado, muros de contención, mampostería y mezclas secas para acabados.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cemento Gris Estructural Tipo UG",
+    "Cemento Blanco Arquitectónico",
+    "Morteros Secos y Concretos Listos",
+    "Cal Hidratada"
+  ],
+  "sourcingNotes": "Despacho programado en camiones completos o palets consolidados de bultos de cemento estructural y morteros especializados directo de planta a obra en Bogotá y municipios de la Sabana."
+}

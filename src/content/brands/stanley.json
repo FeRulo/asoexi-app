@@ -1,0 +1,17 @@
+{
+  "id": "stanley",
+  "name": "Stanley",
+  "sector": "ferretero-construccion",
+  "isTractor": true,
+  "logo": "/brands/stanley.png",
+  "description": "Marca legendaria en herramientas manuales de alta precisión, almacenamiento y herramientas de medición profesional.",
+  "applicationNotes": "Mantenimiento general en planta, ensamble mecánico, dotación de cuadrillas de instalación y obras de construcción.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Herramientas Manuales",
+    "Cintas Métricas de Alta Resistencia",
+    "Juegos de Llaves y Copas",
+    "Niveles Láser y Manuales"
+  ],
+  "sourcingNotes": "Despacho prioritario de fábrica para cajas de herramientas, flexómetros de alto impacto y juegos mecánicos con reposición continua para cuadrillas industriales."
+}

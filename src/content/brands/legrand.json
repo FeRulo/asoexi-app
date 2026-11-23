@@ -1,0 +1,17 @@
+{
+  "id": "legrand",
+  "name": "Legrand",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/legrand.png",
+  "description": "Especialista global en infraestructuras eléctricas y digitales para edificios terciarios, residenciales e industriales.",
+  "applicationNotes": "Aparamenta modular, interruptores de caja moldeada, tomas e interruptores de alta gama, canalizaciones DLP y tableros.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Aparamenta Modular",
+    "Interruptores de Caja Moldeada",
+    "Tomas e Interruptores Institucionales",
+    "Canalización DLP"
+  ],
+  "sourcingNotes": "Abastecimiento programado desde centro de distribución de fábrica en cajas maestras para aparamenta eléctrica, canalización y cajas de piso para proyectos corporativos."
+}

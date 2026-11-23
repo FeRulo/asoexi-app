@@ -1,0 +1,17 @@
+{
+  "id": "corona",
+  "name": "Corona",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/corona.svg",
+  "description": "Multinacional colombiana líder en porcelana sanitaria, griferías institucionales, revestimientos cerámicos y pegantes especializados.",
+  "applicationNotes": "Equipamiento de baños de alto tráfico para centros comerciales, hospitales y colegios con bajo consumo de agua.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Sanitarios Institucionales de Bajo Consumo",
+    "Griferías para Baño y Cocina",
+    "Lavamanos y Orinales Ecológicos",
+    "Pegantes Cerámicos y Boquillas"
+  ],
+  "sourcingNotes": "Abastecimiento programado en cajas paletizadas con protección especial de fábrica para sanitarios institucionales de bajo consumo, lavamanos y griferías de alta resistencia."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "durman",
+  "name": "Durman",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/durman.svg",
+  "description": "Sistemas avanzados de tuberías y conexiones plásticas de Aliaxis para acueducto, alcantarillado e instalaciones sanitarias.",
+  "applicationNotes": "Drenajes pluviales de gran caudal, redes de desagüe sanitario bajo norma NTC y distribución de agua potable.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tubería PVC Sanitaria y Ventilación",
+    "Tubería CPVC para Agua Caliente",
+    "Válvulas y Conexiones Especiales",
+    "Sistemas de Drenaje Subterráneo"
+  ],
+  "sourcingNotes": "Despacho directo de planta en atados de tubería de presión PVC y cajas de accesorios de unión mecánica con entregas en obra civil, edificaciones y redes de acueducto."
+}

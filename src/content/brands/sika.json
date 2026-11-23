@@ -1,0 +1,17 @@
+{
+  "id": "sika",
+  "name": "Sika",
+  "sector": "hidraulico-pinturas",
+  "isTractor": true,
+  "logo": "/brands/sika.svg",
+  "description": "Compañía química suiza líder en impermeabilización, sellado, amortiguación, refuerzo y protección de estructuras.",
+  "applicationNotes": "Impermeabilización de cubiertas, sellado de juntas con Sikaflex, aditivos para concreto y morteros de reparación estructural SikaTop.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Impermeabilizantes Acrílicos y Asfálticos",
+    "Selladores de Poliuretano Sikaflex",
+    "Aditivos Acelerantes y Plastificantes para Concreto",
+    "Morteros de Reparación Estructural SikaTop"
+  ],
+  "sourcingNotes": "Despacho prioritario directo de planta en tambores, cuñetes y cajas de cartuchos de poliuretano Sikaflex con acompañamiento técnico en obra y fichas de seguridad por lote."
+}

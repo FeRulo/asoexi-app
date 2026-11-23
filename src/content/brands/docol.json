@@ -1,0 +1,17 @@
+{
+  "id": "docol",
+  "name": "Docol",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/docol.png",
+  "description": "Metales sanitarios de alta ingeniería y durabilidad, griferías con temporizador hidromecánico e higiene certificada.",
+  "applicationNotes": "Equipamiento antivandálico para baños de estadios, colegios y empresas con griferías de corte automático DocolPress.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Metales Sanitarios Institucionales",
+    "Griferías Hidromecánicas Temporizadas DocolPress",
+    "Válvulas de Descarga Antivandálicas",
+    "Accesorios en Acero Inoxidable"
+  ],
+  "sourcingNotes": "Suministro directo de fábrica bajo pedido para griferías hidromecánicas temporizadas, fluxómetros y sistemas antivandálicos para baterías de baños comerciales de alto tráfico."
+}

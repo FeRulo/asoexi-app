@@ -1,0 +1,17 @@
+{
+  "id": "panduit",
+  "name": "Panduit",
+  "sector": "electrico",
+  "isTractor": true,
+  "logo": "/brands/panduit.png",
+  "description": "Líder mundial en infraestructura de conectividad física, eléctrica y de red para centros de datos y plantas industriales.",
+  "applicationNotes": "Soluciones de cableado estructurado Cat 6A, bandejas portacables, amarras de nylon resistentes a rayos UV y sistemas de puesta a tierra.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cableado Estructurado",
+    "Bandejas Portacables",
+    "Sistemas de Puesta a Tierra",
+    "Amarras y Abrazaderas"
+  ],
+  "sourcingNotes": "Despacho prioritario de fábrica en carretes de cable UTP Cat 6A, patch panels y bolsas maestras de amarras resistentes a intemperie con garantía extendida de conectividad."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "pavco-wavin",
+  "name": "Pavco Wavin",
+  "sector": "hidraulico-pinturas",
+  "isTractor": true,
+  "logo": "/brands/pavco.png",
+  "description": "Líder indiscutible en soluciones de conducción y manejo de fluidos en tubería y accesorios de PVC, CPVC y PPR en Colombia.",
+  "applicationNotes": "Redes hidrosanitarias domiciliarias e industriales, colectores pluviales, acueducto a presión y termofusión para agua caliente.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Tubería Sanitaria y Aguas Lluvias",
+    "Tubería Presión RDE para Acueducto",
+    "Sistemas de Termofusión PPR",
+    "Accesorios y Pegantes PVC"
+  ],
+  "sourcingNotes": "Despacho prioritario directo de planta en atados de tubos de presión RDE y campana Novafort con accesorios de acople garantizados para redes hidrosanitarias de gran envergadura."
+}

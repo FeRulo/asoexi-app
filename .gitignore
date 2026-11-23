@@ -15,10 +15,12 @@ dist/
 
 # Astro cache and generated types
 .astro/
+.wrangler/
 
 # Environment files & logs
 .env
 .env.*
+.dev.vars
 !.env.example
 npm-debug.log*
 yarn-debug.log*

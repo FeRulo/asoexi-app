@@ -1,0 +1,17 @@
+{
+  "id": "evans",
+  "name": "Evans",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/evans.png",
+  "description": "Equipos de bombeo de agua, generación de energía y compresores de aire para soporte industrial y agrícola.",
+  "applicationNotes": "Sistemas de presión constante con variador, respaldo eléctrico para plantas en obra y aire comprimido para herramientas neumáticas.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Sistemas Hidroneumáticos de Presión Constante",
+    "Compresores de Aire Lubricados y Libres de Aceite",
+    "Plantas Eléctricas a Gasolina y Diésel",
+    "Motobombas Autocebantes"
+  ],
+  "sourcingNotes": "Suministro bajo pedido directo a fábrica con asesoría de curva de bombeo, pruebas hidrostáticas de fábrica y despacho con manuales y póliza de garantía original del fabricante."
+}

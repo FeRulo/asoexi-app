@@ -4,6 +4,8 @@ import {
   resolveOgImageUrl,
   buildPageMetadata,
   generateOpenGraphTags,
+  generateBreadcrumbsSchema,
+  generateBreadcrumbListSchema,
   type PageMetadataInput,
 } from '@/lib/seo';
 import { SITE_METADATA } from '@/lib/constants';
@@ -188,6 +190,85 @@ describe('SEO & Open Graph Utilities (src/lib/seo.ts)', () => {
       expect(findProp('og:url')).toMatch(/^https:\/\/asoexi\.com/);
       expect(findProp('og:image')).toMatch(/^https:\/\/asoexi\.com/);
       expect(findName('twitter:image')).toMatch(/^https:\/\/asoexi\.com/);
+    });
+  });
+
+  describe('generateBreadcrumbsSchema and generateBreadcrumbListSchema', () => {
+    it('should generate valid Schema.org BreadcrumbList with absolute URLs and 1-based positions', () => {
+      const items = [
+        { name: 'Inicio', url: '/' },
+        { name: 'Sector Eléctrico', url: '/sector-electrico' },
+        { name: 'Panduit', url: '/distribuidor-panduit-colombia' },
+      ];
+
+      const schema = generateBreadcrumbsSchema(items);
+
+      expect(schema['@context']).toBe('https://schema.org');
+      expect(schema['@type']).toBe('BreadcrumbList');
+      expect(schema.itemListElement).toHaveLength(3);
+
+      expect(schema.itemListElement[0]).toEqual({
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://asoexi.com/',
+      });
+      expect(schema.itemListElement[1]).toEqual({
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Sector Eléctrico',
+        item: 'https://asoexi.com/sector-electrico',
+      });
+      expect(schema.itemListElement[2]).toEqual({
+        '@type': 'ListItem',
+        position: 3,
+        name: 'Panduit',
+        item: 'https://asoexi.com/distribuidor-panduit-colombia',
+      });
+    });
+
+    it('should alias generateBreadcrumbListSchema to generateBreadcrumbsSchema', () => {
+      expect(generateBreadcrumbListSchema).toBe(generateBreadcrumbsSchema);
+    });
+
+    it('should handle empty or null items defensively', () => {
+      const emptySchema = generateBreadcrumbsSchema([]);
+      expect(emptySchema.itemListElement).toEqual([]);
+
+      const nullSchema = generateBreadcrumbsSchema(null);
+      expect(nullSchema.itemListElement).toEqual([]);
+
+      const undefinedSchema = generateBreadcrumbsSchema(undefined);
+      expect(undefinedSchema.itemListElement).toEqual([]);
+    });
+
+    it('should trim names and resolve relative URLs using custom baseUrl if provided', () => {
+      const items = [
+        { name: '  Inicio  ', url: '/' },
+        { name: '  Catálogo  ', url: '/catalogo' },
+      ];
+
+      const schema = generateBreadcrumbsSchema(items, 'https://staging.asoexi.com');
+      expect(schema.itemListElement[0].name).toBe('Inicio');
+      expect(schema.itemListElement[0].item).toBe('https://staging.asoexi.com/');
+      expect(schema.itemListElement[1].name).toBe('Catálogo');
+      expect(schema.itemListElement[1].item).toBe('https://staging.asoexi.com/catalogo');
+    });
+
+    it('should omit item URL when url is undefined, empty string, or whitespace rather than resolving to root domain', () => {
+      const items = [
+        { name: 'Inicio', url: '/' },
+        { name: 'Sector Eléctrico', url: '/sector-electrico' },
+        { name: 'Página Actual' }, // url omitted
+        { name: 'Item Vacío', url: '   ' }, // url whitespace
+      ];
+
+      const schema = generateBreadcrumbsSchema(items);
+      expect(schema.itemListElement).toHaveLength(4);
+      expect(schema.itemListElement[0].item).toBe('https://asoexi.com/');
+      expect(schema.itemListElement[1].item).toBe('https://asoexi.com/sector-electrico');
+      expect(schema.itemListElement[2].item).toBeUndefined();
+      expect(schema.itemListElement[3].item).toBeUndefined();
     });
   });
 });

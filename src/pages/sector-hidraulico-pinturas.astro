@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectorHub from '@/components/catalog/SectorHub.astro';
+import { buildSectorBreadcrumbs, getSectorTechnicalContent } from '@/lib/brands';
+import { generateBreadcrumbsSchema } from '@/lib/seo';
+
+const technicalContent = getSectorTechnicalContent('hidraulico-pinturas')!;
+const breadcrumbsSchema = generateBreadcrumbsSchema(buildSectorBreadcrumbs('hidraulico-pinturas'));
+---
+
+<BaseLayout
+  title={technicalContent.seo.title}
+  description={technicalContent.seo.description}
+  currentPath="/sector-hidraulico-pinturas"
+  canonicalUrl={technicalContent.seo.canonicalPath}
+  jsonLd={breadcrumbsSchema}
+  pageSector="hidraulico-pinturas"
+>
+  <SectorHub sectorId="hidraulico-pinturas" />
+</BaseLayout>

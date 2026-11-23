@@ -1,0 +1,17 @@
+{
+  "id": "knauf",
+  "name": "Knauf",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/knauf.svg",
+  "description": "Sistemas completos de placas de yeso, perfilería galvanizada y aislamiento termoacústico para construcción en seco.",
+  "applicationNotes": "Tabiques divisorios con resistencia al fuego (RF), placas resistentes a la humedad (RH) para zonas húmedas y cielos rasos acústicos.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Placas de Yeso Estándar",
+    "Placas Antihumedad (RH) y Cortafuego (RF)",
+    "Perfiles Metálicos Drywall",
+    "Masillas y Fijaciones Especiales"
+  ],
+  "sourcingNotes": "Abastecimiento consolidado directo de planta para sistemas de muros secos, cielorrasos acústicos y masillas de pegado con despacho programado y paletizado a obra."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "goya",
+  "name": "Goya",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/goya.png",
+  "description": "Herramientas especializadas para la aplicación profesional de pintura, rodillos de alta densidad, brochas y complementos.",
+  "applicationNotes": "Acabados sin salpicaduras en grandes superficies, aplicación de epóxicos y esmaltes con rodillos de microfibra y pelo corto.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Rodillos Profesionales Antigota",
+    "Brochas de Cerda Natural y Sintética",
+    "Espátulas Metálicas y Llanas",
+    "Bandejas y Alargadores"
+  ],
+  "sourcingNotes": "Suministro directo de fábrica en cajas maestras de rodillos profesionales para pintura, brochas de cerda natural y bandejas de aplicación para proyectos de pintura a gran escala."
+}

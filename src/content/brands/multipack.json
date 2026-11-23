@@ -1,0 +1,17 @@
+{
+  "id": "multipack",
+  "name": "Multipack",
+  "sector": "hidraulico-pinturas",
+  "isTractor": false,
+  "logo": "/brands/multipack.png",
+  "description": "Cintas de teflón, selladores de roscas y empaquetaduras técnicas para uniones hidráulicas y de gas sin fugas.",
+  "applicationNotes": "Sellado hermético de uniones roscadas metálicas y plásticas en redes de agua potable, gas natural y fluidos industriales.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cintas de Teflón Industrial para Plomería",
+    "Selladores de Roscas Hidráulicas y de Gas",
+    "Empaques y O-Rings de Caucho",
+    "Juntas de Sellado para Bridas"
+  ],
+  "sourcingNotes": "Despacho directo de fábrica en empaques maestros de cintas de teflón PTFE, selladores líquidos de roscas y empaquetaduras u o-rings de caucho para redes hidrosanitarias y de gas."
+}

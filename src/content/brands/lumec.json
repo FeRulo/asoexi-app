@@ -1,0 +1,17 @@
+{
+  "id": "lumec",
+  "name": "Lumec",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/lumec.png",
+  "description": "Luminarias de alta gama para alumbrado público, zonas exteriores y grandes complejos logísticos e industriales de Signify.",
+  "applicationNotes": "Iluminación perimetral de seguridad, vías de acceso privadas, parques industriales y plazas de maniobra.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Luminarias de Alumbrado Público",
+    "Postes y Brazos para Vías",
+    "Luminarias Decorativas Urbanas",
+    "Ópticas LED de Gran Alcance"
+  ],
+  "sourcingNotes": "Suministro bajo pedido directo a fábrica con opciones de fotometría especializada, empaque protegido y soporte técnico para proyectos de iluminación industrial y vial."
+}

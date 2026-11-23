@@ -1,0 +1,17 @@
+{
+  "id": "makita",
+  "name": "Makita",
+  "sector": "ferretero-construccion",
+  "isTractor": false,
+  "logo": "/brands/makita.png",
+  "description": "Ingeniería japonesa pionera en herramientas inalámbricas profesionales de 18V y 40V Max XGT para trabajo severo.",
+  "applicationNotes": "Corte de metales con tronzadoras, caladoras de alta precisión, atornilladores de impacto y amoladoras para contratistas.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Herramientas Inalámbricas LXT/XGT",
+    "Tronzadoras de Metales",
+    "Sierras Circulares y Caladoras",
+    "Aspiradoras Industriales"
+  ],
+  "sourcingNotes": "Suministro bajo pedido de fábrica en herramientas inalámbricas LXT de 18V y herramientas de corte con respaldo de garantía del fabricante y despacho a empresas."
+}

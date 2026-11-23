@@ -1,0 +1,17 @@
+{
+  "id": "mercury",
+  "name": "Mercury",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/mercury.png",
+  "description": "Marca de iluminación LED confiable y competitiva para mantenimiento locativo, áreas comerciales y residenciales.",
+  "applicationNotes": "Bombillería LED de alta rotación, paneles delgados de incrustar, reflectores para intemperie IP65 y sensores de presencia.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Bombillería LED",
+    "Reflectores Exteriores",
+    "Paneles de Incrustar",
+    "Sensores de Movimiento"
+  ],
+  "sourcingNotes": "Abastecimiento directo de fábrica en cajas selladas de iluminación LED comercial e industrial, reflectores de intemperie, paneles de incrustar y sensores de movimiento para proyectos."
+}

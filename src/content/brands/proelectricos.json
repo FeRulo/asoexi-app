@@ -1,0 +1,17 @@
+{
+  "id": "proelectricos",
+  "name": "Proeléctricos",
+  "sector": "electrico",
+  "isTractor": false,
+  "logo": "/brands/proelectricos.png",
+  "description": "Fabricante colombiano especializado en cajas de paso, tableros de distribución y protecciones eléctricas certificadas.",
+  "applicationNotes": "Instalaciones eléctricas industriales, acometidas, tableros de distribución secundaria y cajas estancas para ambientes agresivos.",
+  "pdfCatalogUrl": null,
+  "productFamilies": [
+    "Cajas de Paso Metálicas",
+    "Tableros de Distribución",
+    "Tomas y Clavijas Industriales",
+    "Interruptores Termomagnéticos"
+  ],
+  "sourcingNotes": "Abastecimiento directo de fábrica en embalajes industriales de tableros de distribución metálicos, cajas de paso y encerramientos industriales certificados para montajes eléctricos."
+}

@@ -5,6 +5,9 @@ import {
   QUOTE_SLA_NOTICE,
 } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
+import { readPageAnalyticsContext, trackWhatsAppLead } from '@/lib/analytics';
+import { dispatchQuoteFormalModalEvent } from '@/islands/QuoteDrawer';
+import { OFFICIAL_QUOTE_RECIPIENT_EMAIL } from '@/lib/quote-formal';
 
 export default function ContactChannelModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +21,9 @@ export default function ContactChannelModal() {
 
   useEffect(() => {
     const handleOpen = () => {
+      window.dispatchEvent(new CustomEvent('close-quote-drawer'));
+      window.dispatchEvent(new CustomEvent('close-search-modal'));
+
       setIsOpen((prev) => {
         if (!prev) {
           previousActiveElement.current = document.activeElement as HTMLElement | null;
@@ -42,7 +48,6 @@ export default function ContactChannelModal() {
   useEffect(() => {
     if (isOpen) {
       // Prevent background scrolling while modal is open
-      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
 
       // Focus close button on open with cleanup
@@ -85,7 +90,7 @@ export default function ContactChannelModal() {
 
       return () => {
         clearTimeout(focusTimer);
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKeyDown);
       };
     }
@@ -204,12 +209,20 @@ export default function ContactChannelModal() {
           </div>
 
           {/* CTA Action Button (Height ≥ 48px for WCAG 2.2 AA) */}
-          <div class="mt-2">
+          <div class="mt-2 space-y-2">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={closeModal}
+              data-wa-managed="island"
+              data-wa-location="contact_channel_modal"
+              onClick={() => {
+                trackWhatsAppLead({
+                  ...readPageAnalyticsContext(),
+                  ctaLocation: 'contact_channel_modal',
+                });
+                closeModal();
+              }}
               aria-label="Chatear por WhatsApp con la Línea Corporativa"
               class="w-full bg-whatsapp hover:bg-whatsapp-hover text-white font-semibold text-xs px-3.5 py-3.5 rounded-industrial min-h-[48px] flex items-center justify-center gap-2 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-1 text-center"
             >
@@ -218,6 +231,20 @@ export default function ContactChannelModal() {
               </svg>
               <span>Chatear por WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                const handled = dispatchQuoteFormalModalEvent(false);
+                if (!handled) {
+                  window.location.href = `mailto:${OFFICIAL_QUOTE_RECIPIENT_EMAIL}`;
+                }
+              }}
+              class="w-full min-h-[48px] px-3 py-2 text-[11px] font-semibold text-secondary hover:text-primary hover:bg-slate-50 border border-slate-200 rounded-industrial transition-colors flex items-center justify-center text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              ¿Sin WhatsApp o necesitas Crédito a 45 Días con RUT? Enviar solicitud formal →
+            </button>
           </div>
         </div>
 

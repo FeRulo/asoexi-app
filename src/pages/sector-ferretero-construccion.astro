@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectorHub from '@/components/catalog/SectorHub.astro';
+import { buildSectorBreadcrumbs, getSectorTechnicalContent } from '@/lib/brands';
+import { generateBreadcrumbsSchema } from '@/lib/seo';
+
+const technicalContent = getSectorTechnicalContent('ferretero-construccion')!;
+const breadcrumbsSchema = generateBreadcrumbsSchema(buildSectorBreadcrumbs('ferretero-construccion'));
+---
+
+<BaseLayout
+  title={technicalContent.seo.title}
+  description={technicalContent.seo.description}
+  currentPath="/sector-ferretero-construccion"
+  canonicalUrl={technicalContent.seo.canonicalPath}
+  jsonLd={breadcrumbsSchema}
+  pageSector="ferretero-construccion"
+>
+  <SectorHub sectorId="ferretero-construccion" />
+</BaseLayout>
