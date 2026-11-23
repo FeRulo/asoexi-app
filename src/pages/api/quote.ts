@@ -32,19 +32,40 @@ function jsonResponse(body: QuoteApiResponse, status: number): Response {
   });
 }
 
-function readEnvVar(locals: unknown, key: string): string | undefined {
-  const runtimeEnv = (locals as RuntimeLocals | undefined)?.runtime?.env;
-  const fromRuntime = runtimeEnv?.[key];
-  if (typeof fromRuntime === 'string' && fromRuntime.trim()) {
-    return fromRuntime.trim();
+async function readEnvVar(locals: unknown, key: string): Promise<string | undefined> {
+  // 1. Astro v6+ / @astrojs/cloudflare v14+: read from `cloudflare:workers` `env`
+  try {
+    const cfWorkersSpecifier: string = 'cloudflare:workers';
+    const cfWorkers = (await import(/* @vite-ignore */ cfWorkersSpecifier)) as {
+      env?: Record<string, unknown>;
+    };
+    const fromCf = cfWorkers?.env?.[key];
+    if (typeof fromCf === 'string' && fromCf.trim()) {
+      return fromCf.trim();
+    }
+  } catch {
+    // Not running inside Cloudflare Workers runtime (e.g., Node/Vitest)
   }
 
+  // 2. Fallback for mock/legacy locals.runtime.env (guarded because Astro v6+ throws on getter)
+  try {
+    const runtimeEnv = (locals as RuntimeLocals | undefined)?.runtime?.env;
+    const fromRuntime = runtimeEnv?.[key];
+    if (typeof fromRuntime === 'string' && fromRuntime.trim()) {
+      return fromRuntime.trim();
+    }
+  } catch {
+    // Astro v6+ removes Astro.locals.runtime.env and throws on access
+  }
+
+  // 3. Vite / Astro build-time or dev env
   const metaEnv = import.meta.env as Record<string, string | undefined>;
   const fromMeta = metaEnv?.[key];
   if (typeof fromMeta === 'string' && fromMeta.trim()) {
     return fromMeta.trim();
   }
 
+  // 4. Node.js process.env fallback
   if (typeof process !== 'undefined' && process.env) {
     const fromProcess = process.env[key];
     if (typeof fromProcess === 'string' && fromProcess.trim()) {
@@ -302,7 +323,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     };
   }
 
-  const resendApiKey = readEnvVar(locals, 'RESEND_API_KEY');
+  const resendApiKey = await readEnvVar(locals, 'RESEND_API_KEY');
   if (!resendApiKey) {
     return jsonResponse(
       {
@@ -316,7 +337,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  const fromEmail = readEnvVar(locals, 'RESEND_FROM_EMAIL');
+  const fromEmail = await readEnvVar(locals, 'RESEND_FROM_EMAIL');
   const emailPayload = buildQuoteEmailPayload({
     request: validatedRequest,
     rutAttachment,

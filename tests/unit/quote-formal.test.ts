@@ -599,5 +599,33 @@ describe('Story 4.4: Motor de Cotización Formal, Crédito 45 Días y Endpoint /
       expect(body.ok).toBe(false);
       expect(body.error.code).toBe('METHOD_NOT_ALLOWED');
     });
+
+    it('no debe lanzar error cuando locals.runtime.env arroja excepción (Astro v6/v7 Cloudflare adapter)', async () => {
+      const req = new Request('https://asoexi.com/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createValidRequest()),
+      });
+
+      const astroV7Locals = {
+        runtime: {
+          get env() {
+            throw new Error(
+              'Astro.locals.runtime.env has been removed in Astro v6. Use \'import { env } from "cloudflare:workers"\' instead.'
+            );
+          },
+        },
+      };
+
+      const res = await POST({
+        request: req,
+        locals: astroV7Locals,
+      } as unknown as Parameters<typeof POST>[0]);
+      const body = await res.json();
+
+      expect(res.status).toBe(502);
+      expect(body.ok).toBe(false);
+      expect(body.error.code).toBe('SERVICE_UNAVAILABLE');
+    });
   });
 });
