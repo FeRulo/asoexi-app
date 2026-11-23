@@ -394,7 +394,7 @@ export const SECTOR_TECHNICAL_CONTENT: Record<SectorId, SectorTechnicalContent> 
       'Soluciones integrales de cableado estructurado, conductores certificados RETIE, breakers termo-magnéticos y canalización para mantenimiento de plantas e instalaciones corporativas.',
     maintenanceFocus:
       'Abastecimiento técnico para mantenimiento correctivo y locativo de redes eléctricas de baja y media tensión, subestaciones, centros de cómputo y plantas industriales con despacho a obra.',
-    technicalCategoriesHeading: 'Soluciones Técnicas para Mantenimiento Correctivo y Locativo Eléctrico',
+    technicalCategoriesHeading: 'Breakers y Conductores Eléctricos en Bogotá para Mantenimiento Correctivo y Locativo',
     technicalCategories: [
       {
         title: 'Cableado Estructurado y Redes de Datos',
@@ -428,6 +428,7 @@ export const SECTOR_TECHNICAL_CONTENT: Record<SectorId, SectorTechnicalContent> 
       },
     ],
     b2bKeywords: [
+      'breakers y conductores eléctricos en Bogotá',
       'cableado estructurado',
       'conductores certificados RETIE',
       'breakers',
@@ -442,9 +443,9 @@ export const SECTOR_TECHNICAL_CONTENT: Record<SectorId, SectorTechnicalContent> 
       ctaNote: 'Consolidamos su lista eléctrica completa en una sola factura y despacho a obra.',
     },
     seo: {
-      title: 'Sector Eléctrico Industrial | Distribuidor Mayorista ASOEXI Colombia',
+      title: 'Breakers y Conductores Eléctricos en Bogotá | ASOEXI S.A.S.',
       description:
-        'Distribución mayorista del Sector Eléctrico en Colombia: conductores certificados RETIE Centelsa, cableado estructurado Panduit, breakers termo-magnéticos y canalización con despacho a obra.',
+        'Distribuidor mayorista de breakers y conductores eléctricos en Bogotá: cables RETIE Centelsa, cableado estructurado Panduit y canalización con despacho a obra.',
       canonicalPath: '/sector-electrico',
     },
   },

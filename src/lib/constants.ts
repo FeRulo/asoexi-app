@@ -252,7 +252,7 @@ export const SITE_METADATA: SiteMetadata = {
   siteName: 'ASOEXI S.A.S.',
   defaultTitle: 'ASOEXI S.A.S. | Distribuidor Mayorista de Insumos Industriales y Ferreteros',
   defaultDescription:
-    'Distribuidor mayorista de insumos industriales, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. Más de 7 años de experiencia y despacho a domicilio.',
+    'Distribuidor mayorista de insumos para mantenimiento industrial, eléctricos, ferreteros e hidráulicos en Bogotá y Colombia. Más de 7 años de experiencia y despacho a domicilio.',
   defaultOgImage: 'https://asoexi.com/og-image.jpg',
   locale: 'es_CO',
   ogType: 'website',

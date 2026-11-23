@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /search-index.json
+
+Sitemap: https://asoexi.com/sitemap.xml
