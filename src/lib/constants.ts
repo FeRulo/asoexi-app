@@ -31,6 +31,40 @@ export interface BusinessHours {
   sundaysAndHolidays: string;
 }
 
+export interface CompanyLocation {
+  streetAddress: string;
+  neighborhood: string;
+  locality: string;
+  region: string;
+  postalCode: string;
+  countryCode: string;
+  geo: {
+    latitude: number;
+    longitude: number;
+  };
+  googleMapsUrl: string;
+}
+
+export interface OpeningHoursSchemaSpec {
+  dayOfWeek: string[];
+  opens: string;
+  closes: string;
+}
+
+export interface AreaServedSchemaItem {
+  type: 'City' | 'AdministrativeArea' | 'Country';
+  name: string;
+}
+
+export interface BusinessCommerceSchema {
+  priceRange: string;
+  currenciesAccepted: string;
+  paymentAccepted: string;
+  officialEmail: string;
+  openingHours: OpeningHoursSchemaSpec[];
+  areaServed: AreaServedSchemaItem[];
+}
+
 export interface NavLink {
   label: string;
   href: string;
@@ -117,6 +151,44 @@ export const BUSINESS_HOURS: BusinessHours = {
   weekdays: 'Lunes a Viernes 7:30 - 16:30',
   saturdays: 'Sábados 8:00 - 12:00',
   sundaysAndHolidays: 'Domingos y Festivos: Cerrado',
+};
+
+export const COMPANY_LOCATION: CompanyLocation = {
+  streetAddress: 'Carrera 55 A No. 51 A 28 Sur, Barrio Venecia',
+  neighborhood: 'Barrio Venecia',
+  locality: 'Bogotá',
+  region: 'Bogotá D.C.',
+  postalCode: '110611',
+  countryCode: 'CO',
+  geo: {
+    latitude: 4.5937,
+    longitude: -74.1378,
+  },
+  googleMapsUrl: 'https://maps.app.goo.gl/rcs1uzyGVfvJ48xK6',
+};
+
+export const BUSINESS_COMMERCE_SCHEMA: BusinessCommerceSchema = {
+  priceRange: '$$',
+  currenciesAccepted: 'COP',
+  paymentAccepted: 'Cash, Credit Card, Bank Transfer',
+  officialEmail: 'serviciocliente@asoexi.com',
+  openingHours: [
+    {
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '07:30',
+      closes: '16:30',
+    },
+    {
+      dayOfWeek: ['Saturday'],
+      opens: '08:00',
+      closes: '12:00',
+    },
+  ],
+  areaServed: [
+    { type: 'City', name: 'Bogotá' },
+    { type: 'AdministrativeArea', name: 'Sabana de Bogotá' },
+    { type: 'Country', name: 'Colombia' },
+  ],
 };
 
 export const NAVIGATION_LINKS: NavLink[] = [

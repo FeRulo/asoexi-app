@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SectorHub from '@/components/catalog/SectorHub.astro';
-import { getSectorTechnicalContent } from '@/lib/brands';
+import { buildSectorBreadcrumbs, getSectorTechnicalContent } from '@/lib/brands';
+import { generateBreadcrumbsSchema } from '@/lib/seo';
 
 const technicalContent = getSectorTechnicalContent('electrico')!;
+const breadcrumbsSchema = generateBreadcrumbsSchema(buildSectorBreadcrumbs('electrico'));
 ---
 
 <BaseLayout
@@ -11,6 +13,7 @@ const technicalContent = getSectorTechnicalContent('electrico')!;
   description={technicalContent.seo.description}
   currentPath="/sector-electrico"
   canonicalUrl={technicalContent.seo.canonicalPath}
+  jsonLd={breadcrumbsSchema}
 >
   <SectorHub sectorId="electrico" />
 </BaseLayout>

@@ -4,13 +4,17 @@ import Hero from '@/components/home/Hero.astro';
 import ValuePillars from '@/components/home/ValuePillars.astro';
 import ClientLogos from '@/components/home/ClientLogos.astro';
 import FeaturedBrands from '@/components/home/FeaturedBrands.astro';
+import { generateInstitutionalSchemas } from '@/lib/seo';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
+
+const institutionalSchemas = generateInstitutionalSchemas();
 ---
 
 <BaseLayout
   title="Distribuidor Mayorista de Insumos para Mantenimiento en Bogotá"
   description="ASOEXI S.A.S., distribuidor mayorista de insumos para mantenimiento eléctrico, ferretero e hidráulico en Bogotá. NIT 900480460-8. Despacho a domicilio."
   currentPath="/"
+  jsonLd={institutionalSchemas}
 >
   <!-- Hero Institucional Modular -->
   <Hero />

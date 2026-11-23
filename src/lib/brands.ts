@@ -154,6 +154,27 @@ export function getBrandH1Title(brandName?: string | null): string {
 }
 
 /**
+ * Builds the canonical 2-tier breadcrumbs hierarchy for a sector hub:
+ * Inicio > [Sector]
+ * Defensively returns only Inicio if sectorId is missing or invalid.
+ */
+export function buildSectorBreadcrumbs(sectorId?: SectorId | string | null): BreadcrumbItem[] {
+  const normalized = typeof sectorId === 'string' ? sectorId.trim().toLowerCase() : '';
+  const sectorMeta = Object.hasOwn(SECTORS_META, normalized)
+    ? SECTORS_META[normalized as SectorId]
+    : undefined;
+
+  if (!sectorMeta) {
+    return [{ name: 'Inicio', url: '/' }];
+  }
+
+  return [
+    { name: 'Inicio', url: '/' },
+    { name: sectorMeta.shortName || sectorMeta.name, url: `/${sectorMeta.slug}` },
+  ];
+}
+
+/**
  * Builds the canonical 3-tier breadcrumbs hierarchy for a brand silo:
  * Inicio > [Sector] > [Marca]
  * Defensively handles missing sector metadata and empty strings.
