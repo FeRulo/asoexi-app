@@ -20,7 +20,7 @@ Consolidar la visibilidad orgánica, local y en motores de búsqueda de IA (AEO)
   - Razón social: `ASOEXI S.A.S.` (nombre comercial `ASOEXI`), NIT `900480460-8`, dominio canónico `https://asoexi.com`.
   - Línea corporativa única por WhatsApp: `+57 301 419 1344` (`+573014191344`), sin líneas personales ni rotación entre asesoras y sin enlaces `tel:`.
   - Correo principal oficial: `serviciocliente@asoexi.com` (adicionales autorizados: `asesorventas1@asoexi.com`, `asesorventas3@asoexi.com`; nunca cuentas `@gmail.com`).
-  - Sede administrativa y logística: `Carrera 55 A No. 51 A 28 Sur`, Barrio Venecia, Bogotá D.C., código postal `110611`, coordenadas `4.5937`, `-74.1378`. Modelo 100% despacho a domicilio (sin venta en mostrador ni retiro en bodega).
+  - Sede administrativa y logística: `Carrera 55 A No. 51 A 28 Sur`, Barrio Venecia, Bogotá D.C., código postal `110611`, coordenadas `4.5899661`, `-74.1472122`. Modelo 100% despacho a domicilio (sin venta en mostrador ni retiro en bodega).
 - **Indexación y Clúster Semántico B2B/AEO:**
   - Generar `sitemap.xml` dinámico en compilación con URLs canónicas absolutas sobre `https://asoexi.com` cubriendo Home, Nosotros, los 3 hubs de sector y los ~40 silos de marca con prioridades adecuadas, más `public/robots.txt` con acceso público y enlace directo al sitemap.
   - Reflejar en encabezados (`h1`/`h2`) y metadatos los clústeres de alta intención mayorista (mantenimiento industrial, conductores y breakers en Bogotá, distribuidor autorizado por marca en Colombia) y términos locales B2B de Bogotá y Barrio Venecia. Meta: 100% de silos indexados en Google Search Console en los primeros 45 días.

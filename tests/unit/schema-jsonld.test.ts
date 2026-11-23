@@ -23,8 +23,8 @@ describe('Story 5.2: Schema.org JSON-LD LocalBusiness (HardwareStore) & Breadcru
       expect(COMPANY_LOCATION.postalCode).toBe('110611');
       expect(COMPANY_LOCATION.countryCode).toBe('CO');
       expect(COMPANY_LOCATION.geo).toEqual({
-        latitude: 4.5937,
-        longitude: -74.1378,
+        latitude: 4.5899661,
+        longitude: -74.1472122,
       });
       expect(COMPANY_LOCATION.googleMapsUrl).toBe('https://maps.app.goo.gl/rcs1uzyGVfvJ48xK6');
     });
@@ -131,8 +131,8 @@ describe('Story 5.2: Schema.org JSON-LD LocalBusiness (HardwareStore) & Breadcru
 
       expect(localBusiness.geo).toEqual({
         '@type': 'GeoCoordinates',
-        latitude: 4.5937,
-        longitude: -74.1378,
+        latitude: 4.5899661,
+        longitude: -74.1472122,
       });
       expect(localBusiness.hasMap).toBe('https://maps.app.goo.gl/rcs1uzyGVfvJ48xK6');
 

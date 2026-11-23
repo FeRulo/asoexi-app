@@ -161,8 +161,8 @@ export const COMPANY_LOCATION: CompanyLocation = {
   postalCode: '110611',
   countryCode: 'CO',
   geo: {
-    latitude: 4.5937,
-    longitude: -74.1378,
+    latitude: 4.5899661,
+    longitude: -74.1472122,
   },
   googleMapsUrl: 'https://maps.app.goo.gl/rcs1uzyGVfvJ48xK6',
 };
