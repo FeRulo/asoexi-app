@@ -18,6 +18,9 @@ export default function ContactChannelModal() {
 
   useEffect(() => {
     const handleOpen = () => {
+      window.dispatchEvent(new CustomEvent('close-quote-drawer'));
+      window.dispatchEvent(new CustomEvent('close-search-modal'));
+
       setIsOpen((prev) => {
         if (!prev) {
           previousActiveElement.current = document.activeElement as HTMLElement | null;
@@ -42,7 +45,6 @@ export default function ContactChannelModal() {
   useEffect(() => {
     if (isOpen) {
       // Prevent background scrolling while modal is open
-      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
 
       // Focus close button on open with cleanup
@@ -85,7 +87,7 @@ export default function ContactChannelModal() {
 
       return () => {
         clearTimeout(focusTimer);
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = '';
         document.removeEventListener('keydown', handleKeyDown);
       };
     }

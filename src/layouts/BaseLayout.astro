@@ -3,6 +3,7 @@ import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
 import ContactChannelModal from '@/islands/ContactChannelModal';
 import LiveSearchModal from '@/islands/LiveSearchModal';
+import QuoteDrawer from '@/islands/QuoteDrawer';
 import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
 import SEOHead from '@/components/seo/SEOHead.astro';
@@ -78,12 +79,111 @@ const {
     <!-- Componentes e islas interactivas de contacto y balanceo -->
     <ContactChannelModal client:load />
     <LiveSearchModal client:idle />
+    <QuoteDrawer client:idle />
     <MobileStickyBar client:idle />
     <FloatingWhatsAppButton />
 
     <!-- Interceptor global para disparadores de contacto y cotización -->
     <script>
       import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
+      import { $cartStore } from '@/stores/cart';
+
+      let cartBadgeUnsubscribe: (() => void) | null = null;
+
+      function syncCartBadges(totalItems: number) {
+        const badges = document.querySelectorAll('[data-cart-badge]');
+        badges.forEach((badge) => {
+          badge.textContent = String(totalItems);
+          if (totalItems > 0) {
+            badge.classList.remove('bg-slate-200', 'text-slate-700');
+            badge.classList.add('bg-primary', 'text-white');
+          } else {
+            badge.classList.remove('bg-primary', 'text-white');
+            badge.classList.add('bg-slate-200', 'text-slate-700');
+          }
+        });
+      }
+
+      function setupQuoteDrawerAndCartTriggers() {
+        if (cartBadgeUnsubscribe) {
+          cartBadgeUnsubscribe();
+        }
+        cartBadgeUnsubscribe = $cartStore.subscribe((state) => {
+          syncCartBadges(state.totalItems);
+        });
+
+        // Disparadores de apertura del Cajón de Cotización (QuoteDrawer)
+        const drawerTriggers = document.querySelectorAll('[data-open-quote-drawer]');
+        drawerTriggers.forEach((trigger) => {
+          if ((trigger as HTMLElement & { __drawerBound?: boolean }).__drawerBound) return;
+          (trigger as HTMLElement & { __drawerBound?: boolean }).__drawerBound = true;
+
+          trigger.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('open-quote-drawer'));
+          });
+        });
+
+        // Botones "+ Agregar a requisición" en BrandCard y Silos de Marca
+        const addButtons = document.querySelectorAll('[data-add-to-quote]');
+        addButtons.forEach((btn) => {
+          if ((btn as HTMLElement & { __addQuoteBound?: boolean }).__addQuoteBound) return;
+          (btn as HTMLElement & { __addQuoteBound?: boolean }).__addQuoteBound = true;
+
+          btn.addEventListener('click', (evt) => {
+            const e = evt as MouseEvent;
+            if (e.defaultPrevented) return;
+            e.preventDefault();
+
+            const el = btn as HTMLElement & {
+              __feedbackTimer?: ReturnType<typeof setTimeout>;
+            };
+            const id = el.getAttribute('data-brand-id') || '';
+            const name = el.getAttribute('data-brand-name') || '';
+            if (!id || !name) return;
+
+            const sector = el.getAttribute('data-brand-sector') || undefined;
+            const url = el.getAttribute('data-brand-url') || undefined;
+            const logo = el.getAttribute('data-brand-logo') || null;
+            const isTractor = el.getAttribute('data-brand-tractor') === 'true';
+
+            $cartStore.addItem({
+              id,
+              name,
+              sector,
+              url,
+              logo,
+              isTractor,
+              type: 'brand',
+            });
+
+            const labelEl = el.querySelector('[data-add-label]');
+            const storedOriginal = el.getAttribute('data-original-label');
+            const originalText =
+              storedOriginal || labelEl?.textContent || 'Agregar a requisición';
+            if (!storedOriginal) {
+              el.setAttribute('data-original-label', originalText);
+            }
+            if (labelEl) {
+              labelEl.textContent = '¡Agregado!';
+            }
+            el.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+
+            if (el.__feedbackTimer) {
+              clearTimeout(el.__feedbackTimer);
+            }
+            el.__feedbackTimer = setTimeout(() => {
+              if (labelEl) {
+                labelEl.textContent = originalText;
+              }
+              el.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
+              el.__feedbackTimer = undefined;
+            }, 1400);
+          });
+        });
+      }
 
       function setupContactTriggers() {
         // Disparadores de apertura del modal de cotización/WhatsApp
@@ -182,6 +282,7 @@ const {
 
       function initLayoutInteractions() {
         setupContactTriggers();
+        setupQuoteDrawerAndCartTriggers();
         setupSingletonMascotObserver();
       }
 

@@ -173,7 +173,7 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
             </div>
 
             <!-- Call to Action Buttons (WCAG 2.2 AA ≥ 48px height) -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
+            <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 mb-3">
               <!-- Primary: Cotización formal por WhatsApp -->
               <a
                 href={whatsappQuoteUrl}
@@ -187,6 +187,23 @@ const brandSourcingNotes = getBrandSourcingNotes(data);
                   <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-2.003-.467-1.579-.652-2.593-2.261-2.671-2.366-.078-.105-.644-.858-.644-1.635 0-.777.406-1.157.55-1.312.144-.156.314-.195.42-.195.105 0 .21.002.301.007.098.005.228-.037.357.273.131.314.446 1.09.485 1.17.039.078.065.17.013.274-.052.105-.078.17-.157.261-.078.092-.164.205-.235.276-.079.079-.161.165-.069.323.092.157.407.672.873 1.087.6.534 1.107.7 1.264.778.157.079.25.066.342-.039.092-.105.393-.458.498-.615.105-.157.21-.131.354-.078.144.052.916.432 1.073.511.157.079.262.118.301.184.039.066.039.38-.105.785z" />
                 </svg>
               </a>
+
+              <!-- Requisition Add Button (Story 4.2) -->
+              <button
+                type="button"
+                data-add-to-quote
+                data-brand-id={data.id}
+                data-brand-name={data.name}
+                data-brand-sector={data.sector}
+                data-brand-url={siloRelativePath}
+                data-brand-logo={hasValidLogo ? data.logo! : ''}
+                data-brand-tractor={data.isTractor ? 'true' : 'false'}
+                aria-label={`Agregar ${data.name} a la lista de requisición multimarca`}
+                class="min-h-[48px] px-5 py-3 inline-flex items-center justify-center gap-2 text-sm font-bold text-primary bg-red-50/70 hover:bg-primary hover:text-white border border-primary/30 rounded-industrial shadow-2xs transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+              >
+                <span class="font-bold text-base" aria-hidden="true">+</span>
+                <span data-add-label>Agregar a requisición</span>
+              </button>
 
               <!-- Secondary: Descarga Condicional de Catálogo PDF vs Solicitud WhatsApp (EDGE-2) -->
               {hasPdfCatalog && normalizedPdfCatalogUrl ? (

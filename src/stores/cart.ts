@@ -12,6 +12,7 @@ export interface CatalogItem {
   quantity: number;
   isTractor?: boolean;
   type?: string;
+  logo?: string | null;
 }
 
 export interface CustomItem {
@@ -37,6 +38,7 @@ export type CartItemInput = {
   quantity?: number;
   isTractor?: boolean;
   type?: string;
+  logo?: string | null;
   isCustom?: boolean;
   notes?: string;
 };
@@ -148,6 +150,41 @@ export function getSafeStorage(): Storage | null {
   return null;
 }
 
+export function normalizeCatalogLogo(logo?: unknown): string | null {
+  if (!logo || typeof logo !== 'string') {
+    return null;
+  }
+  const trimmed = logo.trim();
+  if (
+    trimmed.length === 0 ||
+    trimmed === '#' ||
+    trimmed.toLowerCase().startsWith('javascript:')
+  ) {
+    return null;
+  }
+  return trimmed;
+}
+
+export const resolveItemLogoUrl = normalizeCatalogLogo;
+
+/**
+ * Generates a 2-character uppercase typographic badge fallback when a brand logo is unavailable.
+ */
+export function getBrandTypographicInitials(name?: string | null): string {
+  if (!name || typeof name !== 'string') {
+    return 'AS';
+  }
+  const cleaned = name.trim();
+  if (!cleaned) {
+    return 'AS';
+  }
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  if (words.length >= 2) {
+    return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase();
+  }
+  return cleaned.slice(0, 2).toUpperCase();
+}
+
 function safeDecode(raw: string): CartState {
   try {
     const parsed = JSON.parse(raw);
@@ -174,6 +211,7 @@ function safeDecode(raw: string): CartState {
           quantity: coercedQty,
           isTractor: Boolean(it.isTractor),
           type: it.type ? String(it.type) : undefined,
+          logo: normalizeCatalogLogo(it.logo),
         };
       });
       return {
@@ -246,6 +284,10 @@ export function addItem(input: CartItemInput): void {
     updatedItems = current.items.map((item, idx) => {
       if (idx === existingIndex) {
         const newQty = coerceQuantity(item.quantity + qtyToAdd);
+        if (!('isCustom' in item) && input.logo !== undefined) {
+          const normalizedLogo = normalizeCatalogLogo(input.logo) ?? item.logo ?? null;
+          return { ...item, quantity: newQty, logo: normalizedLogo };
+        }
         return { ...item, quantity: newQty };
       }
       return item;
@@ -261,6 +303,7 @@ export function addItem(input: CartItemInput): void {
       };
       updatedItems = [...current.items, newCustom];
     } else {
+      const normalizedLogo = normalizeCatalogLogo(input.logo);
       const newCatalog: CatalogItem = {
         id: input.id,
         name: input.name,
@@ -269,6 +312,7 @@ export function addItem(input: CartItemInput): void {
         quantity: qtyToAdd,
         isTractor: input.isTractor,
         type: input.type,
+        logo: normalizedLogo,
       };
       updatedItems = [...current.items, newCatalog];
     }

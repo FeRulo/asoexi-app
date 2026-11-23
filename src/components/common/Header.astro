@@ -124,6 +124,26 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
           </kbd>
         </button>
 
+        <!-- Botón Trigger Cajón de Cotización Persistente con Badge Reactivo (Story 4.2) -->
+        <button
+          type="button"
+          data-open-quote-drawer
+          aria-label="Abrir lista de requisición y cajón de cotización"
+          class="relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-2 text-secondary hover:text-primary hover:bg-slate-100 rounded-industrial border border-slate-200 transition-colors min-h-[48px] min-w-[48px] justify-center focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span class="text-xs font-semibold hidden lg:inline">Requisición</span>
+          <span
+            data-cart-badge
+            aria-live="polite"
+            class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-mono font-bold rounded-industrial bg-slate-200 text-slate-700 transition-colors"
+          >
+            0
+          </span>
+        </button>
+
         <!-- CTA Desktop / Tablet (Micro-radio 2px con Remate Angular a 45°) -->
         <a
           href={ctaLink.href}
@@ -177,6 +197,25 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
         <kbd class="px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-100 border border-slate-200 rounded">
           /
         </kbd>
+      </button>
+
+      <!-- Botón Cajón de Cotización Móvil (Story 4.2) -->
+      <button
+        type="button"
+        data-open-quote-drawer
+        aria-label="Abrir lista de requisición multimarca"
+        class="mobile-menu-link flex items-center gap-2.5 w-full px-4 py-3 text-sm font-semibold text-secondary hover:text-primary hover:bg-slate-50 border-b border-slate-100 rounded-industrial min-h-[48px] text-left cursor-pointer"
+      >
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span class="flex-1">Lista de Requisición / Cajón B2B</span>
+        <span
+          data-cart-badge
+          class="inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 text-xs font-mono font-bold rounded-industrial bg-slate-200 text-slate-700"
+        >
+          0
+        </span>
       </button>
 
       {mainNavLinks.map((link) => {
@@ -250,7 +289,7 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
     });
 
     // Cerrar menú al hacer clic en cualquier enlace interno o acción del menú móvil
-    const mobileLinks = mobileMenu.querySelectorAll('a, button[data-open-search-modal]');
+    const mobileLinks = mobileMenu.querySelectorAll('a, button[data-open-search-modal], button[data-open-quote-drawer]');
     mobileLinks.forEach((link) => {
       link.addEventListener('click', () => {
         closeMenu();

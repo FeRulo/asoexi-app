@@ -186,13 +186,14 @@ describe('Nano Stores CartStore ($cartStore) — B2B Requisition (Story 4.1)', (
   });
 
   describe('3. Catalog Item Operations (addItem)', () => {
-    it('should add a new catalog item with default quantity 1 if not specified', () => {
+    it('should add a new catalog item with default quantity 1 if not specified and preserve logo', () => {
       addItem({
         id: 'panduit',
         name: 'Panduit',
         sector: 'electrico',
         url: '/distribuidor-panduit-colombia',
         isTractor: true,
+        logo: '/brands/panduit.png',
       });
 
       const state = $cartStore.get();
@@ -203,7 +204,89 @@ describe('Nano Stores CartStore ($cartStore) — B2B Requisition (Story 4.1)', (
       expect(item.sector).toBe('electrico');
       expect(item.quantity).toBe(1);
       expect(item.isTractor).toBe(true);
+      expect(item.logo).toBe('/brands/panduit.png');
       expect(state.totalItems).toBe(1);
+    });
+
+    it('should normalize empty, whitespace, "#" or "javascript:" logo to null in addItem and safeDecode', () => {
+      addItem({
+        id: 'sika',
+        name: 'Sika',
+        logo: '   ',
+      });
+      addItem({
+        id: 'dewalt',
+        name: 'DeWalt',
+        logo: '#',
+      });
+      addItem({
+        id: 'stanley',
+        name: 'Stanley',
+        logo: 'JavaScript:alert(1)',
+      });
+
+      const items = $cartStore.get().items as CatalogItem[];
+      expect(items[0].logo).toBeNull();
+      expect(items[1].logo).toBeNull();
+      expect(items[2].logo).toBeNull();
+
+      mockStorage.setItem(
+        'asoexi_cart_v1',
+        JSON.stringify({
+          items: [
+            { id: 'panduit', name: 'Panduit', quantity: 2, logo: ' /brands/panduit.png ' },
+            { id: 'dewalt', name: 'DeWalt', quantity: 1, logo: '' },
+            { id: 'sika', name: 'Sika', quantity: 1, logo: '#' },
+            { id: 'truper', name: 'Truper', quantity: 1, logo: 'javascript:void(0)' },
+          ],
+          totalItems: 5,
+        })
+      );
+      syncFromStorage();
+
+      const synced = $cartStore.get().items as CatalogItem[];
+      expect(synced[0].logo).toBe('/brands/panduit.png');
+      expect(synced[1].logo).toBeNull();
+      expect(synced[2].logo).toBeNull();
+      expect(synced[3].logo).toBeNull();
+    });
+
+    it('should preserve existing valid logo when re-adding item with null/invalid logo, and update logo when valid new logo is provided', () => {
+      addItem({
+        id: 'panduit',
+        name: 'Panduit',
+        quantity: 1,
+        logo: '/brands/panduit-v1.png',
+      });
+      expect(($cartStore.get().items[0] as CatalogItem).logo).toBe('/brands/panduit-v1.png');
+
+      // Re-adding with null or '#' preserves existing valid logo
+      addItem({
+        id: 'panduit',
+        name: 'Panduit',
+        quantity: 2,
+        logo: null,
+      });
+      addItem({
+        id: 'panduit',
+        name: 'Panduit',
+        quantity: 1,
+        logo: '#',
+      });
+      const preserved = $cartStore.get().items[0] as CatalogItem;
+      expect(preserved.quantity).toBe(4);
+      expect(preserved.logo).toBe('/brands/panduit-v1.png');
+
+      // Re-adding with a new valid logo updates it
+      addItem({
+        id: 'panduit',
+        name: 'Panduit',
+        quantity: 1,
+        logo: '/brands/panduit.png',
+      });
+      const updated = $cartStore.get().items[0] as CatalogItem;
+      expect(updated.quantity).toBe(5);
+      expect(updated.logo).toBe('/brands/panduit.png');
     });
 
     it('should add a catalog item with specific quantity coerced', () => {

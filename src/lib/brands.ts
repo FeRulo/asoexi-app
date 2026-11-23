@@ -184,7 +184,44 @@ export function buildBrandBreadcrumbs(
  * Validates whether a brand has a non-empty, non-whitespace logo path or URL (EDGE-2).
  */
 export function hasValidBrandLogo(logo?: string | null): boolean {
-  return typeof logo === 'string' && logo.trim().length > 0;
+  return resolveItemLogoUrl(logo) !== null;
+}
+
+/**
+ * Normalizes and validates a brand logo URL/path (EDGE-2).
+ * Returns null if missing, empty, '#' or unsafe protocol.
+ */
+export function resolveItemLogoUrl(logo?: string | null): string | null {
+  if (!logo || typeof logo !== 'string') {
+    return null;
+  }
+  const trimmed = logo.trim();
+  if (
+    trimmed.length === 0 ||
+    trimmed === '#' ||
+    trimmed.toLowerCase().startsWith('javascript:')
+  ) {
+    return null;
+  }
+  return trimmed;
+}
+
+/**
+ * Generates a 2-character uppercase typographic badge fallback when a brand logo is unavailable.
+ */
+export function getBrandTypographicInitials(name?: string | null): string {
+  if (!name || typeof name !== 'string') {
+    return 'AS';
+  }
+  const cleaned = name.trim();
+  if (!cleaned) {
+    return 'AS';
+  }
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  if (words.length >= 2) {
+    return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase();
+  }
+  return cleaned.slice(0, 2).toUpperCase();
 }
 
 export interface BrandLogisticsPromise {

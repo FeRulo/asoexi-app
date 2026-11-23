@@ -6,7 +6,13 @@ import {
   generateRequisitionWhatsAppUrl,
   generateBrandQuoteWhatsAppUrl,
 } from '@/lib/whatsapp';
-import { $cartStore, type CartState } from '@/stores/cart';
+import {
+  $cartStore,
+  resolveItemLogoUrl,
+  getBrandTypographicInitials,
+  type CartState,
+  type CatalogItem,
+} from '@/stores/cart';
 
 const SECTOR_BADGE_CLASSES: Record<string, string> = {
   'electrico': 'text-red-700 bg-red-50 border-red-200/60',
@@ -22,6 +28,7 @@ export default function LiveSearchModal() {
   const [isLoadingIndex, setIsLoadingIndex] = useState(false);
   const [indexError, setIndexError] = useState(false);
   const [addedItemIds, setAddedItemIds] = useState<Record<string, boolean>>({});
+  const [brokenLogos, setBrokenLogos] = useState<Record<string, boolean>>({});
   const [cartState, setCartState] = useState<CartState>(() => $cartStore.get());
 
   useEffect(() => {
@@ -60,6 +67,9 @@ export default function LiveSearchModal() {
   // Open / Close events and global keyboard shortcut `/`
   useEffect(() => {
     const handleOpen = () => {
+      window.dispatchEvent(new CustomEvent('close-quote-drawer'));
+      window.dispatchEvent(new CustomEvent('close-contact-modal'));
+
       setIsOpen((prev) => {
         if (!prev) {
           previousActiveElement.current = document.activeElement as HTMLElement | null;
@@ -110,7 +120,6 @@ export default function LiveSearchModal() {
   useEffect(() => {
     if (!isOpen) return;
 
-    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     // Hide mascot widget and mobile sticky bar dynamically while modal is open
@@ -163,11 +172,11 @@ export default function LiveSearchModal() {
 
     return () => {
       clearTimeout(timer);
-      document.body.style.overflow = originalOverflow;
-      if (mascotWidget) {
+      document.body.style.overflow = '';
+      if (mascotWidget && !mascotWidget.classList.contains('translate-y-8')) {
         mascotWidget.classList.remove('opacity-0', 'pointer-events-none');
       }
-      if (mobileBar) {
+      if (mobileBar && !mobileBar.classList.contains('translate-y-full')) {
         mobileBar.classList.remove('opacity-0', 'pointer-events-none');
       }
       // Re-dispatch scroll event so BaseLayout observer preserves hidden state if user is at #cotizar
@@ -235,6 +244,7 @@ export default function LiveSearchModal() {
       url: item.url,
       isTractor: item.isTractor,
       type: item.type,
+      logo: item.logo ?? null,
     });
 
     setAddedItemIds((prev) => ({ ...prev, [item.id]: true }));
@@ -419,38 +429,75 @@ export default function LiveSearchModal() {
                 const badgeClass =
                   SECTOR_BADGE_CLASSES[item.sector] || 'text-slate-700 bg-slate-100 border-slate-200';
                 const isAdded = addedItemIds[item.id];
+                const logoKey = `${item.id}:${item.logo ?? ''}`;
+                const validLogo =
+                  item.type === 'brand' && !brokenLogos[logoKey]
+                    ? resolveItemLogoUrl(item.logo)
+                    : null;
 
                 return (
                   <div
                     key={`${item.type}-${item.id}`}
                     class="p-3.5 bg-white border border-slate-200 hover:border-primary/40 rounded-industrial shadow-2xs hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                   >
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-1 flex-wrap">
-                        <span
-                          class={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-industrial border ${badgeClass}`}
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                      {/* Brand Logo Miniature or Typographic Fallback */}
+                      {item.type === 'brand' && (
+                        <a
+                          href={item.url}
+                          onClick={closeModal}
+                          aria-label={`Ver ficha de ${item.name}`}
+                          class="w-12 h-12 rounded-industrial border border-slate-200 bg-slate-50 flex items-center justify-center p-1.5 shrink-0 overflow-hidden mt-0.5"
                         >
-                          {item.sectorName}
-                        </span>
-                        {item.isTractor && (
-                          <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-industrial">
-                            Tractora
-                          </span>
-                        )}
-                        <span class="text-[10px] text-slate-400 capitalize">
-                          {item.type === 'brand' ? 'Marca Oficial' : 'Sector Industrial'}
-                        </span>
-                      </div>
-
-                      <h3 class="font-display font-bold text-base text-secondary group-hover:text-primary transition-colors">
-                        <a href={item.url} onClick={closeModal} class="focus:outline-none focus:underline">
-                          {item.name}
+                          {validLogo ? (
+                            <img
+                              src={validLogo}
+                              alt={`Logotipo oficial de ${item.name}`}
+                              width="44"
+                              height="36"
+                              loading="lazy"
+                              onError={() =>
+                                setBrokenLogos((prev) => ({ ...prev, [logoKey]: true }))
+                              }
+                              class="max-h-9 max-w-[42px] w-auto h-auto object-contain"
+                            />
+                          ) : (
+                            <div class="w-full h-full bg-slate-100 text-secondary rounded-industrial flex flex-col items-center justify-center">
+                              <span class="font-display font-extrabold text-[11px] tracking-wider uppercase">
+                                {getBrandTypographicInitials(item.name)}
+                              </span>
+                            </div>
+                          )}
                         </a>
-                      </h3>
+                      )}
 
-                      <p class="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">
-                        {item.description}
-                      </p>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                          <span
+                            class={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-industrial border ${badgeClass}`}
+                          >
+                            {item.sectorName}
+                          </span>
+                          {item.isTractor && (
+                            <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-industrial">
+                              Tractora
+                            </span>
+                          )}
+                          <span class="text-[10px] text-slate-400 capitalize">
+                            {item.type === 'brand' ? 'Marca Oficial' : 'Sector Industrial'}
+                          </span>
+                        </div>
+
+                        <h3 class="font-display font-bold text-base text-secondary group-hover:text-primary transition-colors">
+                          <a href={item.url} onClick={closeModal} class="focus:outline-none focus:underline">
+                            {item.name}
+                          </a>
+                        </h3>
+
+                        <p class="text-xs text-slate-600 line-clamp-2 mt-1 leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Actions: View Link + Requisition Button + Direct Quote (Brands) OR Sector Link (Sectors) */}
@@ -596,12 +643,24 @@ export default function LiveSearchModal() {
                   Vaciar
                 </button>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeModal();
+                    window.dispatchEvent(new CustomEvent('open-quote-drawer'));
+                  }}
+                  class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 text-xs font-semibold rounded-industrial min-h-[48px] transition-colors cursor-pointer"
+                  title="Abrir cajón completo para insumos libres o crédito a 45 días"
+                >
+                  <span>Ver cajón / Insumo libre</span>
+                </button>
+
                 <a
                   href={generateRequisitionWhatsAppUrl(cartState.items)}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={closeModal}
-                  class="inline-flex items-center gap-2 px-3.5 py-2 bg-whatsapp hover:bg-whatsapp-hover text-white text-xs font-semibold rounded-industrial min-h-[44px] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-whatsapp"
+                  class="inline-flex items-center gap-2 px-3.5 py-2 bg-whatsapp hover:bg-whatsapp-hover text-white text-xs font-semibold rounded-industrial min-h-[48px] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-whatsapp"
                   title="Cotizar lista multimarca por WhatsApp"
                 >
                   <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
@@ -612,72 +671,101 @@ export default function LiveSearchModal() {
               </div>
             </div>
 
-            {/* Cuadro contenedor de lista vertical con controles de cantidad */}
+            {/* Cuadro contenedor de lista vertical con controles de cantidad y miniatura de logo */}
             <div class="bg-slate-900/80 border border-slate-700/80 rounded-industrial max-h-44 overflow-y-auto divide-y divide-slate-800/80 shadow-xs">
-              {cartState.items.map((item) => (
-                <div
-                  key={item.id}
-                  class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-slate-800/50 transition-colors"
-                >
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
-                    <span class="text-xs font-medium text-white truncate">{item.name}</span>
-                    {'isTractor' in item && Boolean(item.isTractor) && (
-                      <span class="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">
-                        Tractora
-                      </span>
-                    )}
-                  </div>
+              {cartState.items.map((item) => {
+                const isCustom = 'isCustom' in item && item.isCustom === true;
+                const rawLogo = !isCustom ? (item as CatalogItem).logo : null;
+                const cartLogoKey = `${item.id}:${rawLogo ?? ''}`;
+                const validCartLogo = !brokenLogos[cartLogoKey] ? resolveItemLogoUrl(rawLogo) : null;
 
-                  <div class="flex items-center gap-2.5 shrink-0">
-                    {/* Controles interactivos para sumar o restar unidades */}
-                    <div class="flex items-center bg-slate-800 border border-slate-700 rounded-industrial overflow-hidden shadow-2xs">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (item.quantity > 1) {
-                            $cartStore.updateQuantity(item.id, item.quantity - 1);
-                          } else {
-                            $cartStore.removeItem(item.id);
-                          }
-                        }}
-                        class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
-                        title={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
-                        aria-label={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
-                      >
-                        &minus;
-                      </button>
-
-                      <span class="px-2 py-0.5 text-xs font-semibold text-emerald-400 min-w-[30px] text-center select-none bg-emerald-500/10">
-                        {item.quantity}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() => $cartStore.updateQuantity(item.id, item.quantity + 1)}
-                        class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
-                        title={`Sumar una unidad más de ${item.name}`}
-                        aria-label={`Sumar una unidad más de ${item.name}`}
-                      >
-                        +
-                      </button>
+                return (
+                  <div
+                    key={item.id}
+                    class="flex items-center justify-between gap-3 px-3 py-2 hover:bg-slate-800/50 transition-colors"
+                  >
+                    <div class="flex items-center gap-2 min-w-0">
+                      <div class="w-7 h-7 rounded-industrial bg-white border border-slate-700 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                        {isCustom ? (
+                          <span class="text-[9px] font-bold uppercase text-amber-800 bg-amber-50 w-full h-full flex items-center justify-center">
+                            LB
+                          </span>
+                        ) : validCartLogo ? (
+                          <img
+                            src={validCartLogo}
+                            alt={`Logotipo de ${item.name}`}
+                            width="24"
+                            height="20"
+                            loading="lazy"
+                            onError={() =>
+                              setBrokenLogos((prev) => ({ ...prev, [cartLogoKey]: true }))
+                            }
+                            class="max-h-5 max-w-[22px] w-auto h-auto object-contain"
+                          />
+                        ) : (
+                          <span class="text-[9px] font-display font-extrabold uppercase text-secondary">
+                            {getBrandTypographicInitials(item.name)}
+                          </span>
+                        )}
+                      </div>
+                      <span class="text-xs font-medium text-white truncate">{item.name}</span>
+                      {'isTractor' in item && Boolean(item.isTractor) && (
+                        <span class="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">
+                          Tractora
+                        </span>
+                      )}
                     </div>
 
-                    {/* Botón rápido para remover completamente el ítem */}
-                    <button
-                      type="button"
-                      onClick={() => $cartStore.removeItem(item.id)}
-                      class="text-slate-400 hover:text-red-400 p-1 transition-colors cursor-pointer text-sm font-bold leading-none"
-                      title={`Eliminar completamente ${item.name}`}
-                      aria-label={`Eliminar completamente ${item.name}`}
-                    >
-                      <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
+                    <div class="flex items-center gap-2.5 shrink-0">
+                      {/* Controles interactivos para sumar o restar unidades */}
+                      <div class="flex items-center bg-slate-800 border border-slate-700 rounded-industrial overflow-hidden shadow-2xs">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (item.quantity > 1) {
+                              $cartStore.updateQuantity(item.id, item.quantity - 1);
+                            } else {
+                              $cartStore.removeItem(item.id);
+                            }
+                          }}
+                          class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
+                          title={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
+                          aria-label={item.quantity > 1 ? `Quitar una unidad de ${item.name}` : `Eliminar ${item.name}`}
+                        >
+                          &minus;
+                        </button>
+
+                        <span class="px-2 py-0.5 text-xs font-semibold text-emerald-400 min-w-[30px] text-center select-none bg-emerald-500/10">
+                          {item.quantity}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => $cartStore.updateQuantity(item.id, item.quantity + 1)}
+                          class="w-6 h-6 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer text-sm font-bold leading-none select-none"
+                          title={`Sumar una unidad más de ${item.name}`}
+                          aria-label={`Sumar una unidad más de ${item.name}`}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Botón rápido para remover completamente el ítem */}
+                      <button
+                        type="button"
+                        onClick={() => $cartStore.removeItem(item.id)}
+                        class="text-slate-400 hover:text-red-400 p-1 transition-colors cursor-pointer text-sm font-bold leading-none"
+                        title={`Eliminar completamente ${item.name}`}
+                        aria-label={`Eliminar completamente ${item.name}`}
+                      >
+                        <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-22-2026 17:34
-last_updated: 11-20-2026 14:24
+last_updated: 11-23-2026 11:03
 project: asoexi-app
 project_key: NOKEY
 tracking_system: file-system
@@ -58,7 +58,7 @@ development_status:
 
   epic-4: in-progress
   4-1-almacen-reactivo-persistente-nano-stores-cartstore-para-requisicion-b2b: done
-  4-2-isla-preact-cajon-de-cotizacion-persistente-quotedrawer-y-badge-flotante: backlog
+  4-2-isla-preact-cajon-de-cotizacion-persistente-quotedrawer-y-badge-flotante: review
   4-3-generador-seguro-de-deep-links-whatsapp-con-salvaguarda-de-longitud: backlog
   4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito: backlog
   epic-4-retrospective: optional

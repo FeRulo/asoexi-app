@@ -65,7 +65,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       name: 'Panduit',
       sector: 'electrico',
       isTractor: true,
-      logo: null,
+      logo: '/brands/panduit.png',
       description: 'Líder en cableado estructurado, amarras y conectividad industrial.',
       applicationNotes: 'Cables UTP categoría 6A, bandejas portacables y rotuladoras.',
       pdfCatalogUrl: null,
@@ -175,11 +175,16 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       expect(panduitItem?.sector).toBe('electrico');
       expect(panduitItem?.isTractor).toBe(true);
       expect(panduitItem?.url).toBe('/distribuidor-panduit-colombia');
+      expect(panduitItem?.logo).toBe('/brands/panduit.png');
+
+      const sikaItem = index.find((item) => item.id === 'sika');
+      expect(sikaItem?.logo).toBeNull();
 
       const electricoCategory = index.find((item) => item.id === 'electrico');
       expect(electricoCategory).toBeDefined();
       expect(electricoCategory?.type).toBe('sector');
       expect(electricoCategory?.url).toBe('/sector-electrico');
+      expect(electricoCategory?.logo).toBeNull();
     });
 
     it('should generate canonical URLs correctly for brands and sectors', () => {
@@ -189,6 +194,21 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
 
       const sector = index.find((i) => i.id === 'ferretero-construccion');
       expect(sector?.url).toBe('/sector-ferretero-construccion');
+    });
+
+    it('should sanitize and normalize brand logos in buildSearchIndex (rejecting whitespace, "#" and "javascript:")', () => {
+      const brandsWithEdgeLogos: Brand[] = [
+        { ...sampleBrands[0], id: 'b-valid', logo: '  /brands/panduit.png  ' },
+        { ...sampleBrands[0], id: 'b-empty', logo: '   ' },
+        { ...sampleBrands[0], id: 'b-hash', logo: '#' },
+        { ...sampleBrands[0], id: 'b-js', logo: 'JavaScript:alert(1)' },
+      ];
+      const index = buildSearchIndex(brandsWithEdgeLogos, []);
+
+      expect(index.find((i) => i.id === 'b-valid')?.logo).toBe('/brands/panduit.png');
+      expect(index.find((i) => i.id === 'b-empty')?.logo).toBeNull();
+      expect(index.find((i) => i.id === 'b-hash')?.logo).toBeNull();
+      expect(index.find((i) => i.id === 'b-js')?.logo).toBeNull();
     });
   });
 
@@ -470,6 +490,7 @@ describe('LiveSearch & Zero-Fail Search System (TDD - Story 2.4)', () => {
       expect(panduit).toBeDefined();
       expect(panduit?.isTractor).toBe(true);
       expect(panduit?.url).toBe('/distribuidor-panduit-colombia');
+      expect(panduit?.logo).toBe('/brands/panduit.png');
 
       const electrico = items.find((i: SearchIndexItem) => i.id === 'electrico');
       expect(electrico).toBeDefined();

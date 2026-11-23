@@ -11,6 +11,7 @@ export interface SearchIndexItem {
   isTractor?: boolean;
   description: string;
   url: string;
+  logo?: string | null;
   keywords?: string[];
 }
 
@@ -79,6 +80,17 @@ function normalizeSearchText(text: string): string {
     .toLowerCase();
 }
 
+function normalizeBrandLogoPath(logo?: string | null): string | null {
+  if (!logo || typeof logo !== 'string') {
+    return null;
+  }
+  const trimmed = logo.trim();
+  if (trimmed.length === 0 || trimmed === '#' || trimmed.toLowerCase().startsWith('javascript:')) {
+    return null;
+  }
+  return trimmed;
+}
+
 /**
  * Builds a search index array from brands and categories.
  */
@@ -109,6 +121,7 @@ export function buildSearchIndex(
       isTractor: Boolean(brand.isTractor),
       description: brand.description,
       url: resolveBrandSiloUrl(brand.id),
+      logo: normalizeBrandLogoPath(brand.logo),
       keywords,
     };
   });
@@ -128,6 +141,7 @@ export function buildSearchIndex(
       isTractor: false,
       description: cat.description,
       url: slug,
+      logo: null,
       keywords: [cat.name, cat.shortDescription || '', ...(shortName ? [shortName] : [])],
     };
   });
