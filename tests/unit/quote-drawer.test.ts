@@ -19,6 +19,7 @@ import {
   dispatchQuoteFormalModalEvent,
   filterDrawerCatalogBrands,
   executeRequisitionWhatsAppAction,
+  submitFormalQuoteRequest,
 } from '@/islands/QuoteDrawer';
 import { buildSearchIndex, type SearchIndexItem } from '@/lib/search';
 import {
@@ -410,6 +411,227 @@ describe('QuoteDrawer Island & Commercial Actions (TDD - Story 4.2)', () => {
       expect(outcome.copiedSync).toBe(false);
       expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
       expect(onSafeguardFallbackSpy).toHaveBeenCalledWith(outcome.payload);
+    });
+  });
+
+  describe('7. Story 4.4: Flujo Integrado de Cotización Formal y Crédito 45 Días en QuoteDrawer', () => {
+    it('debe enviar FormData a /api/quote y vaciar $cartStore tras respuesta HTTP 200', async () => {
+      addItem({ id: 'panduit', name: 'Panduit', sector: 'electrico', quantity: 4 });
+      addCustomItem('Cajas de paso 15x15', 2, 'Calibre 18');
+
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            referenceId: 're_drawer_200',
+            message: 'Solicitud radicada',
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: 'Ingeniería Eléctrica S.A.S.',
+          nit: '900888777-1',
+          contactName: 'Laura Pérez',
+          email: 'compras@ingelectrica.co',
+          phone: '3101234567',
+          cityOrAddress: 'Bogotá - Zona Industrial Montevideo',
+          creditRequested: false,
+          notes: 'Despacho en jornada AM',
+        },
+        $cartStore.get().items,
+        null,
+        {
+          fetchFn: fetchMock,
+          onSuccess: () => $cartStore.clear(),
+        }
+      );
+
+      expect(outcome.ok).toBe(true);
+      expect(outcome.referenceId).toBe('re_drawer_200');
+      expect($cartStore.get().items).toHaveLength(0);
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/quote',
+        expect.objectContaining({ method: 'POST' })
+      );
+    });
+
+    it('debe bloquear el envío con crédito a 45 días si falta el archivo RUT PDF y preservar $cartStore', async () => {
+      addItem({ id: 'sika', name: 'Sika', sector: 'hidraulico-pinturas', quantity: 3 });
+
+      const fetchMock = vi.fn();
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: 'Obras Civiles Colombia S.A.S.',
+          nit: '901222333-4',
+          contactName: 'Andrés Gómez',
+          email: 'andres@obrasciviles.co',
+          phone: '',
+          cityOrAddress: 'Chía - Vereda Fagua',
+          creditRequested: true,
+          notes: '',
+        },
+        $cartStore.get().items,
+        null,
+        {
+          fetchFn: fetchMock,
+          onSuccess: () => $cartStore.clear(),
+        }
+      );
+
+      expect(outcome.ok).toBe(false);
+      expect(outcome.fieldErrors?.rutFile).toBeTruthy();
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect($cartStore.get().items).toHaveLength(1);
+    });
+
+    it('debe rechazar un PDF cifrado con contraseña antes de llamar a /api/quote', async () => {
+      addItem({ id: 'dewalt', name: 'DeWalt', sector: 'ferretero-construccion', quantity: 2 });
+
+      const encryptedPdf = new File(
+        [new TextEncoder().encode('%PDF-1.7\n<< /Encrypt 4 0 R >>\n%%EOF')],
+        'rut_protegido.pdf',
+        { type: 'application/pdf' }
+      );
+      const fetchMock = vi.fn();
+
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: 'Constructora Norte S.A.',
+          nit: '800111222-3',
+          contactName: '',
+          email: 'compras@constructoranorte.co',
+          phone: '',
+          cityOrAddress: 'Bogotá - Calle 170 # 45-10',
+          creditRequested: true,
+          notes: '',
+        },
+        $cartStore.get().items,
+        encryptedPdf,
+        {
+          fetchFn: fetchMock,
+          onSuccess: () => $cartStore.clear(),
+        }
+      );
+
+      expect(outcome.ok).toBe(false);
+      expect(outcome.fieldErrors?.rutFile).toMatch(/contraseña|cifrado/i);
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect($cartStore.get().items).toHaveLength(1);
+    });
+
+    it('debe preservar $cartStore cuando /api/quote falla con error 502/504', async () => {
+      addItem({ id: 'pavco', name: 'Pavco Wavin', sector: 'hidraulico-pinturas', quantity: 5 });
+
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ok: false,
+            error: { code: 'UPSTREAM_TIMEOUT', message: 'Timeout de correo' },
+          }),
+          { status: 504, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: 'Acueductos y Obras S.A.S.',
+          nit: '900555666-8',
+          contactName: 'María Ruiz',
+          email: 'mruiz@acueductos.co',
+          phone: '',
+          cityOrAddress: 'Mosquera - Parque Industrial',
+          creditRequested: false,
+          notes: '',
+        },
+        $cartStore.get().items,
+        null,
+        {
+          fetchFn: fetchMock,
+          onSuccess: () => $cartStore.clear(),
+        }
+      );
+
+      expect(outcome.ok).toBe(false);
+      expect(outcome.status).toBe(504);
+      expect($cartStore.get().items).toHaveLength(1);
+    });
+
+    it('debe incluir items y rutFile en el FormData enviado para crédito a 45 días válido y limpiar $cartStore', async () => {
+      addItem({ id: 'panduit', name: 'Panduit', sector: 'electrico', quantity: 2 });
+      const encoded = new TextEncoder().encode('%PDF-1.7\n<< /Type /Catalog >>\n%%EOF');
+      const pdfBytes = new Uint8Array(new ArrayBuffer(encoded.byteLength));
+      pdfBytes.set(encoded);
+      const validRut = new File([pdfBytes], 'RUT_Cliente.pdf', { type: 'application/pdf' });
+
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({ ok: true, referenceId: 're_credit_ok', message: 'Radicado OK' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: 'Constructora Demo S.A.S.',
+          nit: '900480460-8',
+          contactName: 'Pedro Gómez',
+          email: 'compras@constructorademo.co',
+          phone: '3014191344',
+          cityOrAddress: 'Bogotá - Calle 51A Sur',
+          creditRequested: true,
+          notes: 'Urgente en obra',
+        },
+        $cartStore.get().items,
+        validRut,
+        {
+          fetchFn: fetchMock,
+          onSuccess: () => $cartStore.clear(),
+        }
+      );
+
+      expect(outcome.ok).toBe(true);
+      expect($cartStore.get().items).toHaveLength(0);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      const sentBody = fetchMock.mock.calls[0][1].body as FormData;
+      expect(sentBody).toBeInstanceOf(FormData);
+      expect(sentBody.get('creditRequested')).toBe('true');
+      const parsedItems = JSON.parse(String(sentBody.get('items')));
+      expect(parsedItems).toHaveLength(1);
+      expect(parsedItems[0].name).toBe('Panduit');
+      const attachedFile = sentBody.get('rutFile');
+      expect(attachedFile).toBeInstanceOf(File);
+      expect((attachedFile as File).name).toBe('RUT_Cliente.pdf');
+    });
+
+    it('debe retornar fieldErrors cliente sin llamar a /api/quote cuando faltan campos obligatorios', async () => {
+      const fetchMock = vi.fn();
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: '',
+          nit: '-----',
+          contactName: '',
+          email: 'correo-invalido',
+          phone: '',
+          cityOrAddress: '',
+          creditRequested: false,
+          notes: '',
+        },
+        [],
+        null,
+        { fetchFn: fetchMock }
+      );
+
+      expect(outcome.ok).toBe(false);
+      expect(outcome.status).toBe(400);
+      expect(outcome.fieldErrors?.companyName).toBeTruthy();
+      expect(outcome.fieldErrors?.nit).toBeTruthy();
+      expect(outcome.fieldErrors?.email).toBeTruthy();
+      expect(outcome.fieldErrors?.cityOrAddress).toBeTruthy();
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 });

@@ -19,8 +19,178 @@ import {
   copyTextToClipboardSync,
   type RequisitionWhatsAppPayload,
 } from '@/lib/whatsapp';
+import {
+  CREDIT_CONTRACTUAL_NOTICE,
+  MAX_RUT_FILE_SIZE_BYTES,
+  OFFICIAL_QUOTE_RECIPIENT_EMAIL,
+  QUOTE_FORMAL_SUCCESS_MESSAGE,
+  quoteFormalRequestSchema,
+  validateRutPdfFile,
+  buildQuoteFormalFormData,
+  formatZodFieldErrors,
+  type QuoteFormalItem,
+  type QuoteApiResponse,
+} from '@/lib/quote-formal';
 
 export { resolveItemLogoUrl, getBrandTypographicInitials };
+
+export type QuoteDrawerView = 'list' | 'formal' | 'formal-success';
+
+export interface FormalQuoteFormFields {
+  companyName: string;
+  nit: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  cityOrAddress: string;
+  creditRequested: boolean;
+  notes: string;
+}
+
+export interface SubmitFormalQuoteOutcome {
+  ok: boolean;
+  message?: string;
+  referenceId?: string;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+  status?: number;
+}
+
+export function mapCartItemsToFormalItems(items: CartItem[]): QuoteFormalItem[] {
+  return items.map((item) => {
+    const isCustom = isCustomCartItem(item);
+    return {
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      isCustom,
+      sector: !isCustom ? (item as CatalogItem).sector : undefined,
+      notes: isCustom ? (item as CustomItem).notes : undefined,
+    };
+  });
+}
+
+/**
+ * Validates and submits the integrated formal quote / 45-day credit request
+ * to `/api/quote` using multipart FormData (Zero Data-at-Rest PDF validation).
+ */
+export async function submitFormalQuoteRequest(
+  fields: FormalQuoteFormFields,
+  items: CartItem[],
+  rutFile: File | null,
+  options?: {
+    fetchFn?: typeof fetch;
+    onSuccess?: () => void;
+    timeoutMs?: number;
+  }
+): Promise<SubmitFormalQuoteOutcome> {
+  const mappedItems = mapCartItemsToFormalItems(items);
+  const parsed = quoteFormalRequestSchema.safeParse({
+    ...fields,
+    items: mappedItems,
+  });
+
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: 'Verifica los campos obligatorios marcados en el formulario.',
+      fieldErrors: formatZodFieldErrors(parsed.error),
+      status: 400,
+    };
+  }
+
+  if (parsed.data.creditRequested && !rutFile) {
+    const rutMissingMsg =
+      'Para solicitar línea de crédito a 45 días es obligatorio adjuntar el certificado RUT en PDF (máx. 5 MB).';
+    return {
+      ok: false,
+      error: rutMissingMsg,
+      fieldErrors: { rutFile: rutMissingMsg },
+      status: 400,
+    };
+  }
+
+  if (parsed.data.creditRequested && rutFile) {
+    try {
+      const inspection = await validateRutPdfFile(rutFile);
+      if (!inspection.valid) {
+        return {
+          ok: false,
+          error: inspection.message,
+          fieldErrors: { rutFile: inspection.message },
+          status: inspection.code === 'FILE_TOO_LARGE' ? 413 : 400,
+        };
+      }
+    } catch {
+      const readErrMsg =
+        'No se pudo leer el archivo PDF seleccionado. Intenta con otro documento.';
+      return {
+        ok: false,
+        error: readErrMsg,
+        fieldErrors: { rutFile: readErrMsg },
+        status: 400,
+      };
+    }
+  }
+
+  const formData = buildQuoteFormalFormData(
+    parsed.data,
+    parsed.data.creditRequested ? rutFile : null
+  );
+  const fetchFn = options?.fetchFn ?? fetch;
+  const timeoutMs = options?.timeoutMs ?? 15000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetchFn('/api/quote', {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal,
+    });
+
+    let data: QuoteApiResponse | null = null;
+    try {
+      data = (await response.json()) as QuoteApiResponse;
+    } catch {
+      data = null;
+    }
+
+    if (response.ok && data?.ok) {
+      options?.onSuccess?.();
+      return {
+        ok: true,
+        message: data.message ?? QUOTE_FORMAL_SUCCESS_MESSAGE,
+        referenceId: data.referenceId,
+        status: response.status,
+      };
+    }
+
+    return {
+      ok: false,
+      error:
+        data?.error?.message ??
+        `No se pudo radicar tu solicitud en este momento. Usa el correo de respaldo ${OFFICIAL_QUOTE_RECIPIENT_EMAIL}.`,
+      fieldErrors: data?.error?.fieldErrors,
+      status: response.status,
+    };
+  } catch (err) {
+    const isAbort =
+      controller.signal.aborted ||
+      (err instanceof Error &&
+        (err.name === 'AbortError' || err.message.toLowerCase().includes('abort')));
+
+    return {
+      ok: false,
+      error: isAbort
+        ? `La solicitud tardó demasiado en responder. Intenta de nuevo o usa el correo de respaldo ${OFFICIAL_QUOTE_RECIPIENT_EMAIL}.`
+        : `Error de conexión al enviar la solicitud formal. Verifica tu red o usa el correo de respaldo ${OFFICIAL_QUOTE_RECIPIENT_EMAIL}.`,
+      status: isAbort ? 504 : 502,
+    };
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 export interface RequisitionWhatsAppActionOutcome {
   mode: 'direct' | 'safeguard-copied' | 'safeguard-fallback';
@@ -243,8 +413,31 @@ export function dispatchQuoteFormalModalEvent(
 
 export default function QuoteDrawer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [drawerView, setDrawerView] = useState<QuoteDrawerView>('list');
   const [cartState, setCartState] = useState<CartState>(() => $cartStore.get());
   const [brokenLogos, setBrokenLogos] = useState<Record<string, boolean>>({});
+
+  // Story 4.4: Integrated formal quote & 45-day credit form state (preserved across list <-> formal)
+  const [formalCompanyName, setFormalCompanyName] = useState('');
+  const [formalNit, setFormalNit] = useState('');
+  const [formalContactName, setFormalContactName] = useState('');
+  const [formalEmail, setFormalEmail] = useState('');
+  const [formalPhone, setFormalPhone] = useState('');
+  const [formalCityOrAddress, setFormalCityOrAddress] = useState('');
+  const [formalCreditRequested, setFormalCreditRequested] = useState(false);
+  const [formalNotes, setFormalNotes] = useState('');
+  const [rutFile, setRutFile] = useState<File | null>(null);
+  const [rutFileError, setRutFileError] = useState('');
+  const [isValidatingRut, setIsValidatingRut] = useState(false);
+  const [formalFieldErrors, setFormalFieldErrors] = useState<Record<string, string>>({});
+  const [formalSubmitError, setFormalSubmitError] = useState('');
+  const [isSubmittingFormal, setIsSubmittingFormal] = useState(false);
+  const [formalSuccessInfo, setFormalSuccessInfo] = useState<{
+    message: string;
+    referenceId?: string;
+    email: string;
+    creditRequested: boolean;
+  } | null>(null);
 
   // Integrated catalog brand search state inside QuoteDrawer
   const [searchQuery, setSearchQuery] = useState('');
@@ -271,6 +464,8 @@ export default function QuoteDrawer() {
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const customInputRef = useRef<HTMLInputElement | null>(null);
   const safeguardTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const rutInputRef = useRef<HTMLInputElement | null>(null);
+  const rutValidationSeqRef = useRef(0);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const mouseDownTargetRef = useRef<EventTarget | null>(null);
   const customSuccessTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -296,6 +491,8 @@ export default function QuoteDrawer() {
 
   const closeDrawer = () => {
     setIsOpen(false);
+    setDrawerView((prev) => (prev === 'formal-success' ? 'list' : prev));
+    setFormalSuccessInfo(null);
     setSafeguardConfirmationNotice('');
     setSafeguardFallbackPayload(null);
     if (safeguardNoticeTimerRef.current) {
@@ -361,13 +558,36 @@ export default function QuoteDrawer() {
     }
   }, [searchIndex]);
 
-  // Global open-quote-drawer / close-quote-drawer listeners
+  // Global open-quote-drawer / open-quote-formal-modal / close-quote-drawer listeners
   useEffect(() => {
     const handleOpen = () => {
       // Ensure LiveSearchModal or ContactChannelModal are closed cleanly before opening Drawer
       window.dispatchEvent(new CustomEvent('close-search-modal'));
       window.dispatchEvent(new CustomEvent('close-contact-modal'));
 
+      setDrawerView((prev) => (prev === 'formal-success' ? 'list' : prev));
+      setIsOpen((prev) => {
+        if (!prev) {
+          previousActiveElement.current = document.activeElement as HTMLElement | null;
+        }
+        return true;
+      });
+      loadCatalogSearchIndex();
+    };
+
+    const handleOpenFormalModal = (evt: Event) => {
+      evt.preventDefault();
+      const customEvt = evt as CustomEvent<{ creditRequested?: boolean }>;
+      const requestedCredit = Boolean(customEvt.detail?.creditRequested);
+
+      window.dispatchEvent(new CustomEvent('close-search-modal'));
+      window.dispatchEvent(new CustomEvent('close-contact-modal'));
+
+      setFormalCreditRequested(requestedCredit);
+      setFormalSubmitError('');
+      setFormalFieldErrors({});
+      setFormalSuccessInfo(null);
+      setDrawerView('formal');
       setIsOpen((prev) => {
         if (!prev) {
           previousActiveElement.current = document.activeElement as HTMLElement | null;
@@ -382,10 +602,12 @@ export default function QuoteDrawer() {
     };
 
     window.addEventListener('open-quote-drawer', handleOpen);
+    window.addEventListener('open-quote-formal-modal', handleOpenFormalModal);
     window.addEventListener('close-quote-drawer', handleClose);
 
     return () => {
       window.removeEventListener('open-quote-drawer', handleOpen);
+      window.removeEventListener('open-quote-formal-modal', handleOpenFormalModal);
       window.removeEventListener('close-quote-drawer', handleClose);
     };
   }, []);
@@ -551,13 +773,143 @@ export default function QuoteDrawer() {
   };
 
   const handleFormalModalTrigger = (creditRequested: boolean, e: MouseEvent) => {
-    const handledByModal = dispatchQuoteFormalModalEvent(creditRequested);
-    if (handledByModal) {
-      e.preventDefault();
-      closeDrawer();
-    } else {
-      // Allows default mailto fallback navigation or closes drawer cleanly
-      closeDrawer();
+    e.preventDefault();
+    setFormalCreditRequested(creditRequested);
+    setFormalSubmitError('');
+    setFormalFieldErrors({});
+    setFormalSuccessInfo(null);
+    setDrawerView('formal');
+  };
+
+  const handleRutFileChange = async (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    const selected = input.files?.[0] ?? null;
+    const seq = ++rutValidationSeqRef.current;
+
+    setFormalFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next.rutFile;
+      return next;
+    });
+    setFormalSubmitError('');
+
+    if (!selected) {
+      setRutFile(null);
+      setRutFileError('');
+      setIsValidatingRut(false);
+      return;
+    }
+
+    setIsValidatingRut(true);
+    try {
+      const inspection = await validateRutPdfFile(selected);
+      if (seq !== rutValidationSeqRef.current) return;
+      if (!inspection.valid) {
+        setRutFile(null);
+        setRutFileError(inspection.message);
+        input.value = '';
+      } else {
+        setRutFile(selected);
+        setRutFileError('');
+      }
+    } catch {
+      if (seq !== rutValidationSeqRef.current) return;
+      setRutFile(null);
+      setRutFileError('No se pudo leer el archivo PDF seleccionado. Intenta con otro documento.');
+      input.value = '';
+    } finally {
+      if (seq === rutValidationSeqRef.current) {
+        setIsValidatingRut(false);
+      }
+    }
+  };
+
+  const handleClearRutFile = () => {
+    rutValidationSeqRef.current += 1;
+    setRutFile(null);
+    setRutFileError('');
+    setIsValidatingRut(false);
+    clearFormalFieldError('rutFile');
+    if (rutInputRef.current) {
+      rutInputRef.current.value = '';
+    }
+  };
+
+  const clearFormalFieldError = (field: string) => {
+    if (formalFieldErrors[field]) {
+      setFormalFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+    if (formalSubmitError) {
+      setFormalSubmitError('');
+    }
+  };
+
+  const handleFormalQuoteSubmit = async (e: Event) => {
+    e.preventDefault();
+    if (isSubmittingFormal || isValidatingRut) return;
+
+    setIsSubmittingFormal(true);
+    setFormalSubmitError('');
+
+    const submittedEmailCopy = formalEmail.trim();
+    const submittedCreditCopy = formalCreditRequested;
+
+    try {
+      const outcome = await submitFormalQuoteRequest(
+        {
+          companyName: formalCompanyName,
+          nit: formalNit,
+          contactName: formalContactName,
+          email: formalEmail,
+          phone: formalPhone,
+          cityOrAddress: formalCityOrAddress,
+          creditRequested: formalCreditRequested,
+          notes: formalNotes,
+        },
+        cartState.items,
+        formalCreditRequested ? rutFile : null,
+        {
+          onSuccess: () => {
+            $cartStore.clear();
+          },
+        }
+      );
+
+      if (outcome.ok) {
+        setFormalSuccessInfo({
+          message: outcome.message ?? QUOTE_FORMAL_SUCCESS_MESSAGE,
+          referenceId: outcome.referenceId,
+          email: submittedEmailCopy,
+          creditRequested: submittedCreditCopy,
+        });
+        setFormalCompanyName('');
+        setFormalNit('');
+        setFormalContactName('');
+        setFormalEmail('');
+        setFormalPhone('');
+        setFormalCityOrAddress('');
+        setFormalCreditRequested(false);
+        setFormalNotes('');
+        setRutFile(null);
+        setRutFileError('');
+        setFormalFieldErrors({});
+        setDrawerView('formal-success');
+      } else {
+        setFormalFieldErrors(outcome.fieldErrors ?? {});
+        if (outcome.fieldErrors?.rutFile) {
+          setRutFileError(outcome.fieldErrors.rutFile);
+        }
+        setFormalSubmitError(
+          outcome.error ??
+            'No fue posible enviar tu solicitud. Verifica los campos o usa el correo de respaldo.'
+        );
+      }
+    } finally {
+      setIsSubmittingFormal(false);
     }
   };
 
@@ -622,16 +974,38 @@ export default function QuoteDrawer() {
           <div class="min-w-0">
             <div class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/15 text-emerald-300 text-[10px] font-bold uppercase tracking-wider rounded-industrial border border-emerald-500/30 mb-1.5">
               <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-              <span>Cajón Persistente Multimarca · SLA ≤ 5 min</span>
+              <span>
+                {drawerView === 'list'
+                  ? 'Cajón Persistente Multimarca · SLA ≤ 5 min'
+                  : drawerView === 'formal'
+                    ? formalCreditRequested
+                      ? 'Solicitud Formal · Crédito 45 Días con RUT'
+                      : `Radicación Formal · ${OFFICIAL_QUOTE_RECIPIENT_EMAIL}`
+                    : 'Radicación Confirmada · ASOEXI S.A.S.'}
+              </span>
             </div>
             <h2 id="quote-drawer-title" class="font-display font-extrabold text-lg sm:text-xl text-white flex items-center gap-2">
-              <span>{QUOTE_DRAWER_COPY.title}</span>
-              <span class="px-2 py-0.5 text-xs font-mono font-bold bg-primary text-white rounded-industrial">
-                {cartState.totalItems}
+              <span>
+                {drawerView === 'list'
+                  ? QUOTE_DRAWER_COPY.title
+                  : drawerView === 'formal'
+                    ? formalCreditRequested
+                      ? 'Crédito a 45 Días y Cotización Formal'
+                      : 'Cotización Formal por Correo'
+                    : 'Solicitud Formal Radicada'}
               </span>
+              {drawerView === 'list' && (
+                <span class="px-2 py-0.5 text-xs font-mono font-bold bg-primary text-white rounded-industrial">
+                  {cartState.totalItems}
+                </span>
+              )}
             </h2>
             <p class="text-xs text-slate-300 mt-0.5 leading-snug">
-              {QUOTE_DRAWER_COPY.subtitle}
+              {drawerView === 'list'
+                ? QUOTE_DRAWER_COPY.subtitle
+                : drawerView === 'formal'
+                  ? 'Envío directo a serviciocliente@asoexi.com sin almacenamiento en disco.'
+                  : 'Nuestro equipo comercial responderá en tu correo institucional en horario hábil.'}
             </p>
           </div>
 
@@ -648,6 +1022,8 @@ export default function QuoteDrawer() {
           </button>
         </div>
 
+        {drawerView === 'list' && (
+          <>
         {/* Scrollable Body: Integrated Brand Search + Items List + Custom Item Form + Logistics Info */}
         <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 bg-slate-50/60">
           {/* Integrated Catalog Brand Search inside QuoteDrawer */}
@@ -1371,6 +1747,406 @@ export default function QuoteDrawer() {
             </a>
           </div>
         </div>
+          </>
+        )}
+
+        {/* Integrated Story 4.4 View: Formal Quote & 45-Day Commercial Credit with RUT */}
+        {drawerView === 'formal' && (
+          <form
+            id="quote-formal-form"
+            onSubmit={handleFormalQuoteSubmit}
+            noValidate
+            class="flex-1 flex flex-col min-h-0 overflow-hidden"
+          >
+            <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/60">
+              {/* Return to list button preserving all form data */}
+              <div class="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDrawerView('list')}
+                  class="min-h-[48px] px-3 py-2 text-xs font-bold text-secondary bg-white hover:bg-slate-100 border border-slate-300 rounded-industrial inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <span aria-hidden="true">←</span>
+                  <span>Volver a la lista</span>
+                </button>
+                <span class="text-[11px] font-mono text-slate-500">
+                  {cartState.items.length} {cartState.items.length === 1 ? 'ítem' : 'ítems'} ({cartState.totalItems} unds)
+                </span>
+              </div>
+
+              {/* Compact Requisition Summary */}
+              <div class="bg-white border border-slate-200 rounded-industrial p-3.5 text-xs space-y-2 shadow-2xs">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-display font-bold uppercase tracking-wider text-secondary text-[11px]">
+                    Resumen de Requisición Incluida
+                  </span>
+                  <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-slate-100 text-secondary rounded-industrial">
+                    {cartState.totalItems} unds
+                  </span>
+                </div>
+                {cartState.items.length > 0 ? (
+                  <ul class="space-y-1 text-slate-700">
+                    {cartState.items.slice(0, 5).map((item) => (
+                      <li key={item.id} class="flex items-center justify-between gap-2 text-[11px]">
+                        <span class="truncate font-medium">{item.name}</span>
+                        <span class="font-mono font-bold text-secondary shrink-0">x{item.quantity}</span>
+                      </li>
+                    ))}
+                    {cartState.items.length > 5 && (
+                      <li class="text-[11px] text-slate-500 italic">
+                        + {cartState.items.length - 5} referencias adicionales incluidas en el envío
+                      </li>
+                    )}
+                  </ul>
+                ) : (
+                  <p class="text-[11px] text-slate-500 leading-snug">
+                    Tu lista está vacía; puedes detallar tus materiales o requerimientos en el campo de observaciones.
+                  </p>
+                )}
+              </div>
+
+              {/* Corporate Fields */}
+              <div class="bg-white border border-slate-200 rounded-industrial p-4 space-y-3.5 shadow-2xs">
+                <div>
+                  <label for="formal-company-name" class="block text-xs font-semibold text-slate-700 mb-1">
+                    Razón Social *
+                  </label>
+                  <input
+                    id="formal-company-name"
+                    name="companyName"
+                    type="text"
+                    required
+                    value={formalCompanyName}
+                    aria-invalid={Boolean(formalFieldErrors.companyName)}
+                    onInput={(e) => {
+                      setFormalCompanyName((e.target as HTMLInputElement).value);
+                      clearFormalFieldError('companyName');
+                    }}
+                    placeholder="Ej: Constructora Industrial S.A.S."
+                    class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                  />
+                  {formalFieldErrors.companyName && (
+                    <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                      {formalFieldErrors.companyName}
+                    </p>
+                  )}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label for="formal-nit" class="block text-xs font-semibold text-slate-700 mb-1">
+                      NIT Empresarial *
+                    </label>
+                    <input
+                      id="formal-nit"
+                      name="nit"
+                      type="text"
+                      required
+                      value={formalNit}
+                      aria-invalid={Boolean(formalFieldErrors.nit)}
+                      onInput={(e) => {
+                        setFormalNit((e.target as HTMLInputElement).value);
+                        clearFormalFieldError('nit');
+                      }}
+                      placeholder="Ej: 900480460-8"
+                      class="w-full px-3 py-2.5 text-xs sm:text-sm font-mono bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                    />
+                    {formalFieldErrors.nit && (
+                      <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                        {formalFieldErrors.nit}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label for="formal-contact-name" class="block text-xs font-semibold text-slate-700 mb-1">
+                      Nombre de Contacto
+                    </label>
+                    <input
+                      id="formal-contact-name"
+                      name="contactName"
+                      type="text"
+                      value={formalContactName}
+                      aria-invalid={Boolean(formalFieldErrors.contactName)}
+                      onInput={(e) => {
+                        setFormalContactName((e.target as HTMLInputElement).value);
+                        clearFormalFieldError('contactName');
+                      }}
+                      placeholder="Ej: Ing. Carlos Mendoza"
+                      class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                    />
+                    {formalFieldErrors.contactName && (
+                      <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                        {formalFieldErrors.contactName}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label for="formal-email" class="block text-xs font-semibold text-slate-700 mb-1">
+                      Correo Corporativo *
+                    </label>
+                    <input
+                      id="formal-email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formalEmail}
+                      aria-invalid={Boolean(formalFieldErrors.email)}
+                      onInput={(e) => {
+                        setFormalEmail((e.target as HTMLInputElement).value);
+                        clearFormalFieldError('email');
+                      }}
+                      placeholder="compras@tuempresa.com.co"
+                      class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                    />
+                    {formalFieldErrors.email && (
+                      <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                        {formalFieldErrors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label for="formal-phone" class="block text-xs font-semibold text-slate-700 mb-1">
+                      Teléfono / Celular
+                    </label>
+                    <input
+                      id="formal-phone"
+                      name="phone"
+                      type="tel"
+                      value={formalPhone}
+                      aria-invalid={Boolean(formalFieldErrors.phone)}
+                      onInput={(e) => {
+                        setFormalPhone((e.target as HTMLInputElement).value);
+                        clearFormalFieldError('phone');
+                      }}
+                      placeholder="Ej: +57 310 000 0000"
+                      class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                    />
+                    {formalFieldErrors.phone && (
+                      <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                        {formalFieldErrors.phone}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label for="formal-city-address" class="block text-xs font-semibold text-slate-700 mb-1">
+                    Ciudad y Dirección de Entrega en Obra / Empresa *
+                  </label>
+                  <input
+                    id="formal-city-address"
+                    name="cityOrAddress"
+                    type="text"
+                    required
+                    value={formalCityOrAddress}
+                    aria-invalid={Boolean(formalFieldErrors.cityOrAddress)}
+                    onInput={(e) => {
+                      setFormalCityOrAddress((e.target as HTMLInputElement).value);
+                      clearFormalFieldError('cityOrAddress');
+                    }}
+                    placeholder="Ej: Bogotá - Zona Industrial Montevideo, Bodega 12"
+                    class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]"
+                  />
+                  {formalFieldErrors.cityOrAddress && (
+                    <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                      {formalFieldErrors.cityOrAddress}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label for="formal-notes" class="block text-xs font-semibold text-slate-700 mb-1">
+                    Observaciones o Especificaciones Técnicas (opcional)
+                  </label>
+                  <textarea
+                    id="formal-notes"
+                    name="notes"
+                    rows={3}
+                    value={formalNotes}
+                    aria-invalid={Boolean(formalFieldErrors.notes)}
+                    onInput={(e) => {
+                      setFormalNotes((e.target as HTMLTextAreaElement).value);
+                      clearFormalFieldError('notes');
+                    }}
+                    placeholder="Ej: Urgencia en obra, certificados RETIE/SDS requeridos o referencias adicionales..."
+                    class="w-full px-3 py-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-industrial text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  {formalFieldErrors.notes && (
+                    <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1">
+                      {formalFieldErrors.notes}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 45-Day Commercial Credit Toggle + SEC-2 Microcopy + Reactive RUT PDF Upload */}
+              <div class="bg-white border border-slate-200 rounded-industrial p-4 space-y-3 shadow-2xs">
+                <label
+                  for="formal-credit-checkbox"
+                  class="flex items-center gap-3 min-h-[48px] cursor-pointer select-none"
+                >
+                  <input
+                    id="formal-credit-checkbox"
+                    type="checkbox"
+                    checked={formalCreditRequested}
+                    onChange={(e) => {
+                      const checked = (e.target as HTMLInputElement).checked;
+                      setFormalCreditRequested(checked);
+                      if (!checked) {
+                        setRutFileError('');
+                        clearFormalFieldError('rutFile');
+                      }
+                    }}
+                    class="w-5 h-5 accent-primary rounded cursor-pointer shrink-0"
+                  />
+                  <span class="font-display font-bold text-xs sm:text-sm text-secondary">
+                    Solicitar línea de crédito a 45 días
+                  </span>
+                </label>
+
+                {formalCreditRequested && (
+                  <div class="space-y-3 pt-2 border-t border-slate-200">
+                    {/* Exact SEC-2 Contractual Notice */}
+                    <div class="p-3 bg-red-50/80 border border-red-200 rounded-industrial text-xs text-red-950 leading-relaxed">
+                      <p class="font-semibold">{CREDIT_CONTRACTUAL_NOTICE}</p>
+                    </div>
+
+                    <div>
+                      <label for="formal-rut-file" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        Certificado RUT de la Empresa (PDF sin contraseña, máx. {Math.round(MAX_RUT_FILE_SIZE_BYTES / (1024 * 1024))} MB) *
+                      </label>
+                      <input
+                        ref={rutInputRef}
+                        id="formal-rut-file"
+                        name="rutFile"
+                        type="file"
+                        accept=".pdf,application/pdf"
+                        onChange={handleRutFileChange}
+                        aria-invalid={Boolean(rutFileError || formalFieldErrors.rutFile)}
+                        class="block w-full text-xs text-slate-700 file:mr-3 file:py-2.5 file:px-3.5 file:min-h-[48px] file:rounded-industrial file:border-0 file:text-xs file:font-bold file:bg-secondary file:text-white hover:file:bg-secondary-hover file:cursor-pointer border border-slate-300 rounded-industrial bg-slate-50 cursor-pointer"
+                      />
+
+                      {isValidatingRut && (
+                        <p role="status" class="text-[11px] font-semibold text-slate-600 mt-1.5">
+                          Validando firma PDF y seguridad en memoria...
+                        </p>
+                      )}
+
+                      {rutFile && !rutFileError && !isValidatingRut && (
+                        <div class="mt-2 flex items-center justify-between gap-2 p-2 bg-emerald-50 border border-emerald-200 rounded-industrial">
+                          <p role="status" class="text-[11px] font-semibold text-emerald-800 truncate">
+                            ✓ PDF verificado en memoria: {rutFile.name} ({(rutFile.size / 1024).toFixed(1)} KB)
+                          </p>
+                          <button
+                            type="button"
+                            onClick={handleClearRutFile}
+                            class="min-h-[48px] px-3 py-2 text-[11px] font-bold text-red-700 hover:bg-red-100 rounded-industrial shrink-0 cursor-pointer transition-colors"
+                          >
+                            Quitar PDF
+                          </button>
+                        </div>
+                      )}
+
+                      {(rutFileError || formalFieldErrors.rutFile) && (
+                        <p role="alert" class="text-[11px] font-semibold text-red-600 mt-1.5">
+                          {rutFileError || formalFieldErrors.rutFile}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Error + Mailto Fallback preserving $cartStore */}
+              {formalSubmitError && (
+                <div
+                  role="alert"
+                  class="p-3.5 bg-red-50 border border-red-300 rounded-industrial text-xs text-red-900 space-y-2"
+                >
+                  <p class="font-bold">{formalSubmitError}</p>
+                  <a
+                    href={buildRequisitionMailtoUrl(cartState.items, formalCreditRequested)}
+                    class="inline-flex items-center gap-1.5 font-bold text-primary underline underline-offset-2 min-h-[48px] py-1"
+                  >
+                    <span>Enviar respaldo directo a {OFFICIAL_QUOTE_RECIPIENT_EMAIL} →</span>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* Formal View Footer Submit Bar */}
+            <div class="p-4 sm:p-5 bg-white border-t border-slate-200 space-y-2 shrink-0 shadow-lg">
+              <button
+                type="submit"
+                disabled={
+                  isSubmittingFormal ||
+                  isValidatingRut ||
+                  (formalCreditRequested && (!rutFile || Boolean(rutFileError)))
+                }
+                class="w-full min-h-[48px] px-4 py-3 bg-primary hover:bg-primary-hover disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-display font-bold text-xs sm:text-sm rounded-industrial shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <span>
+                  {isSubmittingFormal
+                    ? 'Radicando solicitud...'
+                    : formalCreditRequested
+                      ? 'Radicar Solicitud de Crédito 45 Días con RUT'
+                      : `Enviar Cotización Formal a ${OFFICIAL_QUOTE_RECIPIENT_EMAIL}`}
+                </span>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Integrated Story 4.4 View: Formal Confirmation */}
+        {drawerView === 'formal-success' && (
+          <div class="flex-1 flex flex-col justify-between overflow-y-auto p-5 sm:p-6 bg-slate-50/60">
+            <div class="bg-white border border-emerald-200 rounded-industrial p-6 text-center space-y-4 shadow-xs my-auto">
+              <div class="w-14 h-14 mx-auto rounded-industrial bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div class="space-y-1.5">
+                <h3 class="font-display font-extrabold text-lg text-secondary">
+                  ¡Solicitud Radicada Exitosamente!
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  {formalSuccessInfo?.message ?? QUOTE_FORMAL_SUCCESS_MESSAGE}
+                </p>
+              </div>
+              {formalSuccessInfo?.email && (
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-industrial text-xs text-slate-700 space-y-1">
+                  <p>
+                    Correo institucional registrado:{' '}
+                    <strong class="text-secondary">{formalSuccessInfo.email}</strong>
+                  </p>
+                  {formalSuccessInfo.referenceId && (
+                    <p class="font-mono text-[11px] text-slate-500">
+                      Radicado: {formalSuccessInfo.referenceId}
+                    </p>
+                  )}
+                  {formalSuccessInfo.creditRequested && (
+                    <p class="text-[11px] text-emerald-800 font-semibold pt-1">
+                      RUT recibido en memoria para estudio de crédito comercial a 45 días.
+                    </p>
+                  )}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={closeDrawer}
+                class="w-full min-h-[48px] px-4 py-3 bg-secondary hover:bg-secondary-hover text-white font-display font-bold text-xs sm:text-sm rounded-industrial transition-colors cursor-pointer"
+              >
+                Cerrar y continuar explorando
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

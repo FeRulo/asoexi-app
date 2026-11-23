@@ -5,6 +5,8 @@ import {
   QUOTE_SLA_NOTICE,
 } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
+import { dispatchQuoteFormalModalEvent } from '@/islands/QuoteDrawer';
+import { OFFICIAL_QUOTE_RECIPIENT_EMAIL } from '@/lib/quote-formal';
 
 export default function ContactChannelModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -206,7 +208,7 @@ export default function ContactChannelModal() {
           </div>
 
           {/* CTA Action Button (Height ≥ 48px for WCAG 2.2 AA) */}
-          <div class="mt-2">
+          <div class="mt-2 space-y-2">
             <a
               href={waUrl}
               target="_blank"
@@ -220,6 +222,20 @@ export default function ContactChannelModal() {
               </svg>
               <span>Chatear por WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                const handled = dispatchQuoteFormalModalEvent(false);
+                if (!handled) {
+                  window.location.href = `mailto:${OFFICIAL_QUOTE_RECIPIENT_EMAIL}`;
+                }
+              }}
+              class="w-full min-h-[48px] px-3 py-2 text-[11px] font-semibold text-secondary hover:text-primary hover:bg-slate-50 border border-slate-200 rounded-industrial transition-colors flex items-center justify-center text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              ¿Sin WhatsApp o necesitas Crédito a 45 Días con RUT? Enviar solicitud formal →
+            </button>
           </div>
         </div>
 
