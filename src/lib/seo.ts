@@ -47,6 +47,36 @@ export interface MetaTag {
   content: string;
 }
 
+const GSC_VERIFICATION_TOKEN_PATTERN = /^[A-Za-z0-9_-]{10,128}$/;
+
+/**
+ * Valida y sanitiza el token de verificación de Google Search Console.
+ * Retorna null si está ausente, vacío o contiene caracteres fuera de [A-Za-z0-9_-]{10,128}.
+ */
+export function sanitizeGscVerificationToken(raw?: string | null): string | null {
+  if (typeof raw !== 'string') {
+    return null;
+  }
+  const trimmed = raw.trim();
+  if (!GSC_VERIFICATION_TOKEN_PATTERN.test(trimmed)) {
+    return null;
+  }
+  return trimmed;
+}
+
+/**
+ * Resuelve el token de verificación GSC dando precedencia al prop explícito sobre la variable de entorno.
+ * Un prop explícito (incluso null o vacío) anula el fallback de entorno.
+ */
+export function resolveGscVerificationToken(
+  propToken?: string | null,
+  envToken?: string | null
+): string | null {
+  return sanitizeGscVerificationToken(
+    propToken !== undefined ? propToken : envToken
+  );
+}
+
 function normalizeBaseUrl(baseUrl?: string): string {
   const fallback = SITE_METADATA.siteUrl.replace(/\/+$/, '');
   const trimmed = typeof baseUrl === 'string' ? baseUrl.trim() : '';

@@ -2,12 +2,14 @@
 import {
   buildPageMetadata,
   generateOpenGraphTags,
+  resolveGscVerificationToken,
   type PageMetadataInput,
   type JsonLdInput,
 } from '@/lib/seo';
 
 export interface Props extends PageMetadataInput {
   jsonLd?: JsonLdInput | null;
+  gscVerificationToken?: string | null;
 }
 
 const {
@@ -22,6 +24,7 @@ const {
   ogTitle,
   twitterTitle,
   jsonLd,
+  gscVerificationToken,
 } = Astro.props;
 
 const metadata = buildPageMetadata({
@@ -38,6 +41,10 @@ const metadata = buildPageMetadata({
 });
 
 const ogTags = generateOpenGraphTags(metadata);
+const gscVerification = resolveGscVerificationToken(
+  gscVerificationToken,
+  import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION
+);
 
 const schemas = jsonLd
   ? Array.isArray(jsonLd)
@@ -51,6 +58,9 @@ const schemas = jsonLd
 <link rel="canonical" href={metadata.canonicalUrl} />
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 <meta name="robots" content={metadata.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+{gscVerification && (
+  <meta name="google-site-verification" content={gscVerification} />
+)}
 
 <!-- Open Graph Protocol & Twitter Cards -->
 {ogTags.map((tag) => (

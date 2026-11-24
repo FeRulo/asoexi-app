@@ -8,7 +8,11 @@ import MobileStickyBar from '@/islands/MobileStickyBar';
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton.astro';
 import SEOHead from '@/components/seo/SEOHead.astro';
 import type { JsonLdInput } from '@/lib/seo';
-import { sanitizeGa4MeasurementId } from '@/lib/analytics';
+import {
+  sanitizeGa4MeasurementId,
+  sanitizeGoogleAdsId,
+  resolvePrimaryGtagScriptId,
+} from '@/lib/analytics';
 import '@/styles/global.css';
 
 interface Props {
@@ -48,6 +52,13 @@ const {
 const ga4MeasurementId = sanitizeGa4MeasurementId(
   import.meta.env.PUBLIC_GA4_MEASUREMENT_ID
 );
+const googleAdsId = sanitizeGoogleAdsId(
+  import.meta.env.PUBLIC_GOOGLE_ADS_ID
+);
+const primaryGtagScriptId = resolvePrimaryGtagScriptId(
+  ga4MeasurementId,
+  googleAdsId
+);
 ---
 
 <!doctype html>
@@ -80,20 +91,25 @@ const ga4MeasurementId = sanitizeGa4MeasurementId(
       rel="stylesheet"
     />
 
-    {ga4MeasurementId && (
+    {primaryGtagScriptId && (
       <>
         <script
           async
-          src={`https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`}
+          src={`https://www.googletagmanager.com/gtag/js?id=${primaryGtagScriptId}`}
         ></script>
-        <script is:inline define:vars={{ ga4MeasurementId }}>
+        <script is:inline define:vars={{ ga4MeasurementId, googleAdsId }}>
           window.dataLayer = window.dataLayer || [];
           function gtag() {
             window.dataLayer.push(arguments);
           }
           window.gtag = window.gtag || gtag;
           window.gtag('js', new Date());
-          window.gtag('config', ga4MeasurementId, { transport_type: 'beacon' });
+          if (ga4MeasurementId) {
+            window.gtag('config', ga4MeasurementId, { transport_type: 'beacon' });
+          }
+          if (googleAdsId) {
+            window.gtag('config', googleAdsId, { transport_type: 'beacon' });
+          }
         </script>
       </>
     )}

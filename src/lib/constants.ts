@@ -77,8 +77,25 @@ export interface CommercialAdvisor {
   role: string;
 }
 
+export interface GoogleBusinessProfile {
+  name: string;
+  primaryCategory: string;
+  secondaryCategory: string;
+  categories: string[];
+  address: string;
+  neighborhood: string;
+  city: string;
+  serviceAreas: string[];
+  mapsUrl: string;
+  attributedWebsiteUrl: string;
+  deliveryPolicy: string;
+}
+
 export const LOGISTIC_NOTICE =
   'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)';
+
+export const LOCAL_DELIVERY_POLICY =
+  'Despacho centralizado a domicilio a obras y bodegas en Bogotá y Sabana — Sin venta de mostrador ni retiro en bodega';
 
 export const LOGISTIC_HERO_PROPOSITION =
   'Despacho directo a tu bodega u obra a nivel nacional — Sede administrativa centralizada';
@@ -166,6 +183,8 @@ export const COMPANY_LOCATION: CompanyLocation = {
   },
   googleMapsUrl: 'https://maps.app.goo.gl/rcs1uzyGVfvJ48xK6',
 };
+
+export const LOCAL_HEADQUARTERS_ADDRESS = `${COMPANY_LOCATION.streetAddress}, ${COMPANY_LOCATION.region}`;
 
 export const BUSINESS_COMMERCE_SCHEMA: BusinessCommerceSchema = {
   priceRange: '$$',
@@ -331,6 +350,20 @@ export const SITE_METADATA: SiteMetadata = {
   twitterCard: 'summary_large_image',
 };
 
+export const GOOGLE_BUSINESS_PROFILE: GoogleBusinessProfile = {
+  name: COMPANY_INFO.name,
+  primaryCategory: 'Ferretería',
+  secondaryCategory: 'Proveedor de equipos industriales',
+  categories: ['Ferretería', 'Proveedor de equipos industriales'],
+  address: LOCAL_HEADQUARTERS_ADDRESS,
+  neighborhood: COMPANY_LOCATION.neighborhood,
+  city: COMPANY_LOCATION.region,
+  serviceAreas: ['Bogotá', 'Sabana de Bogotá'],
+  mapsUrl: COMPANY_LOCATION.googleMapsUrl,
+  attributedWebsiteUrl: `${SITE_METADATA.siteUrl}/?utm_source=gbp&utm_medium=organic&utm_campaign=local`,
+  deliveryPolicy: LOCAL_DELIVERY_POLICY,
+};
+
 export interface AboutStat {
   value: string;
   label: string;
@@ -389,8 +422,8 @@ export const ABOUT_DATA: AboutData = {
   history: {
     title: 'Nuestra Historia y Trayectoria B2B',
     paragraphs: [
-      'Constituida legalmente como ASOEXI S.A.S. (con nombre comercial ASOEXI, NIT 900480460-8), contamos con más de 7 años de experiencia ininterrumpida abasteciendo insumos industriales, eléctricos, ferreteros e hidráulicos a los principales centros comerciales, cadenas de hotelería y compañías de servicios en Colombia.',
-      'Nacimos para transformar la adquisición técnica B2B eliminando la intermediación innecesaria, suministrando marcas 100% originales con certificados oficiales de conformidad, facturación electrónica y despacho programado directamente a las instalaciones de nuestros clientes corporativos.',
+      'Constituida legalmente como ASOEXI S.A.S. (con nombre comercial ASOEXI, NIT 900480460-8), contamos con más de 7 años de experiencia ininterrumpida como distribuidor ferretero Bogotá, abasteciendo insumos industriales, eléctricos, ferreteros e hidráulicos a los principales centros comerciales, cadenas de hotelería y compañías de servicios en Colombia.',
+      'Desde nuestra sede administrativa y logística en el Barrio Venecia, operamos como proveedor de insumos industriales Venecia Bogotá y especialistas en materiales eléctricos sur de Bogotá, eliminando la intermediación innecesaria con marcas 100% originales, certificados oficiales de conformidad, facturación electrónica y despacho programado directamente a las instalaciones de nuestros clientes corporativos.',
     ],
     stats: [
       { value: '7+ Años', label: 'Abasteciendo grandes empresas' },
@@ -414,9 +447,8 @@ export const ABOUT_DATA: AboutData = {
     description:
       'Coordinación centralizada de despachos directos a obra, planta o bodega corporativa a nivel nacional.',
     administrativeNotice: 'Sede Administrativa Centralizada',
-    headquartersAddress: 'Carrera 55 A No. 51 A 28 Sur, Bogotá, Colombia',
-    noCounterNotice:
-      'Sede administrativa y despacho logístico a domicilio (sin venta presencial por mostrador ni retiro en bodega)',
+    headquartersAddress: LOCAL_HEADQUARTERS_ADDRESS,
+    noCounterNotice: LOGISTIC_NOTICE,
     features: [
       {
         title: 'Despacho 100% a Domicilio',
