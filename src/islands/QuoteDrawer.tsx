@@ -23,6 +23,7 @@ import {
   deriveRequisitionAnalyticsContext,
   readPageAnalyticsContext,
   trackWhatsAppLead,
+  trackFormalQuoteConversion,
 } from '@/lib/analytics';
 import {
   CREDIT_CONTRACTUAL_NOTICE,
@@ -195,6 +196,44 @@ export async function submitFormalQuoteRequest(
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+/**
+ * Captures pre-clear requisition and page analytics context before submitting the
+ * formal quote request, and fires Google Ads `conversion` only when `outcome.ok` is true.
+ */
+export async function submitFormalQuoteWithTelemetry(
+  fields: FormalQuoteFormFields,
+  items: CartItem[],
+  rutFile: File | null,
+  options?: {
+    fetchFn?: typeof fetch;
+    onSuccess?: () => void;
+    timeoutMs?: number;
+    doc?: Document | null;
+    loc?: { pathname?: string } | null;
+    trackConversionFn?: typeof trackFormalQuoteConversion;
+  }
+): Promise<SubmitFormalQuoteOutcome> {
+  const preSubmitAnalyticsContext = {
+    ...readPageAnalyticsContext(options?.doc, options?.loc),
+    ...deriveRequisitionAnalyticsContext(items),
+    creditRequested: fields.creditRequested,
+    ctaLocation: 'quote_drawer_formal',
+  };
+
+  const outcome = await submitFormalQuoteRequest(fields, items, rutFile, {
+    fetchFn: options?.fetchFn,
+    onSuccess: options?.onSuccess,
+    timeoutMs: options?.timeoutMs,
+  });
+
+  if (outcome.ok) {
+    const trackFn = options?.trackConversionFn ?? trackFormalQuoteConversion;
+    trackFn(preSubmitAnalyticsContext);
+  }
+
+  return outcome;
 }
 
 export interface RequisitionWhatsAppActionOutcome {
@@ -864,7 +903,7 @@ export default function QuoteDrawer() {
     const submittedCreditCopy = formalCreditRequested;
 
     try {
-      const outcome = await submitFormalQuoteRequest(
+      const outcome = await submitFormalQuoteWithTelemetry(
         {
           companyName: formalCompanyName,
           nit: formalNit,

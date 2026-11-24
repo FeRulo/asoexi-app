@@ -1,10 +1,37 @@
 import type { CartItem, CatalogItem } from '@/stores/cart';
 
 export const GA4_WHATSAPP_EVENT_NAME = 'lead_whatsapp_click' as const;
+export const GOOGLE_ADS_EVENT_NAME = 'conversion' as const;
 
 const GA4_MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]{4,20}$/i;
+const GOOGLE_ADS_ID_PATTERN = /^AW-[A-Z0-9]{6,20}$/i;
+const GOOGLE_ADS_CONVERSION_LABEL_PATTERN = /^[A-Za-z0-9_-]{4,64}$/;
 
 export type BrandTier = 'tractor' | 'secondary' | 'general';
+export type GoogleAdsConversionSource = 'whatsapp' | 'formal_quote';
+
+export interface GoogleAdsConversionContext extends WhatsAppLeadContext {
+  conversionSource?: GoogleAdsConversionSource;
+  creditRequested?: boolean;
+}
+
+export interface GoogleAdsConversionOptions {
+  adsId?: string | null;
+  conversionLabel?: string | null;
+  gtag?: unknown;
+}
+
+export interface GoogleAdsConversionPayload {
+  send_to: string;
+  origin_page: string;
+  brand_origin: string;
+  sector_origin: string;
+  brand_tier: BrandTier;
+  conversion_source: GoogleAdsConversionSource;
+  credit_requested?: boolean;
+  cta_location?: string;
+  transport_type: 'beacon';
+}
 
 export interface WhatsAppLeadContext {
   originPage?: string | null;
@@ -80,6 +107,58 @@ export function sanitizeGa4MeasurementId(rawId?: string | null): string | null {
     return null;
   }
   return normalized.toUpperCase();
+}
+
+/**
+ * Validates and normalizes a Google Ads Conversion ID (e.g. AW-123456789).
+ * Returns null if missing, malformed, or containing unsafe characters.
+ */
+export function sanitizeGoogleAdsId(rawId?: string | null): string | null {
+  const normalized = normalizeText(rawId);
+  if (!normalized) return null;
+  if (!GOOGLE_ADS_ID_PATTERN.test(normalized)) {
+    return null;
+  }
+  return normalized.toUpperCase();
+}
+
+/**
+ * Validates a Google Ads conversion label while preserving its original casing.
+ * Returns null if missing, malformed, or containing unsafe characters.
+ */
+export function sanitizeGoogleAdsConversionLabel(rawLabel?: string | null): string | null {
+  const normalized = normalizeText(rawLabel);
+  if (!normalized) return null;
+  if (!GOOGLE_ADS_CONVERSION_LABEL_PATTERN.test(normalized)) {
+    return null;
+  }
+  return normalized;
+}
+
+/**
+ * Builds a validated Google Ads `send_to` target (`AW-XXXXXXXXX/LABEL`).
+ * Returns null if either the Ads ID or conversion label is missing or invalid.
+ */
+export function buildGoogleAdsSendTo(
+  rawAdsId?: string | null,
+  rawLabel?: string | null
+): string | null {
+  const adsId = sanitizeGoogleAdsId(rawAdsId);
+  const label = sanitizeGoogleAdsConversionLabel(rawLabel);
+  if (!adsId || !label) return null;
+  return `${adsId}/${label}`;
+}
+
+/**
+ * Resolves the single primary ID used to load `gtag.js`, prioritizing GA4 over Google Ads.
+ */
+export function resolvePrimaryGtagScriptId(
+  rawGa4Id?: string | null,
+  rawAdsId?: string | null
+): string | null {
+  const ga4Id = sanitizeGa4MeasurementId(rawGa4Id);
+  if (ga4Id) return ga4Id;
+  return sanitizeGoogleAdsId(rawAdsId);
 }
 
 /**
@@ -292,14 +371,105 @@ export function extractWhatsAppClickContextFromElement(
   }
 }
 
+function getDefaultGoogleAdsConfig(): { adsId?: string; conversionLabel?: string } {
+  try {
+    return {
+      adsId: import.meta.env.PUBLIC_GOOGLE_ADS_ID,
+      conversionLabel: import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_LABEL,
+    };
+  } catch {
+    return {};
+  }
+}
+
 /**
- * Emits `lead_whatsapp_click` to GA4 via `window.gtag`.
+ * Emits a non-blocking, PII-free Google Ads `conversion` event via `window.gtag`.
+ * Silently degrades (returns false) when credentials are missing/invalid,
+ * under adblockers, SSR, or runtime errors.
+ */
+export function trackGoogleAdsConversion(
+  context?: GoogleAdsConversionContext | null,
+  options?: GoogleAdsConversionOptions
+): boolean {
+  try {
+    const defaults = getDefaultGoogleAdsConfig();
+    const rawAdsId = options?.adsId !== undefined ? options.adsId : defaults.adsId;
+    const rawLabel =
+      options?.conversionLabel !== undefined
+        ? options.conversionLabel
+        : defaults.conversionLabel;
+
+    const sendTo = buildGoogleAdsSendTo(rawAdsId, rawLabel);
+    if (!sendTo) {
+      return false;
+    }
+
+    const gtagFn =
+      options?.gtag !== undefined
+        ? options.gtag
+        : typeof window !== 'undefined'
+          ? window.gtag
+          : undefined;
+
+    if (typeof gtagFn !== 'function') {
+      return false;
+    }
+
+    const base = buildWhatsAppLeadPayload(context);
+    const payload: GoogleAdsConversionPayload = {
+      send_to: sendTo,
+      origin_page: base.origin_page,
+      brand_origin: base.brand_origin,
+      sector_origin: base.sector_origin,
+      brand_tier: base.brand_tier,
+      conversion_source: context?.conversionSource ?? 'whatsapp',
+      transport_type: 'beacon',
+    };
+
+    if (typeof context?.creditRequested === 'boolean') {
+      payload.credit_requested = context.creditRequested;
+    }
+    if (base.cta_location) {
+      payload.cta_location = base.cta_location;
+    }
+
+    (gtagFn as (cmd: string, eventName: string, params: GoogleAdsConversionPayload) => void)(
+      'event',
+      GOOGLE_ADS_EVENT_NAME,
+      payload
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Emits a Google Ads `conversion` event for a successful formal quote / 45-day credit submission.
+ */
+export function trackFormalQuoteConversion(
+  context?: GoogleAdsConversionContext | null,
+  options?: GoogleAdsConversionOptions
+): boolean {
+  return trackGoogleAdsConversion(
+    {
+      ...context,
+      conversionSource: 'formal_quote',
+    },
+    options
+  );
+}
+
+/**
+ * Emits `lead_whatsapp_click` to GA4 via `window.gtag` and conditionally fires
+ * the Google Ads `conversion` event when `PUBLIC_GOOGLE_ADS_ID` + label are configured.
  * Silently degrades (returns false) under adblockers, SSR, or runtime errors
  * without ever blocking WhatsApp navigation.
  */
 export function trackWhatsAppLead(
   context?: WhatsAppLeadContext | null,
-  gtagOverride?: unknown
+  gtagOverride?: unknown,
+  adsOptions?: Omit<GoogleAdsConversionOptions, 'gtag'>
 ): boolean {
   try {
     const gtagFn =
@@ -319,6 +489,18 @@ export function trackWhatsAppLead(
       GA4_WHATSAPP_EVENT_NAME,
       payload
     );
+
+    trackGoogleAdsConversion(
+      {
+        ...context,
+        conversionSource: 'whatsapp',
+      },
+      {
+        ...adsOptions,
+        gtag: gtagFn,
+      }
+    );
+
     return true;
   } catch {
     return false;

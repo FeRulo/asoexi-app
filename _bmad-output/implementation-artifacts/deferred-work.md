@@ -27,3 +27,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-5-4-verificacion-en-google-search-console-seo-on-page-local-y-google-business-profile.md`
   summary: Reordenar o añadir un paso post-build en `package.json` (`verify`) para que las auditorías de HTML compilado en `dist/client/` se ejecuten siempre sobre artefactos frescos después de `astro build` sin bypass silencioso.
   evidence: Preexistente en `package.json` (`"verify": "vitest run && astro check && tsc --noEmit && astro build"`); afecta por igual a las auditorías de `dist/client/` de Stories 5.2, 5.3 y 5.4.
+
+- source_spec: `/home/fernando/Fernando/Own/asoexi-app/_bmad-output/implementation-artifacts/spec-5-5-infraestructura-de-medicion-para-pauta-y-conversiones-google-ads-sem-geofenced.md`
+  summary: Add executed Astro Container API or E2E verification for `BaseLayout.astro` rendering `gtag.js` and `gtag('config', ...)` when `PUBLIC_GOOGLE_ADS_ID` is set.
+  evidence: Pre-verified by verification-gap; Vitest runs in Node without an Astro component rendering or browser harness, so `.astro` head script output with `PUBLIC_GOOGLE_ADS_ID` enabled is only checked by source assertions.
