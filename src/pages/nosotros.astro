@@ -1,14 +1,21 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ClientLogos from '@/components/home/ClientLogos.astro';
-import { COMPANY_INFO, OFFICIAL_EMAILS, ABOUT_DATA } from '@/lib/constants';
+import {
+  COMPANY_INFO,
+  GOOGLE_BUSINESS_PROFILE,
+  OFFICIAL_EMAILS,
+  ABOUT_DATA,
+  LOCAL_HEADQUARTERS_ADDRESS,
+  LOCAL_DELIVERY_POLICY,
+} from '@/lib/constants';
 import { generateBreadcrumbsSchema, generateInstitutionalSchemas } from '@/lib/seo';
 import { getDirectWhatsAppUrl } from '@/lib/whatsapp';
 
 const directWhatsAppUrl = getDirectWhatsAppUrl();
 const pageTitle = `Nosotros | ${COMPANY_INFO.name} - Distribuidor Mayorista B2B`;
 const pageDescription =
-  'Conoce la trayectoria de más de 7 años de ASOEXI S.A.S. Abastecimiento técnico B2B, protocolos de seguridad SG-SST y despacho directo a obra sin venta en mostrador.';
+  'ASOEXI S.A.S.: +7 años como distribuidor ferretero Bogotá e insumos industriales en Venecia. Protocolos SG-SST y despacho directo sin venta en mostrador.';
 const pageSchemas = [
   ...generateInstitutionalSchemas(),
   generateBreadcrumbsSchema([
@@ -223,16 +230,31 @@ const pageSchemas = [
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <div class="space-y-2">
+          <div class="space-y-2.5">
             <h3 class="font-display font-bold text-base sm:text-lg text-amber-950">
               {ABOUT_DATA.logistics.administrativeNotice}: Despacho 100% a Domicilio en Obra y Empresa
             </h3>
             <p class="text-xs sm:text-sm text-amber-900 leading-relaxed font-body">
-              Nuestras instalaciones centrales ubicadas en <strong>{ABOUT_DATA.logistics.headquartersAddress}</strong> operan estrictamente como sede de gestión administrativa, coordinación técnica y balanceo logístico.
+              <strong class="text-amber-950">Sede administrativa y logística:</strong> {LOCAL_HEADQUARTERS_ADDRESS}. Operamos estrictamente como centro de gestión administrativa, coordinación técnica y balanceo logístico en el sur de Bogotá.
             </p>
             <p class="text-xs sm:text-sm font-bold text-amber-950 bg-amber-100/70 p-2.5 rounded-industrial border border-amber-200">
-              {ABOUT_DATA.logistics.noCounterNotice}. Todos los pedidos se despachan y entregan directamente en su punto de obra, bodega o empresa receptora.
+              {LOCAL_DELIVERY_POLICY}.
             </p>
+            <div class="pt-1">
+              <a
+                href={GOOGLE_BUSINESS_PROFILE.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir ficha verificada de ASOEXI S.A.S. en Google Business Profile y Google Maps"
+                class="inline-flex items-center gap-2 px-4 py-2.5 min-h-[48px] bg-white hover:bg-amber-100 text-amber-950 text-xs font-bold uppercase tracking-wider rounded-industrial border border-amber-300 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                <svg class="w-4 h-4 text-amber-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Ver ubicación en Google Business Profile</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -353,6 +375,19 @@ const pageSchemas = [
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
             <span>Cotizar vía WhatsApp</span>
+          </a>
+          <a
+            href={GOOGLE_BUSINESS_PROFILE.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Consultar ficha verificada de ASOEXI S.A.S. en Google Business Profile"
+            class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors flex items-center gap-2 min-h-[48px] rounded-industrial border border-white/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary"
+          >
+            <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>Google Business Profile</span>
           </a>
         </div>
 

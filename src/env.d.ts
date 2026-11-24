@@ -6,6 +6,7 @@ declare module 'cloudflare:workers' {
 
 interface ImportMetaEnv {
   readonly PUBLIC_GA4_MEASUREMENT_ID?: string;
+  readonly PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
 }
 
 interface ImportMeta {

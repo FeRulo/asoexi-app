@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-22-2026 17:34
-last_updated: 11-23-2026 18:12
+last_updated: 11-23-2026 20:06
 project: asoexi-app
 project_key: NOKEY
 tracking_system: file-system
@@ -67,6 +67,6 @@ development_status:
   5-1-sitemap-xml-dinamico-optimizacion-semantica-para-motores-de-busqueda-e-ia-aeo: done
   5-2-marcado-estructurado-schema-org-json-ld-localbusiness-hardwarestore-y-jerarquia-de-breadcrumblist: done
   5-3-telemetria-de-conversion-por-canal-corporativo-y-auditoria-de-prospectos-calificados: review
-  5-4-verificacion-en-google-search-console-seo-on-page-local-y-google-business-profile: backlog
+  5-4-verificacion-en-google-search-console-seo-on-page-local-y-google-business-profile: review
   5-5-infraestructura-de-medicion-para-pauta-y-conversiones-google-ads-sem-geofenced: backlog
   epic-5-retrospective: optional

@@ -1,11 +1,14 @@
 ---
 import {
   COMPANY_INFO,
+  GOOGLE_BUSINESS_PROFILE,
   CONTACT_PHONES,
   COMMERCIAL_ADVISORS,
   OFFICIAL_EMAILS,
   BUSINESS_HOURS,
   LOGISTIC_NOTICE,
+  LOCAL_HEADQUARTERS_ADDRESS,
+  LOCAL_DELIVERY_POLICY,
   NAVIGATION_LINKS,
 } from '@/lib/constants';
 import { generateWhatsAppUrl } from '@/lib/whatsapp';
@@ -55,10 +58,30 @@ const ctaLink = NAVIGATION_LINKS.find((l) => l.isCta) || {
         <p class="text-xs text-slate-400 leading-relaxed font-body">
           Distribuidor mayorista y comercializador de insumos industriales, eléctricos, ferreteros e hidráulicos con más de {COMPANY_INFO.experienceYears} años abasteciendo obras, industrias y proyectos de infraestructura en Colombia.
         </p>
-        <div class="pt-2 text-xs text-slate-400 space-y-1">
+        <div class="pt-2 text-xs text-slate-400 space-y-1.5">
           <p><strong class="text-white">Razón Social:</strong> {COMPANY_INFO.legalName}</p>
           <p><strong class="text-white">NIT:</strong> {COMPANY_INFO.nit}</p>
-          <p><strong class="text-white">Sede Administrativa:</strong> {COMPANY_INFO.address}, {COMPANY_INFO.city}</p>
+          <p>
+            <strong class="text-white">Sede administrativa y logística:</strong> {LOCAL_HEADQUARTERS_ADDRESS}
+          </p>
+          <p class="text-slate-300 leading-relaxed">
+            {LOCAL_DELIVERY_POLICY}
+          </p>
+          <div class="pt-1.5">
+            <a
+              href={GOOGLE_BUSINESS_PROFILE.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver ficha verificada de ASOEXI S.A.S. en Google Business Profile y Google Maps"
+              class="inline-flex items-center gap-2 px-3 py-2 min-h-[48px] rounded-industrial bg-secondary hover:bg-primary/20 text-slate-200 hover:text-white border border-slate-700 hover:border-primary/40 transition-colors text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Ver ficha en Google Business Profile</span>
+            </a>
+          </div>
         </div>
       </div>
 

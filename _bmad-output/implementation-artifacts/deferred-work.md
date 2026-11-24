@@ -23,3 +23,7 @@
 - source_spec: `_bmad-output/implementation-artifacts/spec-4-4-endpoint-serverless-edge-api-quote-y-modal-unificado-de-cotizacion-formal-y-credito.md`
   summary: Añadir protección anti-abuso (Cloudflare Turnstile o honeypot, rate limiting y validación de `Origin`/`Referer`) en `POST /api/quote` antes de exponer el envío público con Resend en producción.
   evidence: El endpoint `POST /api/quote` actualmente acepta peticiones públicas sin mitigación de spam/flooding contra la cuota de Resend ni el buzón `serviciocliente@asoexi.com`.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-5-4-verificacion-en-google-search-console-seo-on-page-local-y-google-business-profile.md`
+  summary: Reordenar o añadir un paso post-build en `package.json` (`verify`) para que las auditorías de HTML compilado en `dist/client/` se ejecuten siempre sobre artefactos frescos después de `astro build` sin bypass silencioso.
+  evidence: Preexistente en `package.json` (`"verify": "vitest run && astro check && tsc --noEmit && astro build"`); afecta por igual a las auditorías de `dist/client/` de Stories 5.2, 5.3 y 5.4.
